@@ -1,0 +1,55 @@
+listen = ":8005"
+gomaxprocs = 1
+releaseMode = false
+
+[token]
+tokenLibVersion = 1
+accessTokenTTL = "2h"
+privateKeyPath = "./conf/ecdsa_prv.pem"
+publicKeyPath = "./conf/ecdsa_pub.pem"
+
+[captcha]
+defaultLength = 5
+defaultWidth = 240
+defaultHeight = 80
+ttl = "86400s"
+
+[verify]
+defaultLength = 6
+maxSendTimes = 5
+maxCheckTimes = 5
+ttl = "15m"
+
+[login]
+ttl = "10m"
+maxRequestTimes = 5
+maxCaptchaTImes = 1
+
+[mysql]
+dsn = "root:123456@tcp(127.0.0.1:3306)/account?charset=utf8mb4,utf8&parseTime=True&loc=Local"
+maxIdle = 1
+maxOpen = 2
+
+[redis]
+addr = "127.0.0.1:6379"
+password = ""
+poolSize = 5
+db = 1
+dialTimeout = "3s"
+readTimeout = "0.5s"
+writeTimeout = "0.5s"
+
+[log]
+level = "debug"
+
+[email]
+addr = "10.102.2.11:8002"
+bussinessId = 100100001
+tenantId = "000awss3311ls"
+senderEmail = "meiqia@meiqia.com"
+senderName = "meiqia Inc"
+
+[sms]
+addr = "10.102.2.11:8001"
+bussinessId = 100100001
+tenantId = "000awss3311ls"
