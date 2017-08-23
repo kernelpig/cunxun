@@ -1,0 +1,11 @@
+CREATE TABLE `article` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT "id",
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "创建时间",
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "更新时间",
+  `column_id` INT NOT NULL COMMENT "所属栏目",
+  `title` VARCHAR(64) NOT NULL COMMENT "文章标题",
+  `content` TEXT NOT NULL COMMENT "文章内容",
+  `creater_uid` INT NOT NULL COMMENT "创建人id",
+  `updater_uid` INT NOT NULL COMMENT "最近修改人id",
+  PRIMARY KEY (`id`)
+);
