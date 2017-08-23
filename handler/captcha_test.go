@@ -7,6 +7,7 @@ import (
 	"github.com/gavv/httpexpect"
 
 	"wangqingang/cunxun/common"
+	"wangqingang/cunxun/test"
 )
 
 func testCreateCaptcha(t *testing.T, e *httpexpect.Expect) string {
@@ -25,12 +26,12 @@ func testGetCaptchaImage(t *testing.T, e *httpexpect.Expect, id string) {
 }
 
 func testGetCaptchaImageHandler(t *testing.T, e *httpexpect.Expect) {
-	initTestCaseEnv(t)
+	test.InitTestCaseEnv(t)
 	id := testCreateCaptcha(t, e)
 	testGetCaptchaImage(t, e, id)
 }
 
 func testCreateCaptchaHandler(t *testing.T, e *httpexpect.Expect) {
-	initTestCaseEnv(t)
+	test.InitTestCaseEnv(t)
 	testCreateCaptcha(t, e)
 }

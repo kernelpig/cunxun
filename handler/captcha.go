@@ -6,8 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
-	"wangqingang/cunxun/model/captcha"
 )
 
 func CreateCaptchaHandler(c *gin.Context) {

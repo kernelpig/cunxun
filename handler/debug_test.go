@@ -5,8 +5,9 @@ import (
 	"testing"
 
 	"github.com/gavv/httpexpect"
-	
+
 	"wangqingang/cunxun/common"
+	"wangqingang/cunxun/test"
 )
 
 func testDebugPing(t *testing.T, e *httpexpect.Expect) {
@@ -16,7 +17,7 @@ func testDebugPing(t *testing.T, e *httpexpect.Expect) {
 }
 
 func testDebugPingHandler(t *testing.T, e *httpexpect.Expect) {
-	initTestCaseEnv(t)
+	test.InitTestCaseEnv(t)
 	testDebugPing(t, e)
 }
 
@@ -28,4 +29,9 @@ func testDebugGetCaptchaValue(t *testing.T, e *httpexpect.Expect) string {
 		JSON().Object()
 	resp.Value("code").Number().Equal(common.OK)
 	return resp.Value("captcha_value").String().NotEmpty().Raw()
+}
+
+func testDebugGetCaptchaValueHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+	testDebugGetCaptchaValue(t, e)
 }

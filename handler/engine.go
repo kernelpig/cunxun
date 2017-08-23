@@ -15,6 +15,7 @@ func ServerEngine() *gin.Engine {
 	router.Use(gin.Recovery())
 
 	regCaptchaRouter(router)
+	regCheckCodeRouter(router)
 	regDebugRouter(router)
 
 	return router
@@ -24,6 +25,11 @@ func regCaptchaRouter(router *gin.Engine) {
 	captchaGroup := router.Group("/captcha")
 	captchaGroup.GET("/:captcha_id", GetCaptchaImageHandler)
 	captchaGroup.POST("/", CreateCaptchaHandler)
+}
+
+func regCheckCodeRouter(router *gin.Engine) {
+	checkCodeGroup := router.Group("/checkcode")
+	checkCodeGroup.POST("/")
 }
 
 func regDebugRouter(router *gin.Engine) {

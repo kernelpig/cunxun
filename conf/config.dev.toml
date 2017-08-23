@@ -35,9 +35,9 @@ addr = "127.0.0.1:6379"
 password = ""
 poolSize = 5
 db = 1
-dialTimeout = "3s"
-readTimeout = "0.5s"
-writeTimeout = "0.5s"
+dialTimeout = "6s"
+readTimeout = "6s"
+writeTimeout = "6s"
 
 [log]
 level = "debug"

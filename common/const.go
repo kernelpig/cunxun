@@ -1,6 +1,7 @@
 package common
 
 const (
+	ModuleName  = "cunxun"
 	CurrentUser = "current_user"
 	AuthHeader  = "Authorization"
 )
