@@ -15,12 +15,12 @@ func testCreateCaptcha(t *testing.T, e *httpexpect.Expect) string {
 		JSON().Object()
 
 	resp.Value("code").Number().Equal(common.OK)
-	return resp.Value("id").String().Raw()
+	return resp.Value("captcha_id").String().Raw()
 }
 
 func testGetCaptchaImage(t *testing.T, e *httpexpect.Expect, id string) {
-	e.GET("/captcha/{id}").
-		WithPath("id", id).
+	e.GET("/captcha/{captcha_id}").
+		WithPath("captcha_id", id).
 		Expect().Status(http.StatusOK)
 }
 

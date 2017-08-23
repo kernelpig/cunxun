@@ -15,8 +15,8 @@ func DebugPingHandler(c *gin.Context) {
 	return
 }
 
-func DebugGetCaptchaImageHandler(c *gin.Context) {
-	id := c.Param("id")
+func DebugGetCaptchaValueHandler(c *gin.Context) {
+	id := c.Param("captcha_id")
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":          common.OK,

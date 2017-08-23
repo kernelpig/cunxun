@@ -85,6 +85,7 @@ func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
 // debug接口测试
 func testDebugHandler(t *testing.T, e *httpexpect.Expect) {
 	testDebugPingHandler(t, e)
+	testDebugGetCaptchaValue(t, e)
 }
 
 // 内部接口测试

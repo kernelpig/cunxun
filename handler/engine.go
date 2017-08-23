@@ -22,12 +22,12 @@ func ServerEngine() *gin.Engine {
 
 func regCaptchaRouter(router *gin.Engine) {
 	captchaGroup := router.Group("/captcha")
-	captchaGroup.GET("/:id", GetCaptchaImageHandler)
+	captchaGroup.GET("/:captcha_id", GetCaptchaImageHandler)
 	captchaGroup.POST("/", CreateCaptchaHandler)
 }
 
 func regDebugRouter(router *gin.Engine) {
 	debugGroup := router.Group("/debug")
 	debugGroup.GET("/ping", DebugPingHandler)
-	debugGroup.GET("/captcha/:id", DebugGetCaptchaImageHandler)
+	debugGroup.GET("/captcha/:captcha_id", DebugGetCaptchaValueHandler)
 }

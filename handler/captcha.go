@@ -13,14 +13,14 @@ import (
 func CreateCaptchaHandler(c *gin.Context) {
 	id := captcha.GenCaptcha(common.Config.Captcha.DefaultLength)
 	c.JSON(http.StatusOK, gin.H{
-		"code": common.OK,
-		"id":   id,
+		"code":       common.OK,
+		"captcha_id": id,
 	})
 	return
 }
 
 func GetCaptchaImageHandler(c *gin.Context) {
-	id := c.Param("id")
+	id := c.Param("captcha_id")
 
 	width, err := strconv.ParseInt(c.Query("width"), 10, 64)
 	if err != nil {
