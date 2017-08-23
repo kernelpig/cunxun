@@ -34,7 +34,7 @@ func GetCaptchaImageHandler(c *gin.Context) {
 
 	data, err := captcha.GetCaptchaImage(id, int(width), int(height))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, map[string]interface{}{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"code":    common.AccountInternalError,
 			"message": "GetCaptchaImage " + err.Error(),
 		})
