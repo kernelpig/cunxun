@@ -3,7 +3,6 @@ package model
 import (
 	"database/sql"
 	"fmt"
-	"reflect"
 	"strings"
 
 	"wangqingang/cunxun/utils"
@@ -81,8 +80,6 @@ func SQLQueryRow(db sqlExec, selects interface{}, wheres map[string]interface{})
 	}
 
 	_SQL := fmt.Sprintf(`SELECT %s FROM %s WHERE %s`, strings.Join(f, ", "), tableName, strings.Join(w, " and "))
-	fmt.Println("11111111111111", _SQL)
-	fmt.Println("%+v\n", s[0], reflect.ValueOf(s[0]).Kind())
 	err := db.QueryRow(_SQL, q...).Scan(s...)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -132,7 +129,6 @@ func SQLInsert(db sqlExec, inserts interface{}) (int64, error) {
 	}
 
 	_SQL := fmt.Sprintf("INSERT INTO %s SET %s", tableName, strings.Join(u, ", "))
-	fmt.Println("1111111111insert", _SQL)
 	sqlResult, err := db.Exec(_SQL, q...)
 	if err != nil {
 		return 0, err
