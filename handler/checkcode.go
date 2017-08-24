@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/ahmetb/go-linq"
@@ -200,4 +201,38 @@ func CheckcodeVerifyHandler(c *gin.Context) {
 		"code": common.OK,
 	})
 	return
+}
+
+func CheckcodeVerify(c *gin.Context, phone, source, purpose, code string) (bool, error) {
+	var key = checkcode.CheckCodeKey{
+		Phone:   phone,
+		Purpose: purpose,
+		Source:  source,
+	}
+	verify, err := key.GetCheckcode()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": common.AccountInternalError,
+		})
+		return false, err
+	} else if verify == nil {
+		return false, nil
+	} else {
+		if verify.CheckTimes >= common.Config.Checkcode.MaxCheckTimes {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"code": common.AccountRequestLimit,
+			})
+			return false, errors.New("verify code expired")
+		}
+	}
+
+	ok, err := verify.Check(code)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": common.AccountInternalError,
+		})
+		return false, err
+	}
+
+	return ok, nil
 }

@@ -20,7 +20,6 @@ func TestCreateAccount(t *testing.T) {
 
 	u = &User{
 		Phone:          phone,
-		Name:           test.GenRandString(),
 		NickName:       test.GenRandString(),
 		HashedPassword: test.GenRandString(),
 		PasswordLevel:  test.GenRandInt(5),

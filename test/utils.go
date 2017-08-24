@@ -38,3 +38,7 @@ func GenRandString() string {
 func GenRandInt(max int) int {
 	return rand.Intn(max)
 }
+
+func GenFakePassword() string {
+	return GenRandString()[16:]
+}

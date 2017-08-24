@@ -27,6 +27,8 @@ func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
 
 	testCheckcodeSendHandler(t, e)
 	testCheckcodeVerifyHandler(t, e)
+
+	testUserSignupHandler(t, e)
 }
 
 // debug接口测试

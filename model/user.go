@@ -4,7 +4,6 @@ package model
 type User struct {
 	ID             int    `column:"id"`
 	Phone          string `column:"phone"`
-	Name           string `column:"name"`
 	NickName       string `column:"nickname"`
 	HashedPassword string `column:"hashed_password"`
 	PasswordLevel  int    `column:"password_level"`

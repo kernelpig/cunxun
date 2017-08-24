@@ -16,9 +16,17 @@ func ServerEngine() *gin.Engine {
 
 	regCaptchaRouter(router)
 	regCheckCodeRouter(router)
+	regUserRouter(router)
 	regDebugRouter(router)
 
 	return router
+}
+
+func regUserRouter(router *gin.Engine) {
+	userGroup := router.Group("/u")
+	userGroup.POST("/signup", UserSignupHandler)
+	userGroup.POST("/login", UserLoginHandler)
+	userGroup.POST("/logout", UserLogoutHandler)
 }
 
 func regCaptchaRouter(router *gin.Engine) {
