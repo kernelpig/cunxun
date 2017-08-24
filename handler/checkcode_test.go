@@ -23,7 +23,7 @@ func testCheckcodeSend(t *testing.T, e *httpexpect.Expect, request *CheckcodeSen
 func testCheckcodeSendHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 
-	captchaId := testCreateCaptcha(t, e)
+	captchaId := testCaptchaCreate(t, e)
 	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
 
 	request := &CheckcodeSendRequest{
@@ -49,7 +49,7 @@ func testCheckcodeVerify(t *testing.T, e *httpexpect.Expect, request *CheckVerif
 func testCheckcodeVerifyHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 
-	captchaId := testCreateCaptcha(t, e)
+	captchaId := testCaptchaCreate(t, e)
 	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
 
 	sendRequest := &CheckcodeSendRequest{

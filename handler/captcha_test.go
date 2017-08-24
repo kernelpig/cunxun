@@ -10,7 +10,7 @@ import (
 	"wangqingang/cunxun/test"
 )
 
-func testCreateCaptcha(t *testing.T, e *httpexpect.Expect) string {
+func testCaptchaCreate(t *testing.T, e *httpexpect.Expect) string {
 	resp := e.POST("/captcha").
 		Expect().Status(http.StatusOK).
 		JSON().Object()
@@ -19,7 +19,7 @@ func testCreateCaptcha(t *testing.T, e *httpexpect.Expect) string {
 	return resp.Value("captcha_id").String().Raw()
 }
 
-func testGetCaptchaImage(t *testing.T, e *httpexpect.Expect, id string) {
+func testCaptchaGetImage(t *testing.T, e *httpexpect.Expect, id string) {
 	e.GET("/captcha/{captcha_id}").
 		WithPath("captcha_id", id).
 		Expect().Status(http.StatusOK)
@@ -27,11 +27,11 @@ func testGetCaptchaImage(t *testing.T, e *httpexpect.Expect, id string) {
 
 func testCaptchaGetImageHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
-	id := testCreateCaptcha(t, e)
-	testGetCaptchaImage(t, e, id)
+	id := testCaptchaCreate(t, e)
+	testCaptchaGetImage(t, e, id)
 }
 
 func testCaptchaCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
-	testCreateCaptcha(t, e)
+	testCaptchaCreate(t, e)
 }

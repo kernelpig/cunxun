@@ -36,7 +36,7 @@ func testDebugGetCaptchaValue(t *testing.T, e *httpexpect.Expect, captchaId stri
 func testDebugCaptchaGetValueHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 
-	captchaID := testCreateCaptcha(t, e)
+	captchaID := testCaptchaCreate(t, e)
 
 	testDebugGetCaptchaValue(t, e, captchaID)
 }
@@ -57,7 +57,7 @@ func testDebugCheckcodeGetValue(t *testing.T, e *httpexpect.Expect, key *checkco
 func testDebugCheckcodeGetValueHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 
-	captchaID := testCreateCaptcha(t, e)
+	captchaID := testCaptchaCreate(t, e)
 	captchaValue := testDebugGetCaptchaValue(t, e, captchaID)
 
 	sendRequest := &CheckcodeSendRequest{

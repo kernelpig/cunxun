@@ -20,7 +20,7 @@ func testUserSignup(t *testing.T, e *httpexpect.Expect, request *UserSignupReque
 func testUserSignupHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 
-	captchaId := testCreateCaptcha(t, e)
+	captchaId := testCaptchaCreate(t, e)
 	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
 
 	sendRequest := &CheckcodeSendRequest{
