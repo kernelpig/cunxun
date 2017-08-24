@@ -25,13 +25,13 @@ func testGetCaptchaImage(t *testing.T, e *httpexpect.Expect, id string) {
 		Expect().Status(http.StatusOK)
 }
 
-func testGetCaptchaImageHandler(t *testing.T, e *httpexpect.Expect) {
+func testCaptchaGetImageHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 	id := testCreateCaptcha(t, e)
 	testGetCaptchaImage(t, e, id)
 }
 
-func testCreateCaptchaHandler(t *testing.T, e *httpexpect.Expect) {
+func testCaptchaCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 	testCreateCaptcha(t, e)
 }

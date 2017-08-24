@@ -6,6 +6,7 @@ import (
 
 	"github.com/gavv/httpexpect"
 
+	"wangqingang/cunxun/checkcode"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/test"
 )
@@ -21,17 +22,50 @@ func testDebugPingHandler(t *testing.T, e *httpexpect.Expect) {
 	testDebugPing(t, e)
 }
 
-func testDebugGetCaptchaValue(t *testing.T, e *httpexpect.Expect) string {
-	id := testCreateCaptcha(t, e)
+func testDebugGetCaptchaValue(t *testing.T, e *httpexpect.Expect, captchaId string) string {
 	resp := e.GET("/debug/captcha/{captcha_id}").
-		WithPath("captcha_id", id).
+		WithPath("captcha_id", captchaId).
 		Expect().Status(http.StatusOK).
 		JSON().Object()
+
 	resp.Value("code").Number().Equal(common.OK)
+
 	return resp.Value("captcha_value").String().NotEmpty().Raw()
 }
 
-func testDebugGetCaptchaValueHandler(t *testing.T, e *httpexpect.Expect) {
+func testDebugCaptchaGetValueHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
-	testDebugGetCaptchaValue(t, e)
+
+	captchaID := testCreateCaptcha(t, e)
+
+	testDebugGetCaptchaValue(t, e, captchaID)
+}
+
+func testDebugCheckcodeGetValue(t *testing.T, e *httpexpect.Expect, key *checkcode.CheckCodeKey) string {
+	resp := e.GET("/debug/checkcode/").
+		WithQuery("phone", key.Phone).
+		WithQuery("purpose", key.Purpose).
+		WithQuery("source", key.Source).
+		Expect().Status(http.StatusOK).
+		JSON().Object()
+
+	resp.Value("code").Number().Equal(common.OK)
+
+	return resp.Value("checkcode").String().NotEmpty().Raw()
+}
+
+func testDebugCheckcodeGetValueHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+
+	captchaID := testCreateCaptcha(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaID)
+
+	sendRequest := &CheckcodeSendRequest{
+		Phone:        test.GenFakePhone(),
+		Purpose:      test.TestSignupPurpose,
+		Source:       test.TestWebSource,
+		CaptchaId:    captchaID,
+		CaptchaValue: captchaValue,
+	}
+	testCheckcodeSend(t, e, sendRequest)
 }

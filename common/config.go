@@ -17,7 +17,7 @@ type Configs struct {
 	Redis       *RedisConfig
 	Log         *LogConfig
 	Captcha     *CaptchaConfig
-	Verify      *VerifyConfig
+	Checkcode   *CheckcodeConfig
 	Login       *LoginConfig
 	Email       *EmailConfig
 	Sms         *SmsConfig
@@ -43,7 +43,7 @@ type CaptchaConfig struct {
 	TTL           Duration
 }
 
-type VerifyConfig struct {
+type CheckcodeConfig struct {
 	DefaultLength int      // 短信验证码长度，默认为6位
 	MaxSendTimes  int      // 周期内最大发送次数，默认为5次
 	MaxCheckTimes int      // 周期内最大检验次数，默认为5次

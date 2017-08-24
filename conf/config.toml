@@ -14,7 +14,7 @@ defaultWidth = 240
 defaultHeight = 80
 ttl = "86400s"
 
-[verify]
+[checkcode]
 defaultLength = 6
 maxSendTimes = 5
 maxCheckTimes = 5
@@ -26,7 +26,7 @@ maxRequestTimes = 5
 maxCaptchaTImes = 1
 
 [mysql]
-dsn = "root:@tcp(127.0.0.1:3306)/account?charset=utf8mb4,utf8&parseTime=True&loc=Local"
+dsn = "root:@tcp(127.0.0.1:3306)/cunxun?charset=utf8mb4,utf8&parseTime=True&loc=Local"
 maxIdle = 1
 maxOpen = 2
 
@@ -44,7 +44,7 @@ level = "debug"
 
 [statsd]
 addr = "127.0.0.1:8125"
-prefix = "account"
+prefix = "cunxun"
 
 [email]
 addr = "10.102.2.11:8002"

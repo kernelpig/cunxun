@@ -6,8 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"wangqingang/cunxun/captcha"
+	"wangqingang/cunxun/checkcode"
 	"wangqingang/cunxun/common"
-	"wangqingang/cunxun/model/captcha"
 )
 
 func DebugPingHandler(c *gin.Context) {
@@ -15,7 +16,7 @@ func DebugPingHandler(c *gin.Context) {
 	return
 }
 
-func DebugGetCaptchaValueHandler(c *gin.Context) {
+func DebugCaptchaGetValueHandler(c *gin.Context) {
 	id := c.Param("captcha_id")
 
 	c.JSON(http.StatusOK, gin.H{
@@ -24,4 +25,23 @@ func DebugGetCaptchaValueHandler(c *gin.Context) {
 	})
 
 	return
+}
+
+func DebugCheckcodeGetValueHandler(c *gin.Context) {
+	key := checkcode.CheckCodeKey{
+		Phone:   c.Query("phone"),
+		Purpose: c.Query("purpose"),
+		Source:  c.Query("source"),
+	}
+	checkcode, err := key.GetCheckcode()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code": common.AccountInternalError,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":      common.OK,
+		"checkcode": checkcode.Code,
+	})
 }

@@ -23,17 +23,19 @@ func ServerEngine() *gin.Engine {
 
 func regCaptchaRouter(router *gin.Engine) {
 	captchaGroup := router.Group("/captcha")
-	captchaGroup.GET("/:captcha_id", GetCaptchaImageHandler)
-	captchaGroup.POST("/", CreateCaptchaHandler)
+	captchaGroup.GET("/:captcha_id", CaptchaGetImageHandler)
+	captchaGroup.POST("/", CaptchaCreateHandler)
 }
 
 func regCheckCodeRouter(router *gin.Engine) {
 	checkCodeGroup := router.Group("/checkcode")
-	checkCodeGroup.POST("/")
+	checkCodeGroup.POST("/send", CheckcodeSendHandler)
+	checkCodeGroup.POST("/check", CheckcodeVerifyHandler)
 }
 
 func regDebugRouter(router *gin.Engine) {
 	debugGroup := router.Group("/debug")
 	debugGroup.GET("/ping", DebugPingHandler)
-	debugGroup.GET("/captcha/:captcha_id", DebugGetCaptchaValueHandler)
+	debugGroup.GET("/captcha/:captcha_id", DebugCaptchaGetValueHandler)
+	debugGroup.GET("/checkcode", DebugCheckcodeGetValueHandler)
 }

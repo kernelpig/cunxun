@@ -3,6 +3,8 @@ package checkcode
 import (
 	"encoding/json"
 	"fmt"
+	"math"
+	"math/rand"
 	"time"
 
 	"gopkg.in/redis.v4"
@@ -41,7 +43,7 @@ func (c *CheckCode) Save() error {
 	}
 
 	key := c.GetRedisKey()
-	expire := c.CreatedTimestamp + int64(common.Config.Verify.TTL.Seconds()) - time.Now().Unix()
+	expire := c.CreatedTimestamp + int64(common.Config.Checkcode.TTL.Seconds()) - time.Now().Unix()
 	if expire <= 0 {
 		db.Redis.Del(key) // 超时删除
 		return nil
@@ -68,23 +70,29 @@ func (k *CheckCodeKey) GetRedisKey() string {
 	return fmt.Sprintf("%s:%s:%s:%s", common.ModuleName, k.Phone, k.Purpose, k.Source)
 }
 
-func (k *CheckCodeKey) CreateCheckCode(verifyCode string) (*CheckCode, error) {
-	verify := &CheckCode{
+func genCode() string {
+	max := int64(math.Pow10(common.Config.Checkcode.DefaultLength + 1))
+	codeFormat := fmt.Sprintf("%%0%dd", common.Config.Checkcode.DefaultLength)
+	return fmt.Sprintf(codeFormat, rand.Int63n(max))
+}
+
+func (k *CheckCodeKey) CreateCheckCode() (*CheckCode, error) {
+	checkcode := &CheckCode{
 		CheckCodeKey:     *k,
 		SendTimes:        0,
 		CheckTimes:       0,
-		Code:             verifyCode,
+		Code:             genCode(),
 		CreatedTimestamp: time.Now().Unix(),
 	}
 
-	err := verify.Save()
+	err := checkcode.Save()
 	if err != nil {
 		return nil, err
 	}
-	return verify, nil
+	return checkcode, nil
 }
 
-func (k *CheckCodeKey) GetVerify() (*CheckCode, error) {
+func (k *CheckCodeKey) GetCheckcode() (*CheckCode, error) {
 	key := k.GetRedisKey()
 	bs, err := db.Redis.Get(key).Bytes()
 

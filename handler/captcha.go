@@ -10,7 +10,7 @@ import (
 	"wangqingang/cunxun/common"
 )
 
-func CreateCaptchaHandler(c *gin.Context) {
+func CaptchaCreateHandler(c *gin.Context) {
 	id := captcha.GenCaptcha(common.Config.Captcha.DefaultLength)
 	c.JSON(http.StatusOK, gin.H{
 		"code":       common.OK,
@@ -19,7 +19,7 @@ func CreateCaptchaHandler(c *gin.Context) {
 	return
 }
 
-func GetCaptchaImageHandler(c *gin.Context) {
+func CaptchaGetImageHandler(c *gin.Context) {
 	id := c.Param("captcha_id")
 
 	width, err := strconv.ParseInt(c.Query("width"), 10, 64)

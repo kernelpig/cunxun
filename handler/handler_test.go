@@ -5,13 +5,7 @@ import (
 	"testing"
 
 	"github.com/gavv/httpexpect"
-
-	"wangqingang/cunxun/test"
 )
-
-func init() {
-	test.TestInit()
-}
 
 // 主测试函数
 func TestHandlers(t *testing.T) {
@@ -28,14 +22,18 @@ func TestHandlers(t *testing.T) {
 
 // 接口基础功能测试
 func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
-	testCreateCaptchaHandler(t, e)
-	testGetCaptchaImageHandler(t, e)
+	testCaptchaCreateHandler(t, e)
+	testCaptchaGetImageHandler(t, e)
+
+	testCheckcodeSendHandler(t, e)
+	testCheckcodeVerifyHandler(t, e)
 }
 
 // debug接口测试
 func testDebugHandler(t *testing.T, e *httpexpect.Expect) {
 	testDebugPingHandler(t, e)
-	testDebugGetCaptchaValueHandler(t, e)
+	testDebugCaptchaGetValueHandler(t, e)
+	testDebugCheckcodeGetValueHandler(t, e)
 }
 
 // 内部接口测试
