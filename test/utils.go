@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"strings"
+
+	"github.com/satori/go.uuid"
 
 	"wangqingang/cunxun/common"
 )
@@ -26,4 +29,12 @@ func GenFakeSource() string {
 func GenFakePurpose() string {
 	index := rand.Intn(len(common.PurposeRange))
 	return common.PurposeRange[index]
+}
+
+func GenRandString() string {
+	return strings.Replace(uuid.NewV4().String(), "-", "", -1)
+}
+
+func GenRandInt(max int) int {
+	return rand.Intn(max)
 }

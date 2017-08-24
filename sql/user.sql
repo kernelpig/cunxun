@@ -6,9 +6,9 @@ CREATE TABLE `user` (
   `name` VARCHAR(64) NOT NULL COMMENT "用户登录名",
   `nickname` VARCHAR(64) NOT NULL COMMENT "用户昵称",
   `hashed_password` VARCHAR(64) NOT NULL COMMENT "密码",
-  `password_level` INT NOT NULL COMMENT "密码级别",
-  `avatar` VARCHAR(256) NOT NULL COMMENT "头像",
-  `register_source` VARCHAR(256) NOT NULL COMMENT "注册来源",
+  `password_level` INT NOT NULL DEFAULT 0 COMMENT "密码级别",
+  `avatar` VARCHAR(256) NOT NULL DEFAULT "" COMMENT "头像",
+  `register_source` VARCHAR(256) NOT NULL DEFAULT "" COMMENT "注册来源",
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_phone` (`phone`),
   UNIQUE KEY `uk_name` (`name`)
