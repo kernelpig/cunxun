@@ -19,9 +19,9 @@ type TokenKey struct {
 
 type Token struct {
 	TokenKey
-	Token            string `json:"token"`
-	CreatedTimestamp int64  `json:"create_ts"`
-	TTL              int64  `json:"ttl"` // 单位为秒
+	Token            string        `json:"token"`
+	CreatedTimestamp time.Time     `json:"create_ts"`
+	TTL              time.Duration `json:"ttl"`
 }
 
 func (k *TokenKey) GetTokenKey() string {
@@ -36,13 +36,13 @@ func (t *Token) Save() error {
 	}
 
 	key := t.GetTokenKey()
-	expire := t.CreatedTimestamp + t.TTL - time.Now().Unix()
+	expire := t.CreatedTimestamp.Add(t.TTL).Sub(time.Now())
 	if expire <= 0 {
 		db.Redis.Del(key) // 超时删除
 		return nil
 	}
 
-	err = db.Redis.Set(key, value, time.Duration(expire)*time.Second).Err()
+	err = db.Redis.Set(key, value, expire).Err()
 	if err != nil {
 		return err
 	}
@@ -62,8 +62,8 @@ func (k *TokenKey) CreateToken(token string, ttl time.Duration) (*Token, error) 
 	t := &Token{
 		TokenKey:         *k,
 		Token:            token,
-		CreatedTimestamp: time.Now().Unix(),
-		TTL:              int64(ttl.Seconds()),
+		CreatedTimestamp: time.Now(),
+		TTL:              ttl,
 	}
 	err := t.Save()
 	if err != nil {

@@ -5,34 +5,33 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"wangqingang/cunxun/common"
+
 	"wangqingang/cunxun/test"
 )
 
 const (
-	TestAccountId       = 1234
-	TestTokenString     = "adcfbgfdfsfdsfsadfdfdsfda"
-	TestTokenSource     = common.WebSource
-	TestTokenTimeoutTTL = 1
+	testAccountId       = 1234
+	testTokenString     = "adcfbgfdfsfdsfsadfdfdsfda"
+	testTokenTimeoutTTL = 1
 )
 
 var testTokenKey = &TokenKey{
-	UserId: TestAccountId,
-	Source: TestTokenSource,
+	UserId: testAccountId,
+	Source: test.TestWebSource,
 }
 
-func TestCreateToken(t *testing.T) {
+func TestTokenCreate(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
-	token, err := testTokenKey.CreateToken(TestTokenString, common.Config.Token.AccessTokenTTL.D())
+	token, err := testTokenKey.CreateToken(testTokenString, time.Duration(testTokenTimeoutTTL)*time.Second)
 	assert.Nil(err)
 	assert.NotNil(token)
 
 	token, err = testTokenKey.GetToken()
 	assert.Nil(err)
 	assert.NotNil(token)
-	assert.Equal(TestTokenString, token.Token)
+	assert.Equal(testTokenString, token.Token)
 
 	token.Clean()
 	token, err = testTokenKey.GetToken()
@@ -44,10 +43,10 @@ func TestTokenTimeout(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
-	token, err := testTokenKey.CreateToken(TestTokenString, time.Duration(TestTokenTimeoutTTL)*time.Second)
+	token, err := testTokenKey.CreateToken(testTokenString, time.Duration(testTokenTimeoutTTL)*time.Second)
 	assert.Nil(err)
 	assert.NotNil(token)
-	assert.Equal(TestTokenString, token.Token)
+	assert.Equal(testTokenString, token.Token)
 
 	time.Sleep(time.Duration(2) * time.Second)
 	token, err = testTokenKey.GetToken()
@@ -59,7 +58,7 @@ func TestTokenCreateAndStore(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
-	token, err := TokenCreateAndStore(TestAccountId, test.TestWebSource)
+	token, err := TokenCreateAndStore(testAccountId, test.TestWebSource)
 	assert.Nil(err)
 	assert.NotEmpty(token)
 }
