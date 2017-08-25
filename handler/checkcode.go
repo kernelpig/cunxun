@@ -62,7 +62,7 @@ func CheckcodeSendHandler(c *gin.Context) {
 		})
 		return
 	} else if verify == nil {
-		verify, err = checkcodeKey.CreateCheckCode()
+		verify, err = checkcodeKey.CreateCheckCode(common.Config.Checkcode.TTL.D())
 		if err != nil || verify == nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"code": common.AccountInternalError,

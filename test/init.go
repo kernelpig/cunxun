@@ -12,12 +12,15 @@ import (
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
+	"wangqingang/cunxun/token/token_lib"
 )
 
 const (
 	testUserSQLPath    = "../sql/user.sql"
 	testArticleSQLPath = "../sql/article.sql"
 	testColumnSQLPath  = "../sql/column.sql"
+	testPrivateKeyPath = "../conf/ecdsa_prv.pem"
+	testPublicKeyPath  = "../conf/ecdsa_pub.pem"
 )
 
 func init() {
@@ -27,6 +30,8 @@ func init() {
 	db.InitMysql(common.Config.Mysql)
 
 	captcha.InitCaptcha(common.Config.Captcha.TTL.D())
+
+	token_lib.InitKeyPem(testPublicKeyPath, testPrivateKeyPath)
 	rand.Seed(time.Now().UTC().UnixNano())
 }
 

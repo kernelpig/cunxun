@@ -6,8 +6,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/test"
+)
+
+const (
+	testTimeoutTTL = 1
 )
 
 func TestCheckCodeKey_CreateCheckCode(t *testing.T) {
@@ -20,7 +23,7 @@ func TestCheckCodeKey_CreateCheckCode(t *testing.T) {
 		Phone:   test.GenFakePhone(),
 	}
 
-	checkcode, _ := key.CreateCheckCode()
+	checkcode, _ := key.CreateCheckCode(time.Duration(testTimeoutTTL) * time.Second)
 
 	checkcode, _ = key.GetCheckcode()
 	assert.NotNil(checkcode)
@@ -46,15 +49,8 @@ func TestCheckCode_Timeout(t *testing.T) {
 		Phone:   test.GenFakePhone(),
 	}
 
-	// 设置1秒测试老化
-	originTTL := common.Config.Checkcode.TTL.Duration
-	common.Config.Checkcode.TTL.Duration = time.Duration(1) * time.Second
-
 	// 创建TTL为1秒
-	key.CreateCheckCode()
-
-	// 恢复正常的TTL
-	common.Config.Checkcode.TTL.Duration = originTTL
+	key.CreateCheckCode(time.Duration(testTimeoutTTL) * time.Second)
 
 	time.Sleep(time.Duration(2) * time.Second)
 	checkcode, _ := key.GetCheckcode()

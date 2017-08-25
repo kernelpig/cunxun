@@ -6,10 +6,11 @@ import (
 	"runtime"
 	"time"
 
+	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
 	"wangqingang/cunxun/handler"
-	"wangqingang/cunxun/model/captcha"
+	"wangqingang/cunxun/token/token_lib"
 )
 
 func main() {
@@ -24,9 +25,9 @@ func main() {
 	db.InitRedis(common.Config.Redis)
 	db.InitMysql(common.Config.Mysql)
 	captcha.InitCaptcha(common.Config.Captcha.TTL.D())
+	token_lib.InitKeyPem(common.Config.Token.PublicKeyPath, common.Config.Token.PrivateKeyPath)
 
 	// TODO: init log
-
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	router := handler.ServerEngine()

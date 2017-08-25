@@ -22,7 +22,7 @@ type UserSignupRequest struct {
 	VerifyCode string `json:"verify_code" binding:"required"`
 }
 
-type LoginRequest struct {
+type UserLoginRequest struct {
 	Phone        string `json:"phone" binding:"required"`
 	Source       string `json:"source" binding:"required"`
 	Password     string `json:"password" binding:"required,min=8,max=20"`

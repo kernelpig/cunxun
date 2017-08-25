@@ -21,10 +21,11 @@ type CheckCodeKey struct {
 
 type CheckCode struct {
 	CheckCodeKey
-	SendTimes        int    `json:"send_times"`
-	CheckTimes       int    `json:"check_times"`
-	Code             string `json:"verify_code"`
-	CreatedTimestamp int64  `json:"created_ts"`
+	SendTimes        int           `json:"send_times"`
+	CheckTimes       int           `json:"check_times"`
+	Code             string        `json:"verify_code"`
+	CreatedTimestamp time.Time     `json:"created_ts"`
+	TTL              time.Duration `json:"ttl"`
 }
 
 func (c *CheckCode) Check(code string) (bool, error) {
@@ -43,13 +44,13 @@ func (c *CheckCode) Save() error {
 	}
 
 	key := c.GetRedisKey()
-	expire := c.CreatedTimestamp + int64(common.Config.Checkcode.TTL.Seconds()) - time.Now().Unix()
+	expire := c.CreatedTimestamp.Add(c.TTL).Sub(time.Now())
 	if expire <= 0 {
 		db.Redis.Del(key) // 超时删除
 		return nil
 	}
 
-	err = db.Redis.Set(key, value, time.Duration(expire)*time.Second).Err()
+	err = db.Redis.Set(key, value, expire).Err()
 	if err != nil {
 		return err
 	}
@@ -76,13 +77,14 @@ func genCode() string {
 	return fmt.Sprintf(codeFormat, rand.Int63n(max))
 }
 
-func (k *CheckCodeKey) CreateCheckCode() (*CheckCode, error) {
+func (k *CheckCodeKey) CreateCheckCode(ttl time.Duration) (*CheckCode, error) {
 	checkcode := &CheckCode{
 		CheckCodeKey:     *k,
 		SendTimes:        0,
 		CheckTimes:       0,
 		Code:             genCode(),
-		CreatedTimestamp: time.Now().Unix(),
+		CreatedTimestamp: time.Now(),
+		TTL:              ttl,
 	}
 
 	err := checkcode.Save()
