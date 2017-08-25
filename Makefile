@@ -21,6 +21,7 @@ test:
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/token/token_lib
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/token
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/model
+	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/middleware
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/handler
 
 clean:
