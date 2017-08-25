@@ -54,7 +54,7 @@ func testUserLogin(t *testing.T, e *httpexpect.Expect, request *UserLoginRequest
 		Expect().Status(http.StatusOK)
 
 	respObj := resp.JSON().Object()
-	return respObj.Value("account_token").String().NotEmpty().Raw()
+	return respObj.Value("user_token").String().NotEmpty().Raw()
 }
 
 func testUserLoginHandler(t *testing.T, e *httpexpect.Expect) {
@@ -98,4 +98,56 @@ func testUserLoginHandler(t *testing.T, e *httpexpect.Expect) {
 		CaptchaValue: captchaValue,
 	}
 	testUserLogin(t, e, loginRequest)
+}
+
+func testUserLogout(t *testing.T, e *httpexpect.Expect, token string) {
+	resp := e.POST("/u/logout").
+		WithHeader(common.AuthHeaderKey, token).
+		Expect().Status(http.StatusOK)
+	resp.JSON().Object().
+		Value("code").Number().Equal(common.OK)
+}
+
+func testUserLogoutHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+
+	captchaId := testCaptchaCreate(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
+
+	sendRequest := &CheckcodeSendRequest{
+		Phone:        test.GenFakePhone(),
+		Purpose:      test.TestSignupPurpose,
+		Source:       test.TestWebSource,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	testCheckcodeSend(t, e, sendRequest)
+
+	checkcodeKey := &checkcode.CheckCodeKey{
+		Phone:   sendRequest.Phone,
+		Purpose: sendRequest.Purpose,
+		Source:  sendRequest.Source,
+	}
+	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
+
+	signupRequest := &UserSignupRequest{
+		Phone:      sendRequest.Phone,
+		Source:     sendRequest.Source,
+		Password:   test.GenFakePassword(),
+		VerifyCode: code,
+	}
+	testUserSignup(t, e, signupRequest)
+
+	captchaId = testCaptchaCreate(t, e)
+	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
+
+	loginRequest := &UserLoginRequest{
+		Phone:        sendRequest.Phone,
+		Source:       sendRequest.Source,
+		Password:     signupRequest.Password,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	token := testUserLogin(t, e, loginRequest)
+	testUserLogout(t, e, token)
 }

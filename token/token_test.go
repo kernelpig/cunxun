@@ -58,7 +58,8 @@ func TestTokenCreateAndStore(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
-	token, err := TokenCreateAndStore(testAccountId, test.TestWebSource)
+	token, err := TokenCreateAndStore(testAccountId, test.TestWebSource, time.Duration(1)*time.Minute)
 	assert.Nil(err)
 	assert.NotEmpty(token)
+	TokenClean(testAccountId, test.TestWebSource)
 }

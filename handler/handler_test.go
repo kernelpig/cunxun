@@ -30,6 +30,7 @@ func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
 
 	testUserSignupHandler(t, e)
 	testUserLoginHandler(t, e)
+	testUserLogoutHandler(t, e)
 }
 
 // debug接口测试

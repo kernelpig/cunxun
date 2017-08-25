@@ -35,4 +35,7 @@ func TestCreateAccount(t *testing.T) {
 	assert.Nil(err)
 	assert.NotNil(u)
 
+	u, err = GetUserByID(db.Mysql, u.ID)
+	assert.Nil(err)
+	assert.NotNil(u)
 }

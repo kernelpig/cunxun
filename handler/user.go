@@ -10,6 +10,7 @@ import (
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
 	"wangqingang/cunxun/login"
+	"wangqingang/cunxun/middleware"
 	"wangqingang/cunxun/model"
 	"wangqingang/cunxun/password"
 	"wangqingang/cunxun/phone"
@@ -176,7 +177,7 @@ func UserLoginHandler(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := token.TokenCreateAndStore(user.ID, req.Source)
+	accessToken, err := token.TokenCreateAndStore(user.ID, req.Source, common.Config.Token.AccessTokenTTL.D())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": common.AccountInternalError,
@@ -185,12 +186,22 @@ func UserLoginHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code":          common.OK,
-		"account_token": accessToken,
+		"code":       common.OK,
+		"user_token": accessToken,
 	})
 	return
 }
 
 func UserLogoutHandler(c *gin.Context) {
+	userToken := c.GetHeader(common.AuthHeaderKey)
+	payload, err := middleware.CheckAccessToken(userToken)
 
+	if err == nil && payload != nil {
+		token.TokenClean(int(payload.UserId), payload.LoginSource)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": common.OK,
+	})
+	return
 }

@@ -95,13 +95,13 @@ func TokenRemoveAllOfUser(userID int) {
 	}
 }
 
-func TokenCreateAndStore(userID int, source string) (string, error) {
+func TokenCreateAndStore(userID int, source string, ttl time.Duration) (string, error) {
 	issueTime := time.Now()
 
 	// payload中ttl单位为分钟
 	accessToken, err := token_lib.Encrypt(common.Config.Token.TokenLibVersion, &token_lib.Payload{
 		IssueTime:   uint32(uint64(issueTime.Unix())),
-		TTL:         uint16(common.Config.Token.AccessTokenTTL.Minutes()),
+		TTL:         uint16(ttl.Minutes()),
 		UserId:      uint32(userID),
 		LoginSource: source,
 	})
@@ -119,4 +119,16 @@ func TokenCreateAndStore(userID int, source string) (string, error) {
 	}
 
 	return accessToken, nil
+}
+
+func TokenClean(userID int, source string) (*Token, error) {
+	key := &TokenKey{
+		UserId: userID,
+		Source: source,
+	}
+	value, err := key.GetToken()
+	if err != nil || value == nil {
+		return nil, err
+	}
+	return value, value.Clean()
 }

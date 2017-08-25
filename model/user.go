@@ -22,28 +22,16 @@ func GetUserByPhone(db sqlExec, phone string) (*User, error) {
 	return u, nil
 }
 
-//
-//func GetUserById(db sqlExecutor, id string) (*User, error) {
-//	_SQL := "select id, phone, hashed_password, password_level, name, register_source from user where id = ?"
-//
-//	user := &User{}
-//	err := db.QueryRow(_SQL, id).Scan(
-//		&user.ID,
-//		&user.Phone,
-//		&user.HashedPassword,
-//		&user.PasswordLevel,
-//		&user.Name,
-//		&user.RegisterSource,
-//	)
-//	if err == sql.ErrNoRows {
-//		return nil, nil
-//	}
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return user, nil
-//}
+func GetUserByID(db sqlExec, userId int) (*User, error) {
+	u := &User{}
+	isFound, err := SQLQueryRow(db, u, map[string]interface{}{
+		"id": userId,
+	})
+	if err != nil || !isFound {
+		return nil, err
+	}
+	return u, nil
+}
 
 func CreateUser(db sqlExec, user *User) (*User, error) {
 	id, err := SQLInsert(db, user)
