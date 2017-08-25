@@ -4,7 +4,7 @@ type CheckcodeSendRequest struct {
 	Phone        string `json:"phone" binding:"required"`
 	Purpose      string `json:"purpose" binding:"required"`
 	Source       string `json:"source" binding:"required"`
-	CaptchaId    string `json:"captcha_token" binding:"required"`
+	CaptchaId    string `json:"captcha_id" binding:"required"`
 	CaptchaValue string `json:"captcha_value" binding:"required"`
 }
 
@@ -26,7 +26,7 @@ type UserLoginRequest struct {
 	Phone        string `json:"phone" binding:"required"`
 	Source       string `json:"source" binding:"required"`
 	Password     string `json:"password" binding:"required,min=8,max=20"`
-	CaptchaId    string `json:"captcha_token" binding:"omitempty"`
+	CaptchaId    string `json:"captcha_id" binding:"omitempty"`
 	CaptchaValue string `json:"captcha_value" binding:"omitempty"`
 }
 

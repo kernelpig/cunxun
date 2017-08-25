@@ -18,7 +18,7 @@ const (
 
 func GenFakePhone() string {
 	max := int(math.Pow10(8))
-	return fmt.Sprintf("+86 186%08d", rand.Intn(max))
+	return fmt.Sprintf("86 186%08d", rand.Intn(max))
 }
 
 func GenFakeSource() string {

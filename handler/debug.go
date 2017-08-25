@@ -34,7 +34,7 @@ func DebugCheckcodeGetValueHandler(c *gin.Context) {
 		Source:  c.Query("source"),
 	}
 	checkcode, err := key.GetCheckcode()
-	if err != nil {
+	if err != nil || checkcode == nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": common.AccountInternalError,
 		})
