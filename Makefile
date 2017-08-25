@@ -1,14 +1,18 @@
 all: build
 
-export GOPATH := $(GOPATH)
+export GOPATH := $(CURDIR)/_project
 export GOBIN := $(CURDIR)/bin
 
 CURRENT_GIT_GROUP := wangqingang
 CURRENT_GIT_REPO := cunxun
 
-proto:
-	protoc -I pb pb/$(CURRENT_GIT_REPO).proto --go_out=plugins=grpc:pb
-	protoc -I $(CURRENT_GIT_REPO) $(CURRENT_GIT_REPO)/log.proto --go_out=plugins=grpc:$(CURRENT_GIT_REPO)
+folder_dep:
+	mkdir -p $(CURDIR)/_project/src/$(CURRENT_GIT_GROUP)
+	test -d $(CURDIR)/_project/src/$(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO) || ln -s $(CURDIR) $(CURDIR)/_project/src/$(CURRENT_GIT_GROUP)
+
+glide:
+	mkdir -p $(CURDIR)/vendor
+	glide install
 
 build:
 	go install $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)
@@ -27,4 +31,4 @@ test:
 clean:
 	@rm -rf vendor bin _project
 
-.PHONY: proto build test clean
+.PHONY: folder_dep glide test build clean

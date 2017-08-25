@@ -1,9 +1,21 @@
 package: wangqingang/cunxun
 import:
-- package: github.com/golang/protobuf
+- package: github.com/BurntSushi/toml
+- package: github.com/ahmetb/go-linq
+- package: github.com/dchest/captcha
+- package: github.com/gin-gonic/gin
+- package: github.com/go-sql-driver/mysql
+- package: github.com/satori/go.uuid
+- package: github.com/stretchr/testify
   subpackages:
-  - proto
-- package: golang.org/x/net
-  subpackages:
-  - context
-- package: google.golang.org/grpc
+  - assert
+- package: github.com/ttacon/libphonenumber
+- package: golang.org/x/crypto/bcrypt
+- package: gopkg.in/redis.v4
+- package: wangqingang/cunxun/captcha
+- package: wangqingang/cunxun/handler
+- package: wangqingang/cunxun/middleware
+- package: wangqingang/cunxun/model
+- package: wangqingang/cunxun/sms
+testImport:
+- package: github.com/gavv/httpexpect
