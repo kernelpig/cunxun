@@ -93,7 +93,7 @@ func CheckcodeSendHandler(c *gin.Context) {
 			return
 		} else if user != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"code": common.AccountAccountAlreadyExist,
+				"code": common.UserAlreadyExist,
 			})
 			return
 		}
@@ -106,7 +106,7 @@ func CheckcodeSendHandler(c *gin.Context) {
 			return
 		} else if user == nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"code": common.AccountAccountNotExist,
+				"code": common.UserNotExist,
 			})
 			return
 		}

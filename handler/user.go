@@ -117,7 +117,7 @@ func UserLoginHandler(c *gin.Context) {
 		return
 	} else if user == nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"code": common.AccountAccountNotExist,
+			"code": common.UserNotExist,
 		})
 		return
 	}
