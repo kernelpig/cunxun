@@ -5,6 +5,8 @@ import (
 	"unicode"
 
 	"golang.org/x/crypto/bcrypt"
+
+	e "wangqingang/cunxun/error"
 )
 
 const (
@@ -24,14 +26,17 @@ const (
 func Encrypt(passwd string) (string, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(passwd), cost)
 	if err != nil {
-		return "", err
+		return "", e.SE(e.MPasswordErr, e.PasswordEncryptErr, err)
 	}
 	return string(hashed), nil
 }
 
 // Verify 验证密码与哈希是否匹配
 func Verify(passwd string, hash string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(passwd))
+	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(passwd)); err != nil {
+		return e.SE(e.MPasswordErr, e.PasswordVerifyErr, err)
+	}
+	return nil
 }
 
 func isSpecialChar(r rune) bool {
@@ -39,7 +44,7 @@ func isSpecialChar(r rune) bool {
 }
 
 // 计算密码强度
-func PasswordStrength(password string) int {
+func PasswordStrength(password string) (int, error) {
 	length := len(password)
 	hasNumber := strings.IndexFunc(password, unicode.IsNumber) >= 0
 	hasLetter := strings.IndexFunc(password, unicode.IsLetter) >= 0
@@ -51,12 +56,11 @@ func PasswordStrength(password string) int {
 	strongLevel := length > 12 && hasNumber && hasLetter && hasSpecialChar
 
 	if strongLevel {
-		return LevelStrong
+		return LevelStrong, nil
 	} else if normalLevel {
-		return LevelNormal
+		return LevelNormal, nil
 	} else if weakLevel {
-		return LevelWeak
+		return LevelWeak, nil
 	}
-
-	return LevelIllegal
+	return LevelIllegal, e.SE(e.MPasswordErr, e.PasswordLevelErr, nil)
 }

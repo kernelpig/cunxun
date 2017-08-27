@@ -12,6 +12,8 @@ import (
 	"io/ioutil"
 	"math/big"
 	"sync"
+
+	e "wangqingang/cunxun/error"
 )
 
 type counter struct {
@@ -88,30 +90,30 @@ func Encrypt(version int, tk *Payload) (string, error) {
 	case 1:
 		data, err := tk.encryptV1(seq)
 		if err != nil {
-			return "", err
+			return "", e.SE(e.MTokenErr, e.TokenEcryptErr, err)
 		}
 		token := base64.URLEncoding.EncodeToString(data)
 		return token, nil
 	default:
-		return "", errors.New("invalid version")
+		return "", e.SE(e.MTokenErr, e.TokenInvalidVersion, nil)
 	}
 }
 
 func Decrypt(token string) (*Payload, error) {
 	data, err := base64.URLEncoding.DecodeString(token)
 	if err != nil {
-		return nil, errors.New("invalid base64 token")
+		return nil, e.SE(e.MTokenErr, e.TokenBase64DecodeErr, nil)
 	}
 	switch int(data[0]) {
 	case 1:
 		token := &Payload{}
 		err := token.decryptV1(data)
 		if err != nil {
-			return nil, err
+			return nil, e.SE(e.MTokenErr, e.TokenDecryptErr, nil)
 		}
 		return token, nil
 	default:
-		return nil, errors.New("invalid version")
+		return nil, e.SE(e.MTokenErr, e.TokenInvalidVersion, nil)
 	}
 }
 
@@ -138,7 +140,7 @@ func (t *Payload) encryptV1(seq uint32) ([]byte, error) {
 	hashed := h.Sum(nil)
 	r, s, err := ecdsa.Sign(rand.Reader, privateKey, hashed)
 	if err != nil {
-		return nil, err
+		return nil, e.SE(e.MTokenErr, e.TokenSignErr, err)
 	}
 
 	// TOKEN = SIG{VERSION(1B)+SEQ(3B)} + SIGN{SIGN_R(32B)+SIGN_S(32B)} + PAYLOAD{ISSUETIME(4B) + TTL(2B) + ACCOUNTID(32B) + SOURCE(>0B)}
@@ -178,7 +180,7 @@ func (t *Payload) decryptV1(data []byte) error {
 		}
 	}
 	if !valid {
-		return errors.New("sign verify failed")
+		return e.SE(e.MTokenErr, e.TokenSignVerifyErr, nil)
 	}
 
 	// 解析载荷

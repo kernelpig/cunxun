@@ -6,7 +6,7 @@ import (
 
 	"github.com/gavv/httpexpect"
 
-	"wangqingang/cunxun/common"
+	"wangqingang/cunxun/error"
 	"wangqingang/cunxun/test"
 )
 
@@ -15,7 +15,7 @@ func testCaptchaCreate(t *testing.T, e *httpexpect.Expect) string {
 		Expect().Status(http.StatusOK).
 		JSON().Object()
 
-	resp.Value("code").Number().Equal(common.OK)
+	resp.Value("code").Number().Equal(error.OK)
 	return resp.Value("captcha_id").String().Raw()
 }
 

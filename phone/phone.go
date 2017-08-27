@@ -6,37 +6,40 @@ import (
 	"strings"
 
 	libphone "github.com/ttacon/libphonenumber"
+
+	"fmt"
+	e "wangqingang/cunxun/error"
 )
 
-// var v string = "+86 13681454478"
+// var v string = "86 13681454478"
 func ValidPhone(str string) error {
 	if str == "" {
-		return errors.New("empty string")
+		return e.SE(e.MPhoneErr, e.PhoneEmpty, nil)
 	}
 
 	pieces := strings.Split(str, " ")
 	if len(pieces) < 2 {
-		return errors.New("phone format error, expect {+CC}{Space}{Number}")
+		return e.SE(e.MPhoneErr, e.PhoneFormatErr, fmt.Errorf("phone format error, expect {CC}{Space}{Number}"))
 	}
 
 	countryCodeStr := pieces[0]
 	countryCode, err := strconv.Atoi(strings.TrimLeft(countryCodeStr, "+"))
 	if err != nil {
-		return errors.New("invalid country code")
+		return e.SE(e.MPhoneErr, e.PhoneInvalidCountryCode, err)
 	}
 
 	region := libphone.GetRegionCodeForCountryCode(countryCode)
 	if region == libphone.UNKNOWN_REGION {
-		return errors.New("unknown country code region")
+		return e.SE(e.MPhoneErr, e.PhoneUnknownRegion, err)
 	}
 
 	phoneNumber, err := libphone.Parse(str, region)
 	if err != nil {
-		return errors.New("parse phone number failed")
+		return e.SE(e.MPhoneErr, e.PhoneParseNumberErr, err)
 	}
 
 	if !libphone.IsValidNumberForRegion(phoneNumber, region) {
-		return errors.New("mismatch phone region")
+		return e.SE(e.MPhoneErr, e.PhoneRegionMismatch, err)
 	}
 
 	return nil

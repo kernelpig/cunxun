@@ -9,6 +9,7 @@ import (
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/checkcode"
 	"wangqingang/cunxun/common"
+	e "wangqingang/cunxun/error"
 )
 
 func DebugPingHandler(c *gin.Context) {
@@ -20,7 +21,7 @@ func DebugCaptchaGetValueHandler(c *gin.Context) {
 	id := c.Param("captcha_id")
 
 	c.JSON(http.StatusOK, gin.H{
-		"code":          common.OK,
+		"code":          e.OK,
 		"captcha_value": captcha.GetCaptchaValue(id, false),
 	})
 
@@ -35,13 +36,11 @@ func DebugCheckcodeGetValueHandler(c *gin.Context) {
 	}
 	checkcode, err := key.GetCheckcode()
 	if err != nil || checkcode == nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code": common.AccountInternalError,
-		})
+		c.JSON(http.StatusInternalServerError, e.IE(e.IDebugCheckcodeGetValue, e.MCheckcodeErr, e.CheckcodeGetErr, err))
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"code":      common.OK,
+		"code":      e.OK,
 		"checkcode": checkcode.Code,
 	})
 }

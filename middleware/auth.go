@@ -5,11 +5,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
+
 	"wangqingang/cunxun/common"
+	e "wangqingang/cunxun/error"
 	"wangqingang/cunxun/token"
 	"wangqingang/cunxun/token/token_lib"
-
-	"github.com/gin-gonic/gin"
 )
 
 type AuthContext struct {
@@ -18,12 +19,12 @@ type AuthContext struct {
 
 func CheckAccessToken(authToken string) (*token_lib.Payload, error) {
 	if authToken == "" {
-		return nil, errors.New("user token is empty")
+		return nil, e.SE(e.MTokenErr, e.TokenIsEmpty, errors.New("auth middleware or logout"))
 	}
 
 	payload, err := token_lib.Decrypt(authToken)
 	if err != nil {
-		return payload, err
+		return payload, e.SE(e.MTokenErr, e.TokenDecryptErr, err)
 	}
 
 	// payload.ttl 单位为分钟
@@ -31,13 +32,13 @@ func CheckAccessToken(authToken string) (*token_lib.Payload, error) {
 
 	// 转为秒检测超时
 	if uint64(payload.IssueTime)+uint64(ttlDuration.Seconds()) <= uint64(time.Now().Unix()) {
-		return payload, errors.New("user token expired")
+		return payload, e.SE(e.MTokenErr, e.TokenExpired, errors.New("auth middlewareor logout"))
 	}
 
 	tokenKey := token.TokenKey{UserId: int(payload.UserId), Source: payload.LoginSource}
 	token, err := tokenKey.GetToken()
 	if err != nil || token == nil {
-		return payload, errors.New("user token db get failed")
+		return payload, e.SE(e.MTokenErr, e.TokenGetErr, err)
 	}
 
 	return payload, nil
@@ -48,9 +49,7 @@ func authMiddleware() gin.HandlerFunc {
 		authToken := c.GetHeader(common.AuthHeaderKey)
 		payload, err := CheckAccessToken(authToken)
 		if err != nil || payload == nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"code": common.AccountInvalidToken,
-			})
+			c.JSON(http.StatusBadRequest, e.SE(e.MTokenErr, e.TokenInvalid, err))
 			return
 		}
 

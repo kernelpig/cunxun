@@ -15,6 +15,7 @@ import (
 
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
+	e "wangqingang/cunxun/error"
 )
 
 type LoginKey struct {
@@ -46,7 +47,7 @@ func (login *Login) Save() error {
 
 	value, err := json.Marshal(login)
 	if err != nil {
-		return err
+		return e.SE(e.MRedisErr, e.RedisValueMarshalErr, err)
 	}
 
 	key := login.GetLoginKey()
@@ -58,7 +59,7 @@ func (login *Login) Save() error {
 
 	err = db.Redis.Set(key, value, expire).Err()
 	if err != nil {
-		return err
+		return e.SE(e.MRedisErr, e.RedisSetErr, err)
 	}
 
 	return nil
@@ -68,7 +69,7 @@ func (login *Login) Save() error {
 func (login *Login) Clean() error {
 	key := login.GetLoginKey()
 	if err := db.Redis.Del(key).Err(); err != nil {
-		return err
+		return e.SE(e.MRedisErr, e.RedisDelErr, err)
 	}
 	return nil
 }
@@ -83,7 +84,7 @@ func (k *LoginKey) CreateLogin(ttl time.Duration) (*Login, error) {
 	}
 	err := login.Save()
 	if err != nil {
-		return nil, err
+		return nil, e.SE(e.MLoginErr, e.LoginSaveErr, err)
 	}
 	return login, nil
 }
@@ -95,12 +96,12 @@ func (k *LoginKey) GetLogin() (*Login, error) {
 	if err == redis.Nil {
 		return nil, nil
 	} else if err != nil {
-		return nil, err
+		return nil, e.SE(e.MRedisErr, e.RedisGetErr, err)
 	}
 
 	login := &Login{}
 	if err = json.Unmarshal(bs, login); err != nil {
-		return nil, err
+		return nil, e.SE(e.MRedisErr, e.RedisValueUnmarshalErr, err)
 	}
 	return login, nil
 }

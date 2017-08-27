@@ -9,6 +9,7 @@ import (
 
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
+	e "wangqingang/cunxun/error"
 	"wangqingang/cunxun/token/token_lib"
 )
 
@@ -32,7 +33,7 @@ func (t *Token) Save() error {
 
 	value, err := json.Marshal(t)
 	if err != nil {
-		return err
+		return e.SE(e.MRedisErr, e.RedisValueMarshalErr, err)
 	}
 
 	key := t.GetTokenKey()
@@ -44,7 +45,7 @@ func (t *Token) Save() error {
 
 	err = db.Redis.Set(key, value, expire).Err()
 	if err != nil {
-		return err
+		return e.SE(e.MRedisErr, e.RedisSetErr, err)
 	}
 
 	return nil
@@ -53,7 +54,7 @@ func (t *Token) Save() error {
 func (t *TokenKey) Clean() error {
 	key := t.GetTokenKey()
 	if err := db.Redis.Del(key).Err(); err != nil {
-		return err
+		return e.SE(e.MRedisErr, e.RedisDelErr, err)
 	}
 	return nil
 }
@@ -67,7 +68,7 @@ func (k *TokenKey) CreateToken(token string, ttl time.Duration) (*Token, error) 
 	}
 	err := t.Save()
 	if err != nil {
-		return nil, err
+		return nil, e.SE(e.MTokenErr, e.TokenSaveErr, err)
 	}
 	return t, nil
 }
@@ -79,20 +80,13 @@ func (k *TokenKey) GetToken() (*Token, error) {
 		// key不存在则返回redis.Nil
 		return nil, nil
 	} else if err != nil {
-		return nil, err
+		return nil, e.SE(e.MRedisErr, e.RedisGetErr, err)
 	}
 	t := &Token{}
 	if err = json.Unmarshal(bs, t); err != nil {
-		return nil, err
+		return nil, e.SE(e.MRedisErr, e.RedisValueUnmarshalErr, err)
 	}
 	return t, nil
-}
-
-func TokenRemoveAllOfUser(userID int) {
-	for _, s := range common.SourceRange {
-		tokenKey := TokenKey{UserId: userID, Source: s}
-		tokenKey.Clean()
-	}
 }
 
 func TokenCreateAndStore(userID int, source string, ttl time.Duration) (string, error) {
@@ -106,7 +100,7 @@ func TokenCreateAndStore(userID int, source string, ttl time.Duration) (string, 
 		LoginSource: source,
 	})
 	if err != nil {
-		return "", err
+		return "", e.SE(e.MTokenErr, e.TokenCreateErr, err)
 	}
 
 	tokenKey := TokenKey{
@@ -115,7 +109,7 @@ func TokenCreateAndStore(userID int, source string, ttl time.Duration) (string, 
 	}
 	_, err = tokenKey.CreateToken(accessToken, common.Config.Token.AccessTokenTTL.D())
 	if err != nil {
-		return "", err
+		return "", e.SE(e.MTokenErr, e.TokenCreateErr, err)
 	}
 
 	return accessToken, nil

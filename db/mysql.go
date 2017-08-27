@@ -6,6 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"wangqingang/cunxun/common"
+	e "wangqingang/cunxun/error"
 )
 
 // Mysql 全局的MySQL连接池
@@ -15,7 +16,7 @@ var Mysql *sql.DB
 func InitMysql(config *common.MysqlConfig) {
 	pool, err := sql.Open("mysql", config.Dsn)
 	if err != nil {
-		panic(err)
+		panic(e.SE(e.MMysqlErr, e.MysqlConnectErr, err))
 	}
 
 	if config.MaxIdle > 0 {

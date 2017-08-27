@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
+
+	e "wangqingang/cunxun/error"
 )
 
 // Configs 全局配置信息
@@ -95,7 +97,7 @@ var Config *Configs
 func InitConfig(path string) {
 	config, err := loadConfig(path)
 	if err != nil {
-		panic(err)
+		panic(e.SE(e.MConfigErr, e.ConfigLoadErr, err))
 	}
 	Config = config
 }
@@ -103,7 +105,7 @@ func InitConfig(path string) {
 func loadConfig(path string) (*Configs, error) {
 	config := new(Configs)
 	if _, err := toml.DecodeFile(path, config); err != nil {
-		return nil, err
+		return nil, e.SE(e.MConfigErr, e.ConfigParseErr, err)
 	}
 
 	return config, nil
@@ -117,7 +119,10 @@ type Duration struct {
 // UnmarshalText 将字符串形式的时长信息转换为Duration类型
 func (d *Duration) UnmarshalText(text []byte) (err error) {
 	d.Duration, err = time.ParseDuration(string(text))
-	return err
+	if err != nil {
+		return e.SE(e.MConfigErr, e.ConfigParseTimeErr, err)
+	}
+	return nil
 }
 
 // D 从Duration struct中取出time.Duration类型的值

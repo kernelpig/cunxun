@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	e "wangqingang/cunxun/error"
 	"wangqingang/cunxun/utils"
 )
 
@@ -36,7 +37,7 @@ func SQLQueryRows(db sqlExec, selects []interface{}, wheres map[string]interface
 		if err == sql.ErrNoRows {
 			return 0, nil
 		}
-		return 0, err
+		return 0, e.SE(e.MMysqlErr, e.MysqlSelectErr, err)
 	}
 	defer rows.Close()
 
@@ -49,13 +50,13 @@ func SQLQueryRows(db sqlExec, selects []interface{}, wheres map[string]interface
 			s = append(s, value)
 		}
 		if err := rows.Scan(s...); err != nil {
-			return 0, err
+			return 0, e.SE(e.MMysqlErr, e.MysqlRowScanErr, err)
 		}
 		rowsAffected++
 	}
 
 	if err := rows.Err(); err != nil {
-		return 0, err
+		return 0, e.SE(e.MMysqlErr, e.MysqlRowScanErr, err)
 	}
 
 	return rowsAffected, nil
@@ -85,7 +86,7 @@ func SQLQueryRow(db sqlExec, selects interface{}, wheres map[string]interface{})
 		if err == sql.ErrNoRows {
 			return false, nil
 		}
-		return false, err
+		return false, e.SE(e.MMysqlErr, e.MysqlSelectErr, err)
 	}
 
 	return true, nil
@@ -111,10 +112,14 @@ func SQLUpdate(db sqlExec, updates interface{}, wheres map[string]interface{}) (
 	_SQL := fmt.Sprintf("UPDATE %s SET %s WHERE %s", tableName, strings.Join(u, ", "), strings.Join(w, " and "))
 	sqlResult, err := db.Exec(_SQL, q...)
 	if err != nil {
-		return 0, err
+		return 0, e.SE(e.MMysqlErr, e.MysqlUpdateErr, err)
 	}
 
-	return sqlResult.RowsAffected()
+	rowAffected, err := sqlResult.RowsAffected()
+	if err != nil {
+		return 0, e.SE(e.MMysqlErr, e.MysqlRowAffectErr, err)
+	}
+	return rowAffected, nil
 }
 
 func SQLInsert(db sqlExec, inserts interface{}) (int64, error) {
@@ -131,7 +136,7 @@ func SQLInsert(db sqlExec, inserts interface{}) (int64, error) {
 	_SQL := fmt.Sprintf("INSERT INTO %s SET %s", tableName, strings.Join(u, ", "))
 	sqlResult, err := db.Exec(_SQL, q...)
 	if err != nil {
-		return 0, err
+		return 0, e.SE(e.MMysqlErr, e.MysqlInsertErr, err)
 	}
 
 	return sqlResult.LastInsertId()

@@ -8,6 +8,7 @@ import (
 	"github.com/dchest/captcha"
 
 	"wangqingang/cunxun/db"
+	e "wangqingang/cunxun/error"
 )
 
 type CaptchaStore struct {
@@ -68,7 +69,7 @@ func GenCaptcha(length int) (id string) {
 func GetCaptchaImage(id string, width, height int) ([]byte, error) {
 	var buf bytes.Buffer
 	if err := captcha.WriteImage(&buf, id, width, height); err != nil {
-		return nil, err
+		return nil, e.SE(e.MCaptchaErr, e.CaptchaWriteImageErr, err)
 	}
 	return buf.Bytes(), nil
 }

@@ -1,5 +1,9 @@
 package model
 
+import (
+	e "wangqingang/cunxun/error"
+)
+
 // User 对应于数据库user表中的一行
 type User struct {
 	ID             int    `column:"id"`
@@ -17,7 +21,7 @@ func GetUserByPhone(db sqlExec, phone string) (*User, error) {
 		"phone": phone,
 	})
 	if err != nil || !isFound {
-		return nil, err
+		return nil, e.SE(e.MUserErr, e.UserGetErr, err)
 	}
 	return u, nil
 }
@@ -28,7 +32,7 @@ func GetUserByID(db sqlExec, userId int) (*User, error) {
 		"id": userId,
 	})
 	if err != nil || !isFound {
-		return nil, err
+		return nil, e.SE(e.MUserErr, e.UserGetErr, err)
 	}
 	return u, nil
 }
@@ -36,7 +40,7 @@ func GetUserByID(db sqlExec, userId int) (*User, error) {
 func CreateUser(db sqlExec, user *User) (*User, error) {
 	id, err := SQLInsert(db, user)
 	if err != nil {
-		return nil, err
+		return nil, e.SE(e.MUserErr, e.UserCreateErr, err)
 	}
 	user.ID = int(id)
 	return user, nil

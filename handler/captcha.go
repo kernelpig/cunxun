@@ -8,12 +8,13 @@ import (
 
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
+	e "wangqingang/cunxun/error"
 )
 
 func CaptchaCreateHandler(c *gin.Context) {
 	id := captcha.GenCaptcha(common.Config.Captcha.DefaultLength)
 	c.JSON(http.StatusOK, gin.H{
-		"code":       common.OK,
+		"code":       e.OK,
 		"captcha_id": id,
 	})
 	return
@@ -34,10 +35,7 @@ func CaptchaGetImageHandler(c *gin.Context) {
 
 	data, err := captcha.GetCaptchaImage(id, int(width), int(height))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code":    common.AccountInternalError,
-			"message": "GetCaptchaImage " + err.Error(),
-		})
+		c.JSON(http.StatusInternalServerError, e.IE(e.ICaptchaGetImage, e.MCaptchaErr, e.CaptchaWriteImageErr, err))
 		return
 	}
 
