@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"wangqingang/sms_lib"
+	se "wangqingang/sms_lib/error"
 	"wangqingang/sms_lib/pb"
 
 	"wangqingang/cunxun/common"
@@ -28,7 +29,7 @@ func SendCheckcode(config *common.SmsConfig, phone, purpose, checkcode string) (
 	}
 
 	if purpose != common.SignupPurpose {
-		return "", e.S(e.MParamsErr, e.ParamsInvalidPurpose)
+		return "", e.SD(e.MParamsErr, e.ParamsInvalidPurpose, fmt.Sprintf("purpose=%s", purpose))
 	}
 	url := sms_lib.CreateSmsSendUrlWithAccess(config.AliAccessId, config.AliAccessSecret, &request)
 	response, err := http.Get(url)
@@ -44,6 +45,9 @@ func SendCheckcode(config *common.SmsConfig, phone, purpose, checkcode string) (
 	smsResponse := &pb.SendSmsRespose{}
 	if err := json.Unmarshal(bytes, smsResponse); err != nil {
 		return "", e.SP(e.MSmsErr, e.SmsDecodeResponse, err)
+	}
+	if smsResponse.Code != se.OK {
+		return "", e.SD(e.MSmsErr, e.SmsSendErr, string(bytes))
 	}
 
 	return string(bytes), nil

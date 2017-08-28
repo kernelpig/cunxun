@@ -91,7 +91,7 @@ func CheckcodeSendHandler(c *gin.Context) {
 
 	// 发送短信校验码: 短信验证码在生存周期内，不管请求发送几次，都使用同一个验证码，产品需求!
 	if common.Config.ReleaseMode {
-		_, err = sms.SendCheckcode(common.Config.Sms, req.Purpose, parsedPhone.NationalNumber, verify.Code)
+		_, err = sms.SendCheckcode(common.Config.Sms, parsedPhone.NationalNumber, req.Purpose, verify.Code)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.ICheckcodeSend, e.MSmsErr, e.SmsSendErr, err))
 			return

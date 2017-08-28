@@ -73,7 +73,7 @@ func (k *CheckCodeKey) GetRedisKey() string {
 }
 
 func genCode() string {
-	max := int64(math.Pow10(common.Config.Checkcode.DefaultLength + 1))
+	max := int64(math.Pow10(common.Config.Checkcode.DefaultLength))
 	codeFormat := fmt.Sprintf("%%0%dd", common.Config.Checkcode.DefaultLength)
 	return fmt.Sprintf(codeFormat, rand.Int63n(max))
 }

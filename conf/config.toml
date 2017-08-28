@@ -15,7 +15,7 @@ defaultHeight = 80
 ttl = "86400s"
 
 [checkcode]
-defaultLength = 6
+defaultLength = 4
 maxSendTimes = 5
 maxCheckTimes = 5
 ttl = "15m"
