@@ -47,6 +47,7 @@ func testUserSignupHandler(t *testing.T, e *httpexpect.Expect) {
 
 	signupRequest := &UserSignupRequest{
 		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
 		Source:     sendRequest.Source,
 		Password:   test.GenFakePassword(),
 		VerifyCode: code,
@@ -87,6 +88,7 @@ func testUserLoginHandler(t *testing.T, e *httpexpect.Expect) {
 
 	signupRequest := &UserSignupRequest{
 		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
 		Source:     sendRequest.Source,
 		Password:   test.GenFakePassword(),
 		VerifyCode: code,
@@ -138,6 +140,7 @@ func testUserLogoutHandler(t *testing.T, e *httpexpect.Expect) {
 
 	signupRequest := &UserSignupRequest{
 		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
 		Source:     sendRequest.Source,
 		Password:   test.GenFakePassword(),
 		VerifyCode: code,
@@ -194,6 +197,7 @@ func testUserSignupHandler_UserAlreadyExist(t *testing.T, e *httpexpect.Expect) 
 
 	signupRequest := &UserSignupRequest{
 		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
 		Source:     sendRequest.Source,
 		Password:   test.GenFakePassword(),
 		VerifyCode: code,

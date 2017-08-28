@@ -60,6 +60,7 @@ func UserSignupHandler(c *gin.Context) {
 
 	user := &model.User{
 		Phone:          req.Phone,
+		NickName:       req.NickName,
 		HashedPassword: hashedPassword,
 		PasswordLevel:  passwordLevel,
 		RegisterSource: req.Source,

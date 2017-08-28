@@ -18,6 +18,7 @@ type CheckVerifyCodeRequest struct {
 type UserSignupRequest struct {
 	Phone      string `json:"phone" binding:"required"`
 	Source     string `json:"source" binding:"required"`
+	NickName   string `json:"nickname" binding:"required,min=8,max=32"`
 	Password   string `json:"password" binding:"required,min=8,max=16"`
 	VerifyCode string `json:"verify_code" binding:"required"`
 }
