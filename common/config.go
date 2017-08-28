@@ -21,7 +21,6 @@ type Configs struct {
 	Captcha     *CaptchaConfig
 	Checkcode   *CheckcodeConfig
 	Login       *LoginConfig
-	Email       *EmailConfig
 	Sms         *SmsConfig
 }
 
@@ -74,20 +73,10 @@ type LogConfig struct {
 	Level string
 }
 
-// Email服务相关配置
-type EmailConfig struct {
-	Addr        string
-	BussinessId int64
-	TenantId    string
-	SenderEmail string
-	SenderName  string
-}
-
 // Sms服务相关配置
 type SmsConfig struct {
-	Addr        string
-	BussinessId int64
-	TenantId    string
+	AliAccessId     string
+	AliAccessSecret string
 }
 
 // Config 全局配置信息

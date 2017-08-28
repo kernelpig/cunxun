@@ -114,6 +114,8 @@ func initSubErrors() {
 			SmsConnectErr:     "Failed to connect SMS service.",
 			SmsInvalidPurpose: "Invalid purpose.",
 			SmsSendErr:        "SMS failed.",
+			SmsReadResponse:   "Failed to read response content.",
+			SmsDecodeResponse: "Response content decoding failure.",
 		},
 		MParamsErr: {
 			_ParamsErrMin:        "Basic params error information.",

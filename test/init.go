@@ -24,7 +24,7 @@ const (
 )
 
 func init() {
-	common.InitConfig("../conf/config.dev.toml")
+	common.InitConfig("../conf/config.toml")
 
 	db.InitRedis(common.Config.Redis)
 	db.InitMysql(common.Config.Mysql)

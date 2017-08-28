@@ -32,7 +32,7 @@ func UserSignupHandler(c *gin.Context) {
 		return
 	}
 
-	if err := phone.ValidPhone(req.Phone); err != nil {
+	if _, err := phone.ValidPhone(req.Phone); err != nil {
 		c.JSON(http.StatusBadRequest, e.ID(e.IUserSignup, e.MParamsErr, e.ParamsInvalidPhone, detail))
 		return
 	}
@@ -93,7 +93,7 @@ func UserLoginHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.ID(e.IUserLogin, e.MParamsErr, e.ParamsInvalidSource, detail))
 		return
 	}
-	if err := phone.ValidPhone(req.Phone); err != nil {
+	if _, err := phone.ValidPhone(req.Phone); err != nil {
 		c.JSON(http.StatusBadRequest, e.ID(e.IUserLogin, e.MParamsErr, e.ParamsInvalidPhone, detail))
 		return
 	}

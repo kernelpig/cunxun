@@ -10,6 +10,10 @@ import (
 
 func TestValidPhone(t *testing.T) {
 	assert := assert.New(t)
-	err := ValidPhone(test.GenFakePhone())
+
+	phoneStr := test.GenFakePhone()
+	phone, err := ValidPhone(phoneStr)
+
 	assert.Nil(err)
+	t.Log(phone)
 }

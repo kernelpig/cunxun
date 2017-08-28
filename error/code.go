@@ -236,6 +236,8 @@ const (
 	SmsConnectErr
 	SmsInvalidPurpose
 	SmsSendErr
+	SmsReadResponse
+	SmsDecodeResponse
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -311,13 +313,13 @@ func (c Code) MarshalJSON() ([]byte, error) {
 }
 
 type Message struct {
-	Code        Code      `json:"code"`
-	Service     string    `json:"service"`
-	Interface   string    `json:"interface"`
-	SubModule   string    `json:"sub_module"`
-	SubError    string    `json:"sub_error"`
-	Detail string    `json:"detail"`
-	Previous  	*Message `json:"previous"`
+	Code      Code     `json:"code"`
+	Service   string   `json:"service"`
+	Interface string   `json:"interface"`
+	SubModule string   `json:"sub_module"`
+	SubError  string   `json:"sub_error"`
+	Detail    string   `json:"detail"`
+	Previous  *Message `json:"previous"`
 }
 
 func (m Message) Error() string {
@@ -366,7 +368,7 @@ func (c *Code) MD2E(detail string, lastErr error) error {
 			message.Previous = &lastErrMsg
 		} else {
 			message.Previous = &Message{
-				Code: Code{Code: Exception},
+				Code:   Code{Code: Exception},
 				Detail: lastErr.Error(),
 			}
 		}

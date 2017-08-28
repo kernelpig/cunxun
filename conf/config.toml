@@ -46,14 +46,6 @@ level = "debug"
 addr = "127.0.0.1:8125"
 prefix = "cunxun"
 
-[email]
-addr = "10.102.2.11:8002"
-bussinessId = 100100001
-tenantId = "000awss3311ls"
-senderEmail = "meiqia@meiqia.com"
-senderName = "meiqia Inc"
-
 [sms]
-addr = "10.100.5.106:40080"
-bussinessId = 100100001
-tenantId = "000awss3311ls"
+aliAccessId = "YOUR_ALIYUN_ACCESS_ID"
+aliAccessSecret = "YOUR_ALIYUN_ACCESS_SECRET"

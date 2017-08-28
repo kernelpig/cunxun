@@ -35,7 +35,8 @@ func CheckcodeSendHandler(c *gin.Context) {
 		return
 	}
 
-	if err := phone.ValidPhone(req.Phone); err != nil {
+	parsedPhone, err := phone.ValidPhone(req.Phone)
+	if err != nil || parsedPhone == nil {
 		c.JSON(http.StatusBadRequest, e.ID(e.ICheckcodeSend, e.MParamsErr, e.ParamsInvalidPhone, detail))
 		return
 	}
@@ -90,7 +91,7 @@ func CheckcodeSendHandler(c *gin.Context) {
 
 	// 发送短信校验码: 短信验证码在生存周期内，不管请求发送几次，都使用同一个验证码，产品需求!
 	if common.Config.ReleaseMode {
-		_, err = sms.SendCheckcode(common.Config.Sms, req.Purpose, req.Phone, verify.Code)
+		_, err = sms.SendCheckcode(common.Config.Sms, req.Purpose, parsedPhone.NationalNumber, verify.Code)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.ICheckcodeSend, e.MSmsErr, e.SmsSendErr, err))
 			return
@@ -122,7 +123,7 @@ func CheckcodeVerifyHandler(c *gin.Context) {
 		return
 	}
 
-	if err := phone.ValidPhone(req.Phone); err != nil {
+	if _, err := phone.ValidPhone(req.Phone); err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICheckcodeSend, e.MParamsErr, e.ParamsInvalidPhone, detail))
 		return
 	}
