@@ -1,6 +1,6 @@
-listen = ":7130"
+listen = ":8005"
 gomaxprocs = 1
-releaseMode = false
+releaseMode = true
 
 [token]
 tokenLibVersion = 1
@@ -26,7 +26,7 @@ maxRequestTimes = 5
 maxCaptchaTImes = 1
 
 [mysql]
-dsn = "root:@tcp(127.0.0.1:3306)/cunxun?charset=utf8mb4,utf8&parseTime=True&loc=Local"
+dsn = "root:123456@tcp(127.0.0.1:3306)/cunxun?charset=utf8mb4,utf8&parseTime=True&loc=Local"
 maxIdle = 1
 maxOpen = 2
 
@@ -41,10 +41,6 @@ writeTimeout = "0.5s"
 
 [log]
 level = "debug"
-
-[statsd]
-addr = "127.0.0.1:8125"
-prefix = "cunxun"
 
 [sms]
 aliAccessId = "YOUR_ALIYUN_ACCESS_ID"
