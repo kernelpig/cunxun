@@ -28,12 +28,25 @@ func Test(t *testing.T) {
 func TestPasswordStrength(t *testing.T) {
 	as := assert.New(t)
 
-	as.Equal(LevelIllegal, PasswordStrength("12345678"))
-	as.Equal(LevelWeak, PasswordStrength("12345678_"))
-	as.Equal(LevelWeak, PasswordStrength("1234567890aa"))
-	as.Equal(LevelNormal, PasswordStrength("123456789a_"))
-	as.Equal(LevelNormal, PasswordStrength("1234567890a_"))
-	as.Equal(LevelStrong, PasswordStrength("1234567890a_1"))
+	level, err := PasswordStrength("12345678")
+	as.NotNil(err)
+	as.Equal(LevelIllegal, level)
+
+	level, err = PasswordStrength("12345678_")
+	as.Nil(err)
+	as.Equal(LevelWeak, level)
+
+	level, err = PasswordStrength("1234567890aa")
+	as.Nil(err)
+	as.Equal(LevelWeak, level)
+
+	level, err = PasswordStrength("123456789a_")
+	as.Nil(err)
+	as.Equal(LevelNormal, level)
+
+	level, err = PasswordStrength("1234567890a_1")
+	as.Nil(err)
+	as.Equal(LevelStrong, level)
 }
 
 func BenchmarkEncrypt(b *testing.B) {

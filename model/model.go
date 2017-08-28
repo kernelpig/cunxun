@@ -19,6 +19,10 @@ type sqlExec interface {
 	Query(query string, args ...interface{}) (*sql.Rows, error)
 }
 
+func isMysqlDuplicateErr(err error) bool {
+	return strings.Contains(err.Error(), "1062")
+}
+
 func SQLQueryRows(db sqlExec, selects []interface{}, wheres map[string]interface{}) (int64, error) {
 	var f []string
 	tableName, f := utils.StructGetFieldName(selects[0], columnTagKey)
@@ -112,6 +116,9 @@ func SQLUpdate(db sqlExec, updates interface{}, wheres map[string]interface{}) (
 	_SQL := fmt.Sprintf("UPDATE %s SET %s WHERE %s", tableName, strings.Join(u, ", "), strings.Join(w, " and "))
 	sqlResult, err := db.Exec(_SQL, q...)
 	if err != nil {
+		if isMysqlDuplicateErr(err) {
+			return 0, e.SE(e.MMysqlErr, e.MysqlDuplicateErr, err)
+		}
 		return 0, e.SE(e.MMysqlErr, e.MysqlUpdateErr, err)
 	}
 
@@ -135,9 +142,17 @@ func SQLInsert(db sqlExec, inserts interface{}) (int64, error) {
 
 	_SQL := fmt.Sprintf("INSERT INTO %s SET %s", tableName, strings.Join(u, ", "))
 	sqlResult, err := db.Exec(_SQL, q...)
+
 	if err != nil {
+		if isMysqlDuplicateErr(err) {
+			return 0, e.SE(e.MMysqlErr, e.MysqlDuplicateErr, err)
+		}
 		return 0, e.SE(e.MMysqlErr, e.MysqlInsertErr, err)
 	}
 
-	return sqlResult.LastInsertId()
+	lastInsertId, err := sqlResult.LastInsertId()
+	if err != nil {
+		return 0, e.SE(e.MMysqlErr, e.MysqlLastInsertErr, err)
+	}
+	return lastInsertId, nil
 }

@@ -47,5 +47,5 @@ func testInternelHandler(t *testing.T, e *httpexpect.Expect) {
 
 // 异常测试
 func testExceptions(t *testing.T, e *httpexpect.Expect) {
-
+	testUserSignupHandler_UserAlreadyExist(t, e)
 }

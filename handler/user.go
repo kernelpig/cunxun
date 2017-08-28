@@ -67,7 +67,11 @@ func UserSignupHandler(c *gin.Context) {
 
 	user, err = model.CreateUser(db.Mysql, user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, e.IE(e.IUserLogin, e.MUserErr, e.UserCreateErr, err))
+		if msgErr, ok := err.(e.Message); ok && msgErr.Code.IsSubError(e.MUserErr, e.UserAlreadyExist) {
+			c.JSON(http.StatusBadRequest, e.IE(e.IUserSignup, e.MUserErr, e.UserAlreadyExist, err))
+		} else {
+			c.JSON(http.StatusInternalServerError, e.IE(e.IUserSignup, e.MUserErr, e.UserCreateErr, err))
+		}
 		return
 	}
 

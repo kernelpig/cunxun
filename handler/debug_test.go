@@ -7,7 +7,7 @@ import (
 	"github.com/gavv/httpexpect"
 
 	"wangqingang/cunxun/checkcode"
-	"wangqingang/cunxun/common"
+	"wangqingang/cunxun/error"
 	"wangqingang/cunxun/test"
 )
 
@@ -28,7 +28,7 @@ func testDebugGetCaptchaValue(t *testing.T, e *httpexpect.Expect, captchaId stri
 		Expect().Status(http.StatusOK).
 		JSON().Object()
 
-	resp.Value("code").Number().Equal(common.OK)
+	resp.Value("code").Number().Equal(error.OK)
 
 	return resp.Value("captcha_value").String().NotEmpty().Raw()
 }
@@ -49,7 +49,7 @@ func testDebugCheckcodeGetValue(t *testing.T, e *httpexpect.Expect, key *checkco
 		Expect().Status(http.StatusOK).
 		JSON().Object()
 
-	resp.Value("code").Number().Equal(common.OK)
+	resp.Value("code").Number().Equal(error.OK)
 
 	return resp.Value("checkcode").String().NotEmpty().Raw()
 }

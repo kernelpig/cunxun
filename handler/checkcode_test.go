@@ -7,7 +7,7 @@ import (
 	"github.com/gavv/httpexpect"
 
 	"wangqingang/cunxun/checkcode"
-	"wangqingang/cunxun/common"
+	"wangqingang/cunxun/error"
 	"wangqingang/cunxun/test"
 )
 
@@ -17,7 +17,7 @@ func testCheckcodeSend(t *testing.T, e *httpexpect.Expect, request *CheckcodeSen
 		Expect().Status(http.StatusOK)
 
 	respObj := resp.JSON().Object()
-	respObj.Value("code").Number().Equal(common.OK)
+	respObj.Value("code").Number().Equal(error.OK)
 }
 
 func testCheckcodeSendHandler(t *testing.T, e *httpexpect.Expect) {
@@ -43,7 +43,7 @@ func testCheckcodeVerify(t *testing.T, e *httpexpect.Expect, request *CheckVerif
 		Expect().Status(http.StatusOK).
 		JSON().Object()
 
-	resp.Value("code").Number().Equal(common.OK)
+	resp.Value("code").Number().Equal(error.OK)
 }
 
 func testCheckcodeVerifyHandler(t *testing.T, e *httpexpect.Expect) {

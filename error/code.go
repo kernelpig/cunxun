@@ -3,12 +3,17 @@
 * 2. 逻辑与组合在一起, 从高位到低位依次为: 模块标识, 接口标识, 子模块标识, 子模块错误
 * 3. 暂未涉及到多种CPU, 如果后续涉及会采用大段字节序传输
 * 4. 0x00错误码为正常状态, 包括各个子模块, 故成功错误码为0x00000000
+
+* PS 今天感觉有点蛋疼, 修改这个错误码花费了我整整一天的时间, 刚才突然想到, 没有必要这么复
+*    杂, 因为前端/移动端只关心业务相关的错误码, 你内部怎么管理你错误码是自己的事情, 只要
+*    对外的错误码即可, 错误码栈可以参考一下开源的处理.
 **/
 package error
 
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 )
 
 // 特殊错误码
@@ -204,6 +209,8 @@ const (
 	MysqlDeleteErr
 	MysqlRowAffectErr
 	MysqlRowScanErr
+	MysqlLastInsertErr
+	MysqlDuplicateErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -292,8 +299,20 @@ const (
 	_PhoneErrMax
 )
 
+type Code struct {
+	ServiceIndex   int
+	InterfaceIndex int
+	SubModuleIndex int
+	SubErrorIndex  int
+	Code           int
+}
+
+func (c Code) MarshalJSON() ([]byte, error) {
+	return []byte(strconv.Itoa(c.Code)), nil
+}
+
 type Message struct {
-	Code        int       `json:"code"`
+	Code        Code      `json:"code"`
 	Service     string    `json:"service"`
 	Interface   string    `json:"interface"`
 	SubModule   string    `json:"sub_module"`
@@ -310,39 +329,38 @@ func (m Message) Error() string {
 	return fmt.Sprintf("%s", jsonMessage)
 }
 
-func SE(idxSubModuleErr, idxSubError int, detail error) error {
-	return MD2E(SCunxun, IG, idxSubModuleErr, idxSubError, detail)
-}
-
-func IE(idxInterfaceErr, idxSubModuleErr, idxSubError int, detail error) error {
-	return MD2E(SCunxun, idxInterfaceErr, idxSubModuleErr, idxSubError, detail)
+// 生成错误码, C - Code
+func (c *Code) C() int {
+	c.Code = (c.ServiceIndex << 24 & ServiceErrMask) | (c.InterfaceIndex << 16 & InterfaceErrMask) |
+		(c.SubModuleIndex << 8 & SubModuleErrMask) | (c.SubErrorIndex << 0 & SubErrorMask)
+	return c.Code
 }
 
 // 生成带有详细信息的错误信息
-func MD2E(idxServiceErr, idxInterfaceErr, idxSubModuleErr, idxSubError int, detail error) error {
-	code := C(idxServiceErr, idxInterfaceErr, idxSubModuleErr, idxSubError)
-	message := Message{Code: code}
+func (c *Code) MD2E(detail error) error {
+	c.C()
+	message := Message{Code: *c}
 	message.ErrorStack = make([]Message, 0)
 
-	if idxServiceErr >= _ServiceErrMax || idxServiceErr < _ServiceErrMin {
+	if c.ServiceIndex >= _ServiceErrMax || c.ServiceIndex < _ServiceErrMin {
 		message.Service = "invalid service error code"
 	} else {
-		message.Service = ServiceErrs[idxServiceErr]
+		message.Service = ServiceErrs[c.ServiceIndex]
 	}
-	if idxInterfaceErr >= _InterfaceErrMax || idxInterfaceErr < _InterfaceErrMin {
+	if c.InterfaceIndex >= _InterfaceErrMax || c.InterfaceIndex < _InterfaceErrMin {
 		message.Interface = "invalid interface error code"
 	} else {
-		message.Interface = InterfaceErrs[idxInterfaceErr]
+		message.Interface = InterfaceErrs[c.InterfaceIndex]
 	}
-	if idxSubModuleErr >= _SubModuleErrMax || idxSubModuleErr < _SubModuleErrMin {
+	if c.SubModuleIndex >= _SubModuleErrMax || c.SubModuleIndex < _SubModuleErrMin {
 		message.SubModule = "invalid sub module error code"
 	} else {
-		message.SubModule = SubModuleErrs[idxSubModuleErr]
+		message.SubModule = SubModuleErrs[c.SubModuleIndex]
 	}
-	if idxSubError >= len(SubErrors[idxSubModuleErr]) {
+	if c.SubErrorIndex >= len(SubErrors[c.SubModuleIndex]) {
 		message.SubError = "invalid sub error code"
 	} else {
-		message.SubError = SubErrors[idxSubModuleErr][idxSubError]
+		message.SubError = SubErrors[c.SubModuleIndex][c.SubErrorIndex]
 	}
 
 	// 如果是Message类型的Error, 则拷贝其error stack, 并追加本次错误
@@ -360,13 +378,26 @@ func MD2E(idxServiceErr, idxInterfaceErr, idxSubModuleErr, idxSubError int, deta
 	return message
 }
 
-// 生成错误信息, M - Marshal
-func M2E(idxServiceErr, idxInterfaceErr, idxSubModuleErr, idxSubError int) error {
-	return MD2E(idxServiceErr, idxInterfaceErr, idxSubModuleErr, idxSubError, nil)
+func (c *Code) IsSubError(subModuleIndex, subErrorIndex int) bool {
+	return c.SubModuleIndex == subModuleIndex && c.SubErrorIndex == subErrorIndex
 }
 
-// 生成错误码, C - Code
-func C(idxServiceErr, idxInterfaceErr, idxSubModuleErr, idxSubError int) int {
-	return (idxServiceErr << 24 & ServiceErrMask) | (idxInterfaceErr << 16 & InterfaceErrMask) |
-		(idxSubModuleErr << 8 & SubModuleErrMask) | (idxSubError << 0 & SubErrorMask)
+func SE(idxSubModuleErr, idxSubError int, detail error) error {
+	code := Code{
+		ServiceIndex:   SCunxun,
+		InterfaceIndex: IG,
+		SubModuleIndex: idxSubModuleErr,
+		SubErrorIndex:  idxSubError,
+	}
+	return code.MD2E(detail)
+}
+
+func IE(idxInterfaceErr, idxSubModuleErr, idxSubError int, detail error) error {
+	code := Code{
+		ServiceIndex:   SCunxun,
+		InterfaceIndex: idxInterfaceErr,
+		SubModuleIndex: idxSubModuleErr,
+		SubErrorIndex:  idxSubError,
+	}
+	return code.MD2E(detail)
 }

@@ -20,10 +20,13 @@ func GetUserByPhone(db sqlExec, phone string) (*User, error) {
 	isFound, err := SQLQueryRow(db, u, map[string]interface{}{
 		"phone": phone,
 	})
-	if err != nil || !isFound {
+	if err != nil {
 		return nil, e.SE(e.MUserErr, e.UserGetErr, err)
+	} else if !isFound {
+		return nil, nil
+	} else {
+		return u, nil
 	}
-	return u, nil
 }
 
 func GetUserByID(db sqlExec, userId int) (*User, error) {
@@ -31,15 +34,28 @@ func GetUserByID(db sqlExec, userId int) (*User, error) {
 	isFound, err := SQLQueryRow(db, u, map[string]interface{}{
 		"id": userId,
 	})
-	if err != nil || !isFound {
+	if err != nil {
 		return nil, e.SE(e.MUserErr, e.UserGetErr, err)
+	} else if !isFound {
+		return nil, nil
+	} else {
+		return u, nil
 	}
-	return u, nil
+}
+
+func isUserDuplicateErr(err error) bool {
+	if messageErr, ok := err.(e.Message); ok {
+		return messageErr.Code.IsSubError(e.MMysqlErr, e.MysqlDuplicateErr)
+	}
+	return false
 }
 
 func CreateUser(db sqlExec, user *User) (*User, error) {
 	id, err := SQLInsert(db, user)
 	if err != nil {
+		if isUserDuplicateErr(err) {
+			return nil, e.SE(e.MUserErr, e.UserAlreadyExist, err)
+		}
 		return nil, e.SE(e.MUserErr, e.UserCreateErr, err)
 	}
 	user.ID = int(id)

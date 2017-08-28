@@ -8,7 +8,6 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/pem"
-	"errors"
 	"io/ioutil"
 	"math/big"
 	"sync"

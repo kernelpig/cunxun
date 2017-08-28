@@ -8,7 +8,6 @@ import (
 
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/checkcode"
-	"wangqingang/cunxun/common"
 	e "wangqingang/cunxun/error"
 )
 
