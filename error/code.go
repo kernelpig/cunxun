@@ -18,7 +18,6 @@ import (
 
 // 特殊错误码
 const (
-	IG        = 0x00
 	OK        = 0x00000000
 	Exception = 0xffffffff
 )
@@ -317,8 +316,8 @@ type Message struct {
 	Interface   string    `json:"interface"`
 	SubModule   string    `json:"sub_module"`
 	SubError    string    `json:"sub_error"`
-	ErrorDetail string    `json:"error_detail"`
-	ErrorStack  []Message `json:"error_stack"`
+	Detail string    `json:"detail"`
+	Previous  	*Message `json:"previous"`
 }
 
 func (m Message) Error() string {
@@ -337,10 +336,10 @@ func (c *Code) C() int {
 }
 
 // 生成带有详细信息的错误信息
-func (c *Code) MD2E(detail error) error {
+func (c *Code) MD2E(detail string, lastErr error) error {
 	c.C()
 	message := Message{Code: *c}
-	message.ErrorStack = make([]Message, 0)
+	message.Detail = detail
 
 	if c.ServiceIndex >= _ServiceErrMax || c.ServiceIndex < _ServiceErrMin {
 		message.Service = "invalid service error code"
@@ -362,17 +361,14 @@ func (c *Code) MD2E(detail error) error {
 	} else {
 		message.SubError = SubErrors[c.SubModuleIndex][c.SubErrorIndex]
 	}
-
-	// 如果是Message类型的Error, 则拷贝其error stack, 并追加本次错误
-	// 如果是Normal类型的Error, 则写入到本次的detail信息
-	if detail != nil {
-		if detailMessage, ok := detail.(Message); ok {
-			message.ErrorStack = append(message.ErrorStack, detailMessage)
-			for _, element := range detailMessage.ErrorStack {
-				message.ErrorStack = append(message.ErrorStack, element)
-			}
+	if lastErr != nil {
+		if lastErrMsg, ok := lastErr.(Message); ok {
+			message.Previous = &lastErrMsg
 		} else {
-			message.ErrorDetail = detail.Error()
+			message.Previous = &Message{
+				Code: Code{Code: Exception},
+				Detail: lastErr.Error(),
+			}
 		}
 	}
 	return message
@@ -382,22 +378,54 @@ func (c *Code) IsSubError(subModuleIndex, subErrorIndex int) bool {
 	return c.SubModuleIndex == subModuleIndex && c.SubErrorIndex == subErrorIndex
 }
 
-func SE(idxSubModuleErr, idxSubError int, detail error) error {
+// 子模块错误
+func S(idxSubModuleErr, idxSubError int) error {
+	return SE(idxSubModuleErr, idxSubError, "", nil)
+}
+
+// 子模块错误, subModule error with previous
+func SP(idxSubModuleErr, idxSubError int, previous error) error {
+	return SE(idxSubModuleErr, idxSubError, "", previous)
+}
+
+// 子模块错误, subModule error with detail
+func SD(idxSubModuleErr, idxSubError int, detail string) error {
+	return SE(idxSubModuleErr, idxSubError, detail, nil)
+}
+
+// 子模块扩展错误, subModule extent error with datail and previous
+func SE(idxSubModuleErr, idxSubError int, detail string, previous error) error {
 	code := Code{
 		ServiceIndex:   SCunxun,
-		InterfaceIndex: IG,
+		InterfaceIndex: 0x00,
 		SubModuleIndex: idxSubModuleErr,
 		SubErrorIndex:  idxSubError,
 	}
-	return code.MD2E(detail)
+	return code.MD2E(detail, previous)
 }
 
-func IE(idxInterfaceErr, idxSubModuleErr, idxSubError int, detail error) error {
+// 接口错误
+func I(idxInterfaceErr, idxSubModuleErr, idxSubError int) error {
+	return IE(idxInterfaceErr, idxSubModuleErr, idxSubError, "", nil)
+}
+
+// 接口错误, interface error with previous
+func IP(idxInterfaceErr, idxSubModuleErr, idxSubError int, previous error) error {
+	return IE(idxInterfaceErr, idxSubModuleErr, idxSubError, "", previous)
+}
+
+// 接口错误, interface error with detail
+func ID(idxInterfaceErr, idxSubModuleErr, idxSubError int, detail string) error {
+	return IE(idxInterfaceErr, idxSubModuleErr, idxSubError, detail, nil)
+}
+
+// 接口扩展错误, interface extent error with datail and previous
+func IE(idxInterfaceErr, idxSubModuleErr, idxSubError int, detail string, previous error) error {
 	code := Code{
 		ServiceIndex:   SCunxun,
 		InterfaceIndex: idxInterfaceErr,
 		SubModuleIndex: idxSubModuleErr,
 		SubErrorIndex:  idxSubError,
 	}
-	return code.MD2E(detail)
+	return code.MD2E(detail, previous)
 }

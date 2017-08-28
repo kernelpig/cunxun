@@ -21,7 +21,7 @@ func GetUserByPhone(db sqlExec, phone string) (*User, error) {
 		"phone": phone,
 	})
 	if err != nil {
-		return nil, e.SE(e.MUserErr, e.UserGetErr, err)
+		return nil, e.SP(e.MUserErr, e.UserGetErr, err)
 	} else if !isFound {
 		return nil, nil
 	} else {
@@ -35,7 +35,7 @@ func GetUserByID(db sqlExec, userId int) (*User, error) {
 		"id": userId,
 	})
 	if err != nil {
-		return nil, e.SE(e.MUserErr, e.UserGetErr, err)
+		return nil, e.SP(e.MUserErr, e.UserGetErr, err)
 	} else if !isFound {
 		return nil, nil
 	} else {
@@ -54,9 +54,9 @@ func CreateUser(db sqlExec, user *User) (*User, error) {
 	id, err := SQLInsert(db, user)
 	if err != nil {
 		if isUserDuplicateErr(err) {
-			return nil, e.SE(e.MUserErr, e.UserAlreadyExist, err)
+			return nil, e.SP(e.MUserErr, e.UserAlreadyExist, err)
 		}
-		return nil, e.SE(e.MUserErr, e.UserCreateErr, err)
+		return nil, e.SP(e.MUserErr, e.UserCreateErr, err)
 	}
 	user.ID = int(id)
 	return user, nil

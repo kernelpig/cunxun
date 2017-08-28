@@ -97,7 +97,7 @@ var Config *Configs
 func InitConfig(path string) {
 	config, err := loadConfig(path)
 	if err != nil {
-		panic(e.SE(e.MConfigErr, e.ConfigLoadErr, err))
+		panic(e.SP(e.MConfigErr, e.ConfigLoadErr, err))
 	}
 	Config = config
 }
@@ -105,7 +105,7 @@ func InitConfig(path string) {
 func loadConfig(path string) (*Configs, error) {
 	config := new(Configs)
 	if _, err := toml.DecodeFile(path, config); err != nil {
-		return nil, e.SE(e.MConfigErr, e.ConfigParseErr, err)
+		return nil, e.SP(e.MConfigErr, e.ConfigParseErr, err)
 	}
 
 	return config, nil
@@ -120,7 +120,7 @@ type Duration struct {
 func (d *Duration) UnmarshalText(text []byte) (err error) {
 	d.Duration, err = time.ParseDuration(string(text))
 	if err != nil {
-		return e.SE(e.MConfigErr, e.ConfigParseTimeErr, err)
+		return e.SP(e.MConfigErr, e.ConfigParseTimeErr, err)
 	}
 	return nil
 }

@@ -35,13 +35,13 @@ func (c *CheckCode) Check(code string) (bool, error) {
 	}
 
 	c.CheckTimes++
-	return false, e.SE(e.MCheckcodeErr, e.CheckcodeSaveErr, c.Save())
+	return false, e.SP(e.MCheckcodeErr, e.CheckcodeSaveErr, c.Save())
 }
 
 func (c *CheckCode) Save() error {
 	value, err := json.Marshal(c)
 	if err != nil {
-		return e.SE(e.MRedisErr, e.RedisValueMarshalErr, err)
+		return e.SP(e.MRedisErr, e.RedisValueMarshalErr, err)
 	}
 
 	key := c.GetRedisKey()
@@ -53,7 +53,7 @@ func (c *CheckCode) Save() error {
 
 	err = db.Redis.Set(key, value, expire).Err()
 	if err != nil {
-		return e.SE(e.MRedisErr, e.RedisSetErr, err)
+		return e.SP(e.MRedisErr, e.RedisSetErr, err)
 	}
 
 	return nil
@@ -62,7 +62,7 @@ func (c *CheckCode) Save() error {
 func (c *CheckCode) Clean() error {
 	key := c.GetRedisKey()
 	if err := db.Redis.Del(key).Err(); err != nil {
-		return e.SE(e.MRedisErr, e.RedisDelErr, err)
+		return e.SP(e.MRedisErr, e.RedisDelErr, err)
 	}
 
 	return nil
@@ -90,7 +90,7 @@ func (k *CheckCodeKey) CreateCheckCode(ttl time.Duration) (*CheckCode, error) {
 
 	err := checkcode.Save()
 	if err != nil {
-		return nil, e.SE(e.MCheckcodeErr, e.CheckcodeSaveErr, err)
+		return nil, e.SP(e.MCheckcodeErr, e.CheckcodeSaveErr, err)
 	}
 	return checkcode, nil
 }
@@ -103,12 +103,12 @@ func (k *CheckCodeKey) GetCheckcode() (*CheckCode, error) {
 		// key不存在,不返回错误
 		return nil, nil
 	} else if err != nil {
-		return nil, e.SE(e.MRedisErr, e.RedisGetErr, err)
+		return nil, e.SP(e.MRedisErr, e.RedisGetErr, err)
 	}
 
 	c := &CheckCode{}
 	if err = json.Unmarshal(bs, c); err != nil {
-		return nil, e.SE(e.MRedisErr, e.RedisValueUnmarshalErr, err)
+		return nil, e.SP(e.MRedisErr, e.RedisValueUnmarshalErr, err)
 	}
 	return c, nil
 }

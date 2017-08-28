@@ -16,7 +16,7 @@ var Mysql *sql.DB
 func InitMysql(config *common.MysqlConfig) {
 	pool, err := sql.Open("mysql", config.Dsn)
 	if err != nil {
-		panic(e.SE(e.MMysqlErr, e.MysqlConnectErr, err))
+		panic(e.SP(e.MMysqlErr, e.MysqlConnectErr, err))
 	}
 
 	if config.MaxIdle > 0 {

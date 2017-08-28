@@ -22,39 +22,39 @@ import (
 func UserSignupHandler(c *gin.Context) {
 	var req UserSignupRequest
 	if err := c.BindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, e.IE(e.IUserSignup, e.MParamsErr, e.ParamsBindErr, err))
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserSignup, e.MParamsErr, e.ParamsBindErr, err))
 		return
 	}
 
-	detail := fmt.Errorf("%+v", req)
+	detail := fmt.Sprintf("%+v", req)
 	if !linq.From(common.SourceRange).Contains(req.Source) {
-		c.JSON(http.StatusBadRequest, e.IE(e.IUserSignup, e.MParamsErr, e.ParamsInvalidSource, detail))
+		c.JSON(http.StatusBadRequest, e.ID(e.IUserSignup, e.MParamsErr, e.ParamsInvalidSource, detail))
 		return
 	}
 
 	if err := phone.ValidPhone(req.Phone); err != nil {
-		c.JSON(http.StatusBadRequest, e.IE(e.IUserSignup, e.MParamsErr, e.ParamsInvalidPhone, detail))
+		c.JSON(http.StatusBadRequest, e.ID(e.IUserSignup, e.MParamsErr, e.ParamsInvalidPhone, detail))
 		return
 	}
 
 	ok, err := CheckcodeVerify(c, req.Phone, req.Source, common.SignupPurpose, req.VerifyCode)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, e.IE(e.IUserSignup, e.MCheckcodeErr, e.CheckcodeCheckErr, err))
+		c.JSON(http.StatusInternalServerError, e.IP(e.IUserSignup, e.MCheckcodeErr, e.CheckcodeCheckErr, err))
 		return
 	} else if !ok {
-		c.JSON(http.StatusBadRequest, e.IE(e.IUserSignup, e.MCheckcodeErr, e.CheckcodeMismatch, nil))
+		c.JSON(http.StatusBadRequest, e.I(e.IUserSignup, e.MCheckcodeErr, e.CheckcodeMismatch))
 		return
 	}
 
 	hashedPassword, err := password.Encrypt(req.Password)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, e.IE(e.IUserSignup, e.MPasswordErr, e.PasswordEncryptErr, err))
+		c.JSON(http.StatusInternalServerError, e.IP(e.IUserSignup, e.MPasswordErr, e.PasswordEncryptErr, err))
 		return
 	}
 
 	passwordLevel, err := password.PasswordStrength(req.Password)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, e.IE(e.IUserSignup, e.MPasswordErr, e.PasswordLevelErr, err))
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserSignup, e.MPasswordErr, e.PasswordLevelErr, err))
 		return
 	}
 
@@ -68,9 +68,9 @@ func UserSignupHandler(c *gin.Context) {
 	user, err = model.CreateUser(db.Mysql, user)
 	if err != nil {
 		if msgErr, ok := err.(e.Message); ok && msgErr.Code.IsSubError(e.MUserErr, e.UserAlreadyExist) {
-			c.JSON(http.StatusBadRequest, e.IE(e.IUserSignup, e.MUserErr, e.UserAlreadyExist, err))
+			c.JSON(http.StatusBadRequest, e.IP(e.IUserSignup, e.MUserErr, e.UserAlreadyExist, err))
 		} else {
-			c.JSON(http.StatusInternalServerError, e.IE(e.IUserSignup, e.MUserErr, e.UserCreateErr, err))
+			c.JSON(http.StatusInternalServerError, e.IP(e.IUserSignup, e.MUserErr, e.UserCreateErr, err))
 		}
 		return
 	}
@@ -84,38 +84,38 @@ func UserSignupHandler(c *gin.Context) {
 func UserLoginHandler(c *gin.Context) {
 	var req UserLoginRequest
 	if err := c.BindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, e.IE(e.IUserLogin, e.MParamsErr, e.ParamsBindErr, err))
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserLogin, e.MParamsErr, e.ParamsBindErr, err))
 		return
 	}
 
-	detail := fmt.Errorf("%+v", req)
+	detail := fmt.Sprintf("%+v", req)
 	if !linq.From(common.SourceRange).Contains(req.Source) {
-		c.JSON(http.StatusBadRequest, e.IE(e.IUserLogin, e.MParamsErr, e.ParamsInvalidSource, detail))
+		c.JSON(http.StatusBadRequest, e.ID(e.IUserLogin, e.MParamsErr, e.ParamsInvalidSource, detail))
 		return
 	}
 	if err := phone.ValidPhone(req.Phone); err != nil {
-		c.JSON(http.StatusBadRequest, e.IE(e.IUserLogin, e.MParamsErr, e.ParamsInvalidPhone, detail))
+		c.JSON(http.StatusBadRequest, e.ID(e.IUserLogin, e.MParamsErr, e.ParamsInvalidPhone, detail))
 		return
 	}
 
 	user, err := model.GetUserByPhone(db.Mysql, req.Phone)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, e.IE(e.IUserLogin, e.MUserErr, e.UserGetErr, err))
+		c.JSON(http.StatusInternalServerError, e.IP(e.IUserLogin, e.MUserErr, e.UserGetErr, err))
 		return
 	} else if user == nil {
-		c.JSON(http.StatusBadRequest, e.IE(e.IUserLogin, e.MUserErr, e.UserNotExist, nil))
+		c.JSON(http.StatusBadRequest, e.I(e.IUserLogin, e.MUserErr, e.UserNotExist))
 		return
 	}
 
 	var loginKey = login.LoginKey{Phone: req.Phone, Purpose: common.SigninPurpose, Source: req.Source}
 	login, err := loginKey.GetLogin()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, e.IE(e.IUserLogin, e.MLoginErr, e.LoginGetErr, err))
+		c.JSON(http.StatusInternalServerError, e.IP(e.IUserLogin, e.MLoginErr, e.LoginGetErr, err))
 		return
 	} else if login == nil {
 		login, err = loginKey.CreateLogin(common.Config.Login.TTL.D())
 		if err != nil || login == nil {
-			c.JSON(http.StatusInternalServerError, e.IE(e.IUserLogin, e.MLoginErr, e.LoginCreateErr, err))
+			c.JSON(http.StatusInternalServerError, e.IP(e.IUserLogin, e.MLoginErr, e.LoginCreateErr, err))
 			return
 		}
 	}
@@ -126,32 +126,32 @@ func UserLoginHandler(c *gin.Context) {
 		needCaptcha = true
 	}
 	if needCaptcha {
-		leftTimes := fmt.Errorf("%d", login.GetLeftTimes())
+		leftTimes := fmt.Sprintf("%d", login.GetLeftTimes())
 		if req.CaptchaId == "" || req.CaptchaValue == "" {
-			c.JSON(http.StatusBadRequest, e.IE(e.IUserLogin, e.MCaptchaErr, e.CaptchaRequired, leftTimes))
+			c.JSON(http.StatusBadRequest, e.ID(e.IUserLogin, e.MCaptchaErr, e.CaptchaRequired, leftTimes))
 			return
 		}
 
 		if !captcha.VerifyCaptcha(req.CaptchaId, req.CaptchaValue) {
-			c.JSON(http.StatusBadRequest, e.IE(e.IUserLogin, e.MCaptchaErr, e.CaptchaMismatch, leftTimes))
+			c.JSON(http.StatusBadRequest, e.ID(e.IUserLogin, e.MCaptchaErr, e.CaptchaMismatch, leftTimes))
 			return
 		}
 	}
 	if login.RequestTimes >= common.Config.Login.MaxRequestTimes {
-		c.JSON(http.StatusBadRequest, e.IE(e.IUserLogin, e.MLoginErr, e.LogDumpRequestErr, nil))
+		c.JSON(http.StatusBadRequest, e.I(e.IUserLogin, e.MLoginErr, e.LogDumpRequestErr))
 		return
 	}
 	login.RequestTimes++
 	login.Save()
 
 	if err := password.Verify(req.Password, user.HashedPassword); err != nil {
-		c.JSON(http.StatusBadRequest, e.IE(e.IUserLogin, e.MPasswordErr, e.PasswordInvalid, err))
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserLogin, e.MPasswordErr, e.PasswordInvalid, err))
 		return
 	}
 
 	accessToken, err := token.TokenCreateAndStore(user.ID, req.Source, common.Config.Token.AccessTokenTTL.D())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, e.IE(e.IUserLogin, e.MTokenErr, e.TokenCreateErr, err))
+		c.JSON(http.StatusInternalServerError, e.IP(e.IUserLogin, e.MTokenErr, e.TokenCreateErr, err))
 		return
 	}
 

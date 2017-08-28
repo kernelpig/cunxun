@@ -26,7 +26,7 @@ const (
 func Encrypt(passwd string) (string, error) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(passwd), cost)
 	if err != nil {
-		return "", e.SE(e.MPasswordErr, e.PasswordEncryptErr, err)
+		return "", e.SP(e.MPasswordErr, e.PasswordEncryptErr, err)
 	}
 	return string(hashed), nil
 }
@@ -34,7 +34,7 @@ func Encrypt(passwd string) (string, error) {
 // Verify 验证密码与哈希是否匹配
 func Verify(passwd string, hash string) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(passwd)); err != nil {
-		return e.SE(e.MPasswordErr, e.PasswordVerifyErr, err)
+		return e.SP(e.MPasswordErr, e.PasswordVerifyErr, err)
 	}
 	return nil
 }
@@ -62,5 +62,5 @@ func PasswordStrength(password string) (int, error) {
 	} else if weakLevel {
 		return LevelWeak, nil
 	}
-	return LevelIllegal, e.SE(e.MPasswordErr, e.PasswordLevelErr, nil)
+	return LevelIllegal, e.SP(e.MPasswordErr, e.PasswordLevelErr, nil)
 }

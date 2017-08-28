@@ -35,7 +35,7 @@ func CaptchaGetImageHandler(c *gin.Context) {
 
 	data, err := captcha.GetCaptchaImage(id, int(width), int(height))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, e.IE(e.ICaptchaGetImage, e.MCaptchaErr, e.CaptchaWriteImageErr, err))
+		c.JSON(http.StatusInternalServerError, e.IP(e.ICaptchaGetImage, e.MCaptchaErr, e.CaptchaWriteImageErr, err))
 		return
 	}
 

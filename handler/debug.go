@@ -35,7 +35,7 @@ func DebugCheckcodeGetValueHandler(c *gin.Context) {
 	}
 	checkcode, err := key.GetCheckcode()
 	if err != nil || checkcode == nil {
-		c.JSON(http.StatusInternalServerError, e.IE(e.IDebugCheckcodeGetValue, e.MCheckcodeErr, e.CheckcodeGetErr, err))
+		c.JSON(http.StatusInternalServerError, e.IP(e.IDebugCheckcodeGetValue, e.MCheckcodeErr, e.CheckcodeGetErr, err))
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

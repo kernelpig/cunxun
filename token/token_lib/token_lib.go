@@ -89,30 +89,30 @@ func Encrypt(version int, tk *Payload) (string, error) {
 	case 1:
 		data, err := tk.encryptV1(seq)
 		if err != nil {
-			return "", e.SE(e.MTokenErr, e.TokenEcryptErr, err)
+			return "", e.SP(e.MTokenErr, e.TokenEcryptErr, err)
 		}
 		token := base64.URLEncoding.EncodeToString(data)
 		return token, nil
 	default:
-		return "", e.SE(e.MTokenErr, e.TokenInvalidVersion, nil)
+		return "", e.SP(e.MTokenErr, e.TokenInvalidVersion, nil)
 	}
 }
 
 func Decrypt(token string) (*Payload, error) {
 	data, err := base64.URLEncoding.DecodeString(token)
 	if err != nil {
-		return nil, e.SE(e.MTokenErr, e.TokenBase64DecodeErr, nil)
+		return nil, e.SP(e.MTokenErr, e.TokenBase64DecodeErr, nil)
 	}
 	switch int(data[0]) {
 	case 1:
 		token := &Payload{}
 		err := token.decryptV1(data)
 		if err != nil {
-			return nil, e.SE(e.MTokenErr, e.TokenDecryptErr, nil)
+			return nil, e.SP(e.MTokenErr, e.TokenDecryptErr, nil)
 		}
 		return token, nil
 	default:
-		return nil, e.SE(e.MTokenErr, e.TokenInvalidVersion, nil)
+		return nil, e.SP(e.MTokenErr, e.TokenInvalidVersion, nil)
 	}
 }
 
@@ -139,7 +139,7 @@ func (t *Payload) encryptV1(seq uint32) ([]byte, error) {
 	hashed := h.Sum(nil)
 	r, s, err := ecdsa.Sign(rand.Reader, privateKey, hashed)
 	if err != nil {
-		return nil, e.SE(e.MTokenErr, e.TokenSignErr, err)
+		return nil, e.SP(e.MTokenErr, e.TokenSignErr, err)
 	}
 
 	// TOKEN = SIG{VERSION(1B)+SEQ(3B)} + SIGN{SIGN_R(32B)+SIGN_S(32B)} + PAYLOAD{ISSUETIME(4B) + TTL(2B) + ACCOUNTID(32B) + SOURCE(>0B)}
@@ -179,7 +179,7 @@ func (t *Payload) decryptV1(data []byte) error {
 		}
 	}
 	if !valid {
-		return e.SE(e.MTokenErr, e.TokenSignVerifyErr, nil)
+		return e.SP(e.MTokenErr, e.TokenSignVerifyErr, nil)
 	}
 
 	// 解析载荷

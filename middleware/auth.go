@@ -19,12 +19,12 @@ type AuthContext struct {
 
 func CheckAccessToken(authToken string) (*token_lib.Payload, error) {
 	if authToken == "" {
-		return nil, e.SE(e.MTokenErr, e.TokenIsEmpty, errors.New("auth middleware or logout"))
+		return nil, e.SP(e.MTokenErr, e.TokenIsEmpty, errors.New("auth middleware or logout"))
 	}
 
 	payload, err := token_lib.Decrypt(authToken)
 	if err != nil {
-		return payload, e.SE(e.MTokenErr, e.TokenDecryptErr, err)
+		return payload, e.SP(e.MTokenErr, e.TokenDecryptErr, err)
 	}
 
 	// payload.ttl 单位为分钟
@@ -32,13 +32,13 @@ func CheckAccessToken(authToken string) (*token_lib.Payload, error) {
 
 	// 转为秒检测超时
 	if uint64(payload.IssueTime)+uint64(ttlDuration.Seconds()) <= uint64(time.Now().Unix()) {
-		return payload, e.SE(e.MTokenErr, e.TokenExpired, errors.New("auth middlewareor logout"))
+		return payload, e.SP(e.MTokenErr, e.TokenExpired, errors.New("auth middlewareor logout"))
 	}
 
 	tokenKey := token.TokenKey{UserId: int(payload.UserId), Source: payload.LoginSource}
 	token, err := tokenKey.GetToken()
 	if err != nil || token == nil {
-		return payload, e.SE(e.MTokenErr, e.TokenGetErr, err)
+		return payload, e.SP(e.MTokenErr, e.TokenGetErr, err)
 	}
 
 	return payload, nil
@@ -49,7 +49,7 @@ func authMiddleware() gin.HandlerFunc {
 		authToken := c.GetHeader(common.AuthHeaderKey)
 		payload, err := CheckAccessToken(authToken)
 		if err != nil || payload == nil {
-			c.JSON(http.StatusBadRequest, e.SE(e.MTokenErr, e.TokenInvalid, err))
+			c.JSON(http.StatusBadRequest, e.SP(e.MTokenErr, e.TokenInvalid, err))
 			return
 		}
 

@@ -41,7 +41,7 @@ func SQLQueryRows(db sqlExec, selects []interface{}, wheres map[string]interface
 		if err == sql.ErrNoRows {
 			return 0, nil
 		}
-		return 0, e.SE(e.MMysqlErr, e.MysqlSelectErr, err)
+		return 0, e.SP(e.MMysqlErr, e.MysqlSelectErr, err)
 	}
 	defer rows.Close()
 
@@ -54,13 +54,13 @@ func SQLQueryRows(db sqlExec, selects []interface{}, wheres map[string]interface
 			s = append(s, value)
 		}
 		if err := rows.Scan(s...); err != nil {
-			return 0, e.SE(e.MMysqlErr, e.MysqlRowScanErr, err)
+			return 0, e.SP(e.MMysqlErr, e.MysqlRowScanErr, err)
 		}
 		rowsAffected++
 	}
 
 	if err := rows.Err(); err != nil {
-		return 0, e.SE(e.MMysqlErr, e.MysqlRowScanErr, err)
+		return 0, e.SP(e.MMysqlErr, e.MysqlRowScanErr, err)
 	}
 
 	return rowsAffected, nil
@@ -90,7 +90,7 @@ func SQLQueryRow(db sqlExec, selects interface{}, wheres map[string]interface{})
 		if err == sql.ErrNoRows {
 			return false, nil
 		}
-		return false, e.SE(e.MMysqlErr, e.MysqlSelectErr, err)
+		return false, e.SP(e.MMysqlErr, e.MysqlSelectErr, err)
 	}
 
 	return true, nil
@@ -117,14 +117,14 @@ func SQLUpdate(db sqlExec, updates interface{}, wheres map[string]interface{}) (
 	sqlResult, err := db.Exec(_SQL, q...)
 	if err != nil {
 		if isMysqlDuplicateErr(err) {
-			return 0, e.SE(e.MMysqlErr, e.MysqlDuplicateErr, err)
+			return 0, e.SP(e.MMysqlErr, e.MysqlDuplicateErr, err)
 		}
-		return 0, e.SE(e.MMysqlErr, e.MysqlUpdateErr, err)
+		return 0, e.SP(e.MMysqlErr, e.MysqlUpdateErr, err)
 	}
 
 	rowAffected, err := sqlResult.RowsAffected()
 	if err != nil {
-		return 0, e.SE(e.MMysqlErr, e.MysqlRowAffectErr, err)
+		return 0, e.SP(e.MMysqlErr, e.MysqlRowAffectErr, err)
 	}
 	return rowAffected, nil
 }
@@ -145,14 +145,14 @@ func SQLInsert(db sqlExec, inserts interface{}) (int64, error) {
 
 	if err != nil {
 		if isMysqlDuplicateErr(err) {
-			return 0, e.SE(e.MMysqlErr, e.MysqlDuplicateErr, err)
+			return 0, e.SP(e.MMysqlErr, e.MysqlDuplicateErr, err)
 		}
-		return 0, e.SE(e.MMysqlErr, e.MysqlInsertErr, err)
+		return 0, e.SP(e.MMysqlErr, e.MysqlInsertErr, err)
 	}
 
 	lastInsertId, err := sqlResult.LastInsertId()
 	if err != nil {
-		return 0, e.SE(e.MMysqlErr, e.MysqlLastInsertErr, err)
+		return 0, e.SP(e.MMysqlErr, e.MysqlLastInsertErr, err)
 	}
 	return lastInsertId, nil
 }

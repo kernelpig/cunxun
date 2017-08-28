@@ -13,32 +13,32 @@ import (
 // var v string = "86 13681454478"
 func ValidPhone(str string) error {
 	if str == "" {
-		return e.SE(e.MPhoneErr, e.PhoneEmpty, nil)
+		return e.SP(e.MPhoneErr, e.PhoneEmpty, nil)
 	}
 
 	pieces := strings.Split(str, " ")
 	if len(pieces) < 2 {
-		return e.SE(e.MPhoneErr, e.PhoneFormatErr, fmt.Errorf("phone format error, expect {CC}{Space}{Number}"))
+		return e.SP(e.MPhoneErr, e.PhoneFormatErr, fmt.Errorf("phone format error, expect {CC}{Space}{Number}"))
 	}
 
 	countryCodeStr := pieces[0]
 	countryCode, err := strconv.Atoi(strings.TrimLeft(countryCodeStr, "+"))
 	if err != nil {
-		return e.SE(e.MPhoneErr, e.PhoneInvalidCountryCode, err)
+		return e.SP(e.MPhoneErr, e.PhoneInvalidCountryCode, err)
 	}
 
 	region := libphone.GetRegionCodeForCountryCode(countryCode)
 	if region == libphone.UNKNOWN_REGION {
-		return e.SE(e.MPhoneErr, e.PhoneUnknownRegion, err)
+		return e.SP(e.MPhoneErr, e.PhoneUnknownRegion, err)
 	}
 
 	phoneNumber, err := libphone.Parse(str, region)
 	if err != nil {
-		return e.SE(e.MPhoneErr, e.PhoneParseNumberErr, err)
+		return e.SP(e.MPhoneErr, e.PhoneParseNumberErr, err)
 	}
 
 	if !libphone.IsValidNumberForRegion(phoneNumber, region) {
-		return e.SE(e.MPhoneErr, e.PhoneRegionMismatch, err)
+		return e.SP(e.MPhoneErr, e.PhoneRegionMismatch, err)
 	}
 
 	return nil
