@@ -2,6 +2,8 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+
+	"wangqingang/cunxun/middleware"
 )
 
 func ServerEngine() *gin.Engine {
@@ -11,6 +13,7 @@ func ServerEngine() *gin.Engine {
 		panic("create server failed")
 	}
 
+	router.Use(middleware.CrossMiddleware())
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 

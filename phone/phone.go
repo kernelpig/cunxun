@@ -1,12 +1,12 @@
 package phone
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
 	libphone "github.com/ttacon/libphonenumber"
 
-	"fmt"
 	e "wangqingang/cunxun/error"
 )
 

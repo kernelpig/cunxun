@@ -44,7 +44,7 @@ func CheckAccessToken(authToken string) (*token_lib.Payload, error) {
 	return payload, nil
 }
 
-func authMiddleware() gin.HandlerFunc {
+func AuthMiddleware() gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 		authToken := c.GetHeader(common.AuthHeaderKey)
 		payload, err := CheckAccessToken(authToken)

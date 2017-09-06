@@ -1,12 +1,12 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/ahmetb/go-linq"
 	"github.com/gin-gonic/gin"
 
-	"fmt"
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/checkcode"
 	"wangqingang/cunxun/common"

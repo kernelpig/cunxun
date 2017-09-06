@@ -1,9 +1,10 @@
 package common
 
 const (
-	ModuleName    = "cunxun"
-	CurrentUser   = "current_user"
-	AuthHeaderKey = "Authorization"
+	ModuleName     = "cunxun"
+	CurrentUser    = "current_user"
+	AuthHeaderKey  = "Authorization"
+	CrossHeaderKey = "Access-Control-Allow-Origin"
 )
 
 const (
