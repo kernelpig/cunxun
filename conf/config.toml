@@ -9,7 +9,7 @@ privateKeyPath = "./conf/ecdsa_prv.pem"
 publicKeyPath = "./conf/ecdsa_pub.pem"
 
 [captcha]
-defaultLength = 5
+defaultLength = 4
 defaultWidth = 240
 defaultHeight = 80
 ttl = "86400s"
