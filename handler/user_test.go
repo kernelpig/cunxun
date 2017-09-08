@@ -213,5 +213,4 @@ func testUserSignupHandler_UserAlreadyExist(t *testing.T, e *httpexpect.Expect) 
 	}
 
 	resp.JSON().Object().Value("code").Number().Equal(userAlreadyExistCode.C())
-
 }

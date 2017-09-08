@@ -32,7 +32,7 @@ func CheckAccessToken(authToken string) (*token_lib.Payload, error) {
 
 	// 转为秒检测超时
 	if uint64(payload.IssueTime)+uint64(ttlDuration.Seconds()) <= uint64(time.Now().Unix()) {
-		return payload, e.SP(e.MTokenErr, e.TokenExpired, errors.New("auth middlewareor logout"))
+		return payload, e.SD(e.MTokenErr, e.TokenExpired, "auth middlewareor logout")
 	}
 
 	tokenKey := token.TokenKey{UserId: int(payload.UserId), Source: payload.LoginSource}
@@ -42,6 +42,17 @@ func CheckAccessToken(authToken string) (*token_lib.Payload, error) {
 	}
 
 	return payload, nil
+}
+
+func GetCurrentAuth(c *gin.Context) *AuthContext {
+	currentCtx, ok := c.Get(common.CurrentUser)
+	if !ok {
+		return nil
+	}
+	if authCtx, ok := currentCtx.(AuthContext); ok {
+		return &authCtx
+	}
+	return nil
 }
 
 func AuthMiddleware() gin.HandlerFunc {

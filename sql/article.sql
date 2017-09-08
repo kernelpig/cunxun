@@ -8,4 +8,4 @@ CREATE TABLE `article` (
   `creater_uid` INT NOT NULL COMMENT "创建人id",
   `updater_uid` INT NOT NULL COMMENT "最近修改人id",
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;

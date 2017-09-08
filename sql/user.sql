@@ -10,4 +10,4 @@ CREATE TABLE `user` (
   `register_source` VARCHAR(256) NOT NULL DEFAULT "" COMMENT "注册来源",
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_phone` (`phone`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;

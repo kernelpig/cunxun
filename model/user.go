@@ -43,17 +43,10 @@ func GetUserByID(db sqlExec, userId int) (*User, error) {
 	}
 }
 
-func isUserDuplicateErr(err error) bool {
-	if messageErr, ok := err.(e.Message); ok {
-		return messageErr.Code.IsSubError(e.MMysqlErr, e.MysqlDuplicateErr)
-	}
-	return false
-}
-
 func CreateUser(db sqlExec, user *User) (*User, error) {
 	id, err := SQLInsert(db, user)
 	if err != nil {
-		if isUserDuplicateErr(err) {
+		if isDBDuplicateErr(err) {
 			return nil, e.SP(e.MUserErr, e.UserAlreadyExist, err)
 		}
 		return nil, e.SP(e.MUserErr, e.UserCreateErr, err)

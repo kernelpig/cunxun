@@ -53,6 +53,7 @@ const (
 	IUserSignup
 	IUserLogin
 	IUserLogout
+	IColumnCreate
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -78,6 +79,7 @@ const (
 	MAuthErr
 	MOthersErr
 	MPhoneErr
+	MColumnErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -261,6 +263,7 @@ const (
 const (
 	_AuthErrMin = iota
 	AuthTokenEmpty
+	AuthGetCurrentErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -298,6 +301,15 @@ const (
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
 	_PhoneErrMax
+)
+
+// 栏目错误
+const (
+	_ColumnErrMin = iota
+	ColumnGetErr
+	ColumnAlreadyExist
+	ColumnNotExist
+	ColumnCreateErr
 )
 
 type Code struct {

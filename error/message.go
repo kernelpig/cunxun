@@ -125,8 +125,9 @@ func initSubErrors() {
 			ParamsBindErr:        "Parameter parsing error.",
 		},
 		MAuthErr: {
-			_AuthErrMin:    "Basic auth error information.",
-			AuthTokenEmpty: "Auth token is empty.",
+			_AuthErrMin:       "Basic auth error information.",
+			AuthTokenEmpty:    "Auth token is empty.",
+			AuthGetCurrentErr: "Failed to obtain current authentication information.",
 		},
 		MUtilsErr: {
 			_UtilsErrMin: "Basic utils error information.",
@@ -142,6 +143,13 @@ func initSubErrors() {
 			PhoneUnknownRegion:      "Unknown region.",
 			PhoneRegionMismatch:     "Region mismatch.",
 			PhoneParseNumberErr:     "Failed to parse phone number.",
+		},
+		MColumnErr: {
+			_ColumnErrMin:      "Basic column error information.",
+			ColumnGetErr:       "Failed to obtain column information.",
+			ColumnAlreadyExist: "Column already exists.",
+			ColumnNotExist:     "Column does not exist.",
+			ColumnCreateErr:    "Failed to create column.",
 		},
 	}
 }

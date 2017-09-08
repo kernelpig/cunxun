@@ -21,6 +21,7 @@ func ServerEngine() *gin.Engine {
 	regCheckCodeRouter(router)
 	regUserRouter(router)
 	regDebugRouter(router)
+	regColumnRouter(router)
 
 	return router
 }
@@ -49,4 +50,10 @@ func regDebugRouter(router *gin.Engine) {
 	debugGroup.GET("/ping", DebugPingHandler)
 	debugGroup.GET("/captcha/:captcha_id", DebugCaptchaGetValueHandler)
 	debugGroup.GET("/checkcode", DebugCheckcodeGetValueHandler)
+}
+
+func regColumnRouter(router *gin.Engine) {
+	userGroup := router.Group("/column")
+	userGroup.Use(middleware.AuthMiddleware())
+	userGroup.POST("/", ColumnCreateHandler)
 }

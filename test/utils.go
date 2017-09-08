@@ -35,8 +35,12 @@ func GenRandString() string {
 	return strings.Replace(uuid.NewV4().String(), "-", "", -1)
 }
 
+// 注意: 不包括0
 func GenRandInt(max int) int {
-	return rand.Intn(max)
+	if max <= 1 {
+		return 1
+	}
+	return rand.Intn(max-1) + 1
 }
 
 func GenFakePassword() string {

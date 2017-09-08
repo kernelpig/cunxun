@@ -23,6 +23,13 @@ func isMysqlDuplicateErr(err error) bool {
 	return strings.Contains(err.Error(), "1062")
 }
 
+func isDBDuplicateErr(err error) bool {
+	if messageErr, ok := err.(e.Message); ok {
+		return messageErr.Code.IsSubError(e.MMysqlErr, e.MysqlDuplicateErr)
+	}
+	return false
+}
+
 func SQLQueryRows(db sqlExec, selects []interface{}, wheres map[string]interface{}) (int64, error) {
 	var f []string
 	tableName, f := utils.StructGetFieldName(selects[0], columnTagKey)
@@ -35,7 +42,7 @@ func SQLQueryRows(db sqlExec, selects []interface{}, wheres map[string]interface
 		q = append(q, value)
 	}
 
-	_SQL := fmt.Sprintf(`SELECT %s FROM %s WHERE %s`, strings.Join(f, ", "), tableName, strings.Join(w, " and "))
+	_SQL := fmt.Sprintf("SELECT %s FROM `%s` WHERE %s", strings.Join(f, ", "), tableName, strings.Join(w, " and "))
 	rows, err := db.Query(_SQL, q...)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -84,7 +91,7 @@ func SQLQueryRow(db sqlExec, selects interface{}, wheres map[string]interface{})
 		q = append(q, value)
 	}
 
-	_SQL := fmt.Sprintf(`SELECT %s FROM %s WHERE %s`, strings.Join(f, ", "), tableName, strings.Join(w, " and "))
+	_SQL := fmt.Sprintf("SELECT %s FROM `%s` WHERE %s", strings.Join(f, ", "), tableName, strings.Join(w, " and "))
 	err := db.QueryRow(_SQL, q...).Scan(s...)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -113,7 +120,7 @@ func SQLUpdate(db sqlExec, updates interface{}, wheres map[string]interface{}) (
 		q = append(q, value)
 	}
 
-	_SQL := fmt.Sprintf("UPDATE %s SET %s WHERE %s", tableName, strings.Join(u, ", "), strings.Join(w, " and "))
+	_SQL := fmt.Sprintf("UPDATE `%s` SET %s WHERE %s", tableName, strings.Join(u, ", "), strings.Join(w, " and "))
 	sqlResult, err := db.Exec(_SQL, q...)
 	if err != nil {
 		if isMysqlDuplicateErr(err) {
@@ -140,7 +147,7 @@ func SQLInsert(db sqlExec, inserts interface{}) (int64, error) {
 		q = append(q, value)
 	}
 
-	_SQL := fmt.Sprintf("INSERT INTO %s SET %s", tableName, strings.Join(u, ", "))
+	_SQL := fmt.Sprintf("INSERT INTO `%s` SET %s", tableName, strings.Join(u, ", "))
 	sqlResult, err := db.Exec(_SQL, q...)
 
 	if err != nil {

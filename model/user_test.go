@@ -9,7 +9,7 @@ import (
 	"wangqingang/cunxun/test"
 )
 
-func TestCreateAccount(t *testing.T) {
+func TestCreateUser(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 

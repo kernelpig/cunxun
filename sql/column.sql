@@ -5,4 +5,4 @@ CREATE TABLE `column` (
   `name` VARCHAR(64) NOT NULL COMMENT "栏目名称",
   `creater_uid` INT NOT NULL COMMENT "创建人id",
   PRIMARY KEY (`id`)
-);
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
