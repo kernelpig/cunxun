@@ -33,6 +33,8 @@ func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
 	testUserLogoutHandler(t, e)
 
 	testColumnCreateHandler(t, e)
+	
+	testArticleCreateHandler(t, e)
 }
 
 // debug接口测试

@@ -41,3 +41,9 @@ type ResetPasswordRequest struct {
 type ColumnCreateRequest struct {
 	Name string `json:"name"`
 }
+
+type ArticleCreateRequest struct {
+	ColumnId int    `json:"column_id"`
+	Title    string `json:"title"`
+	Content  string `json:"content"`
+}

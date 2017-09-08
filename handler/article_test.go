@@ -12,18 +12,18 @@ import (
 	"wangqingang/cunxun/test"
 )
 
-func testColumnCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *ColumnCreateRequest) int {
-	resp := e.POST("/column/").
+func testArticleCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *ArticleCreateRequest) int {
+	resp := e.POST("/article/").
 		WithHeader(common.AuthHeaderKey, xToken).
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
 	respObj := resp.JSON().Object()
 	respObj.Value("code").Number().Equal(error.OK)
-	return int(respObj.Value("column_id").Number().Raw())
+	return int(respObj.Value("article_id").Number().Raw())
 }
 
-func testColumnCreateHandler(t *testing.T, e *httpexpect.Expect) {
+func testArticleCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 
 	captchaId := testCaptchaCreate(t, e)
@@ -66,8 +66,15 @@ func testColumnCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	}
 	xToken := testUserLogin(t, e, loginRequest)
 
-	createRequest := &ColumnCreateRequest{
+	createColumnRequest := &ColumnCreateRequest{
 		Name: test.GenRandString(),
 	}
-	testColumnCreate(t, e, xToken, createRequest)
+	columnID := testColumnCreate(t, e, xToken, createColumnRequest)
+
+	createArticleRequest := &ArticleCreateRequest{
+		ColumnId: columnID,
+		Title:    test.GenRandString(),
+		Content:  test.GenRandString() + test.GenRandString(),
+	}
+	testArticleCreate(t, e, xToken, createArticleRequest)
 }

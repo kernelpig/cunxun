@@ -22,6 +22,7 @@ func ServerEngine() *gin.Engine {
 	regUserRouter(router)
 	regDebugRouter(router)
 	regColumnRouter(router)
+	regArticleRouter(router)
 
 	return router
 }
@@ -56,4 +57,10 @@ func regColumnRouter(router *gin.Engine) {
 	userGroup := router.Group("/column")
 	userGroup.Use(middleware.AuthMiddleware())
 	userGroup.POST("/", ColumnCreateHandler)
+}
+
+func regArticleRouter(router *gin.Engine) {
+	userGroup := router.Group("/article")
+	userGroup.Use(middleware.AuthMiddleware())
+	userGroup.POST("/", ArticleCreateHandler)
 }

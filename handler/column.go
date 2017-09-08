@@ -37,6 +37,7 @@ func ColumnCreateHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+		"code":      e.OK,
+		"column_id": column.ID,
 	})
 }
