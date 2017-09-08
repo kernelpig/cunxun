@@ -151,6 +151,13 @@ func initSubErrors() {
 			ColumnNotExist:     "Column does not exist.",
 			ColumnCreateErr:    "Failed to create column.",
 		},
+		MArticleErr: {
+			_ArticleErrMin:      "Basic article error information.",
+			ArticleGetErr:       "Failed to obtain article information.",
+			ArticleAlreadyExist: "Article already exists.",
+			ArticleNotExist:     "Article does not exist.",
+			ArticleCreateErr:    "Failed to create article.",
+		},
 	}
 }
 
