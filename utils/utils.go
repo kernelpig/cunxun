@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"reflect"
+	"sort"
 	"strings"
 )
 
@@ -70,6 +71,7 @@ func Struct2MapWithValue(st interface{}, tagKey string, isParseDefault bool) (st
 	return strings.ToLower(keyElements.Name()), result
 }
 
+// 列排序
 func StructGetFieldName(st interface{}, tagKey string) (string, []string) {
 	result := make([]string, 0)
 
@@ -87,25 +89,25 @@ func StructGetFieldName(st interface{}, tagKey string) (string, []string) {
 		}
 		result = append(result, tagValue)
 	}
-
+	sort.Strings(result)
 	return strings.ToLower(keyElements.Name()), result
 }
 
-func StructGetFieldAddr(st interface{}) (string, []interface{}) {
+// 地址按照列字段排序, 与列查询字段保持一致
+func StructGetFieldAddr(st interface{}, tagKey string) (string, []interface{}) {
 	result := make([]interface{}, 0)
+	sortedKey := make([]string, 0)
+	tblName, unsortedMap := Struct2MapWithAddr(st, tagKey)
 
-	valueElements := reflect.ValueOf(st).Elem()
-	keyElements := reflect.TypeOf(st).Elem()
-
-	// 只处理可导出的成员
-	for i := 0; i < valueElements.NumField(); i++ {
-		if !valueElements.Field(i).CanSet() {
-			continue
-		}
-		result = append(result, valueElements.Field(i).Addr())
+	for key, _ := range unsortedMap {
+		sortedKey = append(sortedKey, key)
 	}
+	sort.Strings(sortedKey)
 
-	return strings.ToLower(keyElements.Name()), result
+	for _, key := range sortedKey {
+		result = append(result, unsortedMap[key])
+	}
+	return tblName, result
 }
 
 func StructGetFieldValue(st interface{}) (string, []interface{}) {

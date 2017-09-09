@@ -11,6 +11,8 @@ import (
 
 const (
 	columnTagKey = "column"
+	pageNumStart = 1
+	pageSize     = 20
 )
 
 type sqlExec interface {
@@ -30,47 +32,75 @@ func isDBDuplicateErr(err error) bool {
 	return false
 }
 
-func SQLQueryRows(db sqlExec, selects []interface{}, wheres map[string]interface{}) (int64, error) {
+// pageSize<=len(selects), pageNum待获取的页数数据, 数据页码从1开始, 遇到任何错误都返回处理完成, 不再处理后续页面
+func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interface{}, pageSize, pageNum int) (bool, error) {
 	var f []string
-	tableName, f := utils.StructGetFieldName(selects[0], columnTagKey)
+	var _SQL string
+	var rows *sql.Rows
+	var err error
 
-	var w []string
-	var q []interface{}
-
-	for key, value := range wheres {
-		w = append(w, fmt.Sprintf("%s = ?", key))
-		q = append(q, value)
+	// 数据页码从1开始
+	if pageNum < pageNumStart {
+		return true, e.S(e.MMysqlErr, e.MysqlInvalidPageNum)
+	} else if len(*selects) < pageSize {
+		return true, e.S(e.MMysqlErr, e.MysqlNoEnoughModelBuf)
+	} else if len(*selects) > pageSize {
+		*selects = (*selects)[:pageSize]
 	}
 
-	_SQL := fmt.Sprintf("SELECT %s FROM `%s` WHERE %s", strings.Join(f, ", "), tableName, strings.Join(w, " and "))
-	rows, err := db.Query(_SQL, q...)
+	// 计算limit分页偏移
+	pageOffset := pageSize * (pageNum - 1)
+
+	// 获取表名及所有字段
+	tableName, f := utils.StructGetFieldName((*selects)[0], columnTagKey)
+
+	// 不带有where查询条件
+	if wheres == nil || len(wheres) == 0 {
+		_SQL = fmt.Sprintf("SELECT %s FROM `%s` limit %d, %d",
+			strings.Join(f, ", "), tableName, pageOffset, pageSize)
+		rows, err = db.Query(_SQL)
+	} else {
+		// 带有where查询条件
+		var w []string
+		var q []interface{}
+
+		for key, value := range wheres {
+			w = append(w, fmt.Sprintf("%s = ?", key))
+			q = append(q, value)
+		}
+		_SQL = fmt.Sprintf("SELECT %s FROM `%s` WHERE %s limit %d, %d",
+			strings.Join(f, ", "), tableName, strings.Join(w, " and "), pageOffset, pageSize)
+		rows, err = db.Query(_SQL, q...)
+	}
+
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return 0, nil
+			return true, nil
 		}
-		return 0, e.SP(e.MMysqlErr, e.MysqlSelectErr, err)
+		return true, e.SP(e.MMysqlErr, e.MysqlSelectErr, err)
 	}
 	defer rows.Close()
 
 	var rowsAffected int64
 	for rows.Next() {
-		var s []interface{}
-		_, selectsMap := utils.Struct2MapWithAddr(selects[rowsAffected], columnTagKey)
-
-		for _, value := range selectsMap {
-			s = append(s, value)
-		}
-		if err := rows.Scan(s...); err != nil {
-			return 0, e.SP(e.MMysqlErr, e.MysqlRowScanErr, err)
+		// 获取当前的结构中所有字段地址, 按照字段排序
+		_, fieldAddr := utils.StructGetFieldAddr((*selects)[rowsAffected], columnTagKey)
+		if err := rows.Scan(fieldAddr...); err != nil {
+			return true, e.SP(e.MMysqlErr, e.MysqlRowScanErr, err)
 		}
 		rowsAffected++
 	}
 
 	if err := rows.Err(); err != nil {
-		return 0, e.SP(e.MMysqlErr, e.MysqlRowScanErr, err)
+		return true, e.SP(e.MMysqlErr, e.MysqlRowScanErr, err)
 	}
 
-	return rowsAffected, nil
+	// 收缩buf, 去掉没有用到的数据
+	*selects = (*selects)[:rowsAffected]
+	if rowsAffected <= int64(pageSize) {
+		return true, nil
+	}
+	return false, nil
 }
 
 func SQLQueryRow(db sqlExec, selects interface{}, wheres map[string]interface{}) (bool, error) {
