@@ -37,6 +37,7 @@ func ArticleCreateHandler(c *gin.Context) {
 		} else {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IArticleCreate, e.MArticleErr, e.ArticleCreateErr, err))
 		}
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{

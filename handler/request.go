@@ -43,7 +43,7 @@ type ColumnCreateRequest struct {
 }
 
 type ArticleCreateRequest struct {
-	ColumnId int    `json:"column_id"`
-	Title    string `json:"title"`
-	Content  string `json:"content"`
+	ColumnId int    `json:"column_id" binding:"required"`
+	Title    string `json:"title" binding:"required"`
+	Content  string `json:"content" binding:"required"`
 }
