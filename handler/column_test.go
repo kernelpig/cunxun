@@ -78,8 +78,7 @@ func testColumnCreateHandler(t *testing.T, e *httpexpect.Expect) {
 func testColumnGetAll(t *testing.T, e *httpexpect.Expect, xToken string) []*model.Column {
 	assert := assert.New(t)
 
-	resp := e.GET("/column/").
-		WithHeader(common.AuthHeaderKey, xToken).
+	resp := e.GET("/column").
 		Expect().Status(http.StatusOK)
 
 	respObj := resp.JSON().Object()

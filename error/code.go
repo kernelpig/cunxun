@@ -56,6 +56,7 @@ const (
 	IColumnCreate
 	IArticleCreate
 	IColumnGetAll
+	IArticleGetList
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -258,6 +259,9 @@ const (
 	ParamsInvalidSource
 	ParamsInvalidPurpose
 	ParamsBindErr
+	ParamsInvalidColumnID
+	ParamsInvalidPageNum
+	ParamsInvalidPageSize
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -326,6 +330,7 @@ const (
 	ArticleAlreadyExist
 	ArticleNotExist
 	ArticleCreateErr
+	ArticleGetListErr
 )
 
 type Code struct {

@@ -49,7 +49,7 @@ func GetAllColumn(db sqlExec) ([]*Column, error) {
 	for pageNum := 1; true; pageNum++ {
 		isOver, err := SQLQueryRows(db, &modelBuf, map[string]interface{}{}, pageSize, pageNum)
 		if err != nil {
-			return nil, e.SP(e.MColumnErr, e.ColumnGetErr, err)
+			return nil, e.SP(e.MColumnErr, e.ColumnGetAllErr, err)
 		}
 		for _, item := range modelBuf {
 			if model, ok := item.(*Column); ok {

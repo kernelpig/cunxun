@@ -12,11 +12,6 @@ import (
 )
 
 func ColumnGetAllHandler(c *gin.Context) {
-	currentCtx := middleware.GetCurrentAuth(c)
-	if currentCtx == nil {
-		c.JSON(http.StatusBadRequest, e.I(e.IColumnCreate, e.MAuthErr, e.AuthGetCurrentErr))
-		return
-	}
 	list, err := model.GetAllColumn(db.Mysql)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IColumnGetAll, e.MColumnErr, e.ColumnGetAllErr, err))

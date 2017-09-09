@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -43,5 +44,33 @@ func ArticleCreateHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":       e.OK,
 		"article_id": article.ID,
+	})
+}
+
+// columnID, pageNum, pageSize
+func ArticleGetListHandler(c *gin.Context) {
+	columnID, err := strconv.ParseInt(c.Query("column_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidColumnID, err))
+		return
+	}
+	pageNum, err := strconv.ParseInt(c.Query("page_num"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidPageNum, err))
+		return
+	}
+	pageSize, err := strconv.ParseInt(c.Query("page_size"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidPageSize, err))
+		return
+	}
+	list, err := model.GetArticleList(db.Mysql, map[string]interface{}{"column_id": columnID}, int(pageSize), int(pageNum))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleGetList, e.MArticleErr, e.ArticleGetListErr, err))
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+		"list": list,
 	})
 }
