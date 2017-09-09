@@ -5,12 +5,12 @@ import (
 )
 
 type Article struct {
-	ID         int    `column:"id"`
-	ColumnId   int    `column:"column_id"`
-	Title      string `column:"title"`
-	Content    string `column:"content"`
-	CreaterUid int    `column:"creater_uid"`
-	UpdaterUid int    `column:"updater_uid"`
+	ID         int    `json:"id" column:"id"`
+	ColumnId   int    `json:"column_id" column:"column_id"`
+	Title      string `json:"title" column:"title"`
+	Content    string `json:"content" column:"content"`
+	CreaterUid int    `json:"creater_uid" column:"creater_uid"`
+	UpdaterUid int    `json:"updater_uid" column:"updater_uid"`
 }
 
 func GetArticleByID(db sqlExec, articleID int) (*Article, error) {

@@ -5,9 +5,9 @@ import (
 )
 
 type Column struct {
-	ID         int    `column:"id"`
-	Name       string `column:"name"`
-	CreaterUid int    `column:"creater_uid"`
+	ID         int    `json:"id" column:"id"`
+	Name       string `json:"name" column:"name"`
+	CreaterUid int    `json:"creater_uid" column:"creater_uid"`
 }
 
 func GetColumnByID(db sqlExec, columnID int) (*Column, error) {

@@ -6,13 +6,13 @@ import (
 
 // User 对应于数据库user表中的一行
 type User struct {
-	ID             int    `column:"id"`
-	Phone          string `column:"phone"`
-	NickName       string `column:"nickname"`
-	HashedPassword string `column:"hashed_password"`
-	PasswordLevel  int    `column:"password_level"`
-	RegisterSource string `column:"register_source"`
-	Avatar         string `column:"avatar"`
+	ID             int    `json:"id" column:"id"`
+	Phone          string `json:"phone" column:"phone"`
+	NickName       string `json:"nickname" column:"nickname"`
+	HashedPassword string `json:"hashed_password" column:"hashed_password"`
+	PasswordLevel  int    `json:"password_level" column:"password_level"`
+	RegisterSource string `json:"register_source" column:"register_source"`
+	Avatar         string `json:"avatar" column:"avatar"`
 }
 
 func GetUserByPhone(db sqlExec, phone string) (*User, error) {
