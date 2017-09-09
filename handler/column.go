@@ -11,6 +11,23 @@ import (
 	"wangqingang/cunxun/model"
 )
 
+func ColumnGetAllHandler(c *gin.Context) {
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.IColumnCreate, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+	list, err := model.GetAllColumn(db.Mysql)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IColumnGetAll, e.MColumnErr, e.ColumnGetAllErr, err))
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+		"list": list,
+	})
+}
+
 func ColumnCreateHandler(c *gin.Context) {
 	var req ColumnCreateRequest
 	if err := c.BindJSON(&req); err != nil {

@@ -5,7 +5,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"fmt"
 	"wangqingang/cunxun/db"
 	"wangqingang/cunxun/test"
 )
@@ -23,7 +22,6 @@ func TestCreateArticle(t *testing.T) {
 	}
 
 	c, err := CreateArticle(db.Mysql, c)
-	fmt.Println("xxxxxxxxx", err)
 	assert.Nil(err)
 	assert.NotNil(c)
 

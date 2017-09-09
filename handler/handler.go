@@ -28,39 +28,40 @@ func ServerEngine() *gin.Engine {
 }
 
 func regUserRouter(router *gin.Engine) {
-	userGroup := router.Group("/u")
-	userGroup.POST("/signup", UserSignupHandler)
-	userGroup.POST("/login", UserLoginHandler)
-	userGroup.POST("/logout", UserLogoutHandler)
+	group := router.Group("/u")
+	group.POST("/signup", UserSignupHandler)
+	group.POST("/login", UserLoginHandler)
+	group.POST("/logout", UserLogoutHandler)
 }
 
 func regCaptchaRouter(router *gin.Engine) {
-	captchaGroup := router.Group("/captcha")
-	captchaGroup.GET("/:captcha_id", CaptchaGetImageHandler)
-	captchaGroup.POST("/", CaptchaCreateHandler)
+	group := router.Group("/captcha")
+	group.GET("/:captcha_id", CaptchaGetImageHandler)
+	group.POST("/", CaptchaCreateHandler)
 }
 
 func regCheckCodeRouter(router *gin.Engine) {
-	checkCodeGroup := router.Group("/checkcode")
-	checkCodeGroup.POST("/send", CheckcodeSendHandler)
-	checkCodeGroup.POST("/check", CheckcodeVerifyHandler)
+	group := router.Group("/checkcode")
+	group.POST("/send", CheckcodeSendHandler)
+	group.POST("/check", CheckcodeVerifyHandler)
 }
 
 func regDebugRouter(router *gin.Engine) {
-	debugGroup := router.Group("/debug")
-	debugGroup.GET("/ping", DebugPingHandler)
-	debugGroup.GET("/captcha/:captcha_id", DebugCaptchaGetValueHandler)
-	debugGroup.GET("/checkcode", DebugCheckcodeGetValueHandler)
+	group := router.Group("/debug")
+	group.GET("/ping", DebugPingHandler)
+	group.GET("/captcha/:captcha_id", DebugCaptchaGetValueHandler)
+	group.GET("/checkcode", DebugCheckcodeGetValueHandler)
 }
 
 func regColumnRouter(router *gin.Engine) {
-	userGroup := router.Group("/column")
-	userGroup.Use(middleware.AuthMiddleware())
-	userGroup.POST("/", ColumnCreateHandler)
+	group := router.Group("/column")
+	group.Use(middleware.AuthMiddleware())
+	group.POST("/", ColumnCreateHandler)
+	group.GET("/", ColumnGetAllHandler)
 }
 
 func regArticleRouter(router *gin.Engine) {
-	userGroup := router.Group("/article")
-	userGroup.Use(middleware.AuthMiddleware())
-	userGroup.POST("/", ArticleCreateHandler)
+	group := router.Group("/article")
+	group.Use(middleware.AuthMiddleware())
+	group.POST("/", ArticleCreateHandler)
 }

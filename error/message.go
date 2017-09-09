@@ -153,6 +153,7 @@ func initSubErrors() {
 			ColumnNotExist:      "Column does not exist.",
 			ColumnCreateErr:     "Failed to create column.",
 			ColumnGetOnePageErr: "Failed to obtain one page column.",
+			ColumnGetAllErr:     "Failed to obtain all column information.",
 		},
 		MArticleErr: {
 			_ArticleErrMin:      "Basic article error information.",
@@ -183,6 +184,8 @@ func initSubModuleErrs() {
 		MUtilsErr:        "utils",              // utils错误
 		MOthersErr:       "others",             // 其他杂项错误
 		MPhoneErr:        "phone",              // 手机号码错误
+		MColumnErr:       "column",             // 栏目错误
+		MArticleErr:      "article",            // 文章错误
 	}
 }
 
@@ -199,5 +202,8 @@ func initInterfaceErr() {
 		IUserSignup:             "get /u/signup",
 		IUserLogin:              "post /u/login",
 		IUserLogout:             "post /u/logout",
+		IColumnCreate:           "post /column/",
+		IArticleCreate:          "post /article/",
+		IColumnGetAll:           "get /column/",
 	}
 }
