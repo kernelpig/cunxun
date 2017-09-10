@@ -97,7 +97,7 @@ func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interfac
 
 	// 收缩buf, 去掉没有用到的数据
 	*selects = (*selects)[:rowsAffected]
-	if rowsAffected <= int64(pageSize) {
+	if rowsAffected < int64(pageSize) {
 		return true, nil
 	}
 	return false, nil

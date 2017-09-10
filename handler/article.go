@@ -64,13 +64,14 @@ func ArticleGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidPageSize, err))
 		return
 	}
-	list, err := model.GetArticleList(db.Mysql, map[string]interface{}{"column_id": columnID}, int(pageSize), int(pageNum))
+	list, isOver, err := model.GetArticleList(db.Mysql, map[string]interface{}{"column_id": columnID}, int(pageSize), int(pageNum))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleGetList, e.MArticleErr, e.ArticleGetListErr, err))
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": e.OK,
+		"end": isOver,
 		"list": list,
 	})
 }

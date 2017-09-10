@@ -48,8 +48,9 @@ func TestGetArticleList(t *testing.T) {
 		cs = append(cs, c)
 	}
 
-	items, err := GetArticleList(db.Mysql, map[string]interface{}{}, 20, 1)
+	items, isOver, err := GetArticleList(db.Mysql, map[string]interface{}{}, 20, 1)
 	assert.Nil(err)
 	assert.NotNil(items)
+	assert.True(isOver)
 	assert.Equal(10, len(items))
 }

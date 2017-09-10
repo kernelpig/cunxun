@@ -39,7 +39,7 @@ func CreateArticle(db sqlExec, article *Article) (*Article, error) {
 	return article, nil
 }
 
-func GetArticleList(db sqlExec, where map[string]interface{}, pageSize, pageNum int) ([]*Article, error) {
+func GetArticleList(db sqlExec, where map[string]interface{}, pageSize, pageNum int) ([]*Article, bool, error) {
 	var list []*Article
 
 	// 初始化缓冲区
@@ -49,19 +49,14 @@ func GetArticleList(db sqlExec, where map[string]interface{}, pageSize, pageNum 
 	}
 
 	// 每次只取pageSize个
-	for pageNum := 1; true; pageNum++ {
-		isOver, err := SQLQueryRows(db, &modelBuf, where, pageSize, pageNum)
-		if err != nil {
-			return nil, e.SP(e.MArticleErr, e.ArticleGetListErr, err)
-		}
-		for _, item := range modelBuf {
-			if model, ok := item.(*Article); ok {
-				list = append(list, model)
-			}
-		}
-		if isOver {
-			break
+	isOver, err := SQLQueryRows(db, &modelBuf, where, pageSize, pageNum)
+	if err != nil {
+		return nil, true, e.SP(e.MArticleErr, e.ArticleGetListErr, err)
+	}
+	for _, item := range modelBuf {
+		if model, ok := item.(*Article); ok {
+			list = append(list, model)
 		}
 	}
-	return list, nil
+	return list, isOver, nil
 }
