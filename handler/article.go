@@ -72,12 +72,12 @@ func ArticleGetListHandler(c *gin.Context) {
 		return
 	}
 	pageNum, err := strconv.ParseInt(c.Query("page_num"), 10, 64)
-	if err != nil {
+	if err != nil || pageNum == 0 {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidPageNum, err))
 		return
 	}
 	pageSize, err := strconv.ParseInt(c.Query("page_size"), 10, 64)
-	if err != nil {
+	if err != nil || pageSize == 0 {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidPageSize, err))
 		return
 	}

@@ -66,16 +66,16 @@ func CommentGetHandler(c *gin.Context) {
 func CommentGetListHandler(c *gin.Context) {
 	articleID, err := strconv.ParseInt(c.Query("article_id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, e.IP(e.ICommentGetList, e.MParamsErr, e.ParamsInvalidColumnID, err))
+		c.JSON(http.StatusBadRequest, e.IP(e.ICommentGetList, e.MParamsErr, e.ParamsInvalidCommentID, err))
 		return
 	}
 	pageNum, err := strconv.ParseInt(c.Query("page_num"), 10, 64)
-	if err != nil {
+	if err != nil || pageNum == 0 {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentGetList, e.MParamsErr, e.ParamsInvalidPageNum, err))
 		return
 	}
 	pageSize, err := strconv.ParseInt(c.Query("page_size"), 10, 64)
-	if err != nil {
+	if err != nil || pageSize == 0 {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentGetList, e.MParamsErr, e.ParamsInvalidPageSize, err))
 		return
 	}
