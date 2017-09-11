@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+	"time"
 )
 
 func IsTypeDefaultValue(v interface{}) bool {
@@ -17,6 +18,12 @@ func IsTypeDefaultValue(v interface{}) bool {
 	} else if vType.Name() == "int" || vType.Name() == "int32" || vType.Name() == "int64" {
 		if v == 0 {
 			return true
+		}
+	} else if vType.Name() == "Time" {
+		if vTime, ok := v.(time.Time); ok {
+			if vTime.Equal(time.Time{}) {
+				return true
+			}
 		}
 	} else {
 		panic(fmt.Sprintf("not support type: %s", vType.Name()))

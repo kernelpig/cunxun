@@ -1,16 +1,20 @@
 package model
 
 import (
+	"time"
+	
 	e "wangqingang/cunxun/error"
 )
 
 type Article struct {
-	ID         int    `json:"id" column:"id"`
-	ColumnId   int    `json:"column_id" column:"column_id"`
-	Title      string `json:"title" column:"title"`
-	Content    string `json:"content" column:"content"`
-	CreaterUid int    `json:"creater_uid" column:"creater_uid"`
-	UpdaterUid int    `json:"updater_uid" column:"updater_uid"`
+	ID         int       `json:"id" column:"id"`
+	ColumnId   int       `json:"column_id" column:"column_id"`
+	Title      string    `json:"title" column:"title"`
+	Content    string    `json:"content" column:"content"`
+	CreaterUid int       `json:"creater_uid" column:"creater_uid"`
+	UpdaterUid int       `json:"updater_uid" column:"updater_uid"`
+	CreatedAt  time.Time `json:"created_at" column:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at" column:"updated_at"`
 }
 
 func GetArticleByID(db sqlExec, articleID int) (*Article, error) {
