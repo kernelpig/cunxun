@@ -167,6 +167,14 @@ func initSubErrors() {
 			ArticleCreateErr:    "Failed to create article.",
 			ArticleGetListErr:   "Failed to get article list.",
 		},
+		MCommentErr: {
+			_CommentErrMin:      "Basic comment error information.",
+			CommentGetErr:       "Failed to obtain comment information.",
+			CommentAlreadyExist: "Comment already exists.",
+			CommentNotExist:     "Comment does not exist.",
+			CommentCreateErr:    "Failed to create comment.",
+			CommentGetListErr:   "Failed to get comment list.",
+		},
 	}
 }
 
@@ -191,6 +199,7 @@ func initSubModuleErrs() {
 		MPhoneErr:        "phone",              // 手机号码错误
 		MColumnErr:       "column",             // 栏目错误
 		MArticleErr:      "article",            // 文章错误
+		MCommentErr:      "comment",            // 评论错误
 	}
 }
 

@@ -19,6 +19,7 @@ const (
 	testUserSQLPath    = "../sql/user.sql"
 	testArticleSQLPath = "../sql/article.sql"
 	testColumnSQLPath  = "../sql/column.sql"
+	testCommentSQLPath = "../sql/comment.sql"
 	testPrivateKeyPath = "../conf/ecdsa_prv.pem"
 	testPublicKeyPath  = "../conf/ecdsa_pub.pem"
 )
@@ -62,4 +63,5 @@ func InitTestCaseEnv(t *testing.T) {
 	initMySQLTable(t, testUserSQLPath, "user")
 	initMySQLTable(t, testColumnSQLPath, "column")
 	initMySQLTable(t, testArticleSQLPath, "article")
+	initMySQLTable(t, testCommentSQLPath, "comment")
 }

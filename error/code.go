@@ -85,6 +85,7 @@ const (
 	MPhoneErr
 	MColumnErr
 	MArticleErr
+	MCommentErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -333,6 +334,16 @@ const (
 	ArticleNotExist
 	ArticleCreateErr
 	ArticleGetListErr
+)
+
+// 评论错误
+const (
+	_CommentErrMin = iota
+	CommentGetErr
+	CommentAlreadyExist
+	CommentNotExist
+	CommentCreateErr
+	CommentGetListErr
 )
 
 type Code struct {
