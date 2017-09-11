@@ -60,7 +60,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		authToken := c.GetHeader(common.AuthHeaderKey)
 		payload, err := CheckAccessToken(authToken)
 		if err != nil || payload == nil {
-			c.JSON(http.StatusBadRequest, e.SP(e.MTokenErr, e.TokenInvalid, err))
+			c.JSON(http.StatusBadRequest, err)
 			c.Abort()
 			return
 		}
