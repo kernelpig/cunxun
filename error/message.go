@@ -129,6 +129,7 @@ func initSubErrors() {
 			ParamsInvalidPageNum:   "Invalid page number.",
 			ParamsInvalidPageSize:  "Invalid page size.",
 			ParamsInvalidArticleID: "Invalid article id.",
+			ParamsInvalidCommentID: "Invalid comment id.",
 		},
 		MAuthErr: {
 			_AuthErrMin:       "Basic auth error information.",
@@ -221,5 +222,8 @@ func initInterfaceErr() {
 		IColumnGetAll:           "get /column/",
 		IArticleGetList:         "get /article/",
 		IArticleGet:             "get /article/:article_id",
+		ICommentCreate:          "post /comment/",
+		ICommentGetList:         "get /comment/",
+		ICommentGet:             "get /comment/:comment_id",
 	}
 }

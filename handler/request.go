@@ -47,3 +47,8 @@ type ArticleCreateRequest struct {
 	Title    string `json:"title" binding:"required"`
 	Content  string `json:"content" binding:"required"`
 }
+
+type CommentCreateRequest struct {
+	ArticleId int    `json:"article_id" binding:"required"`
+	Content   string `json:"content" binding:"required"`
+}

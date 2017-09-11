@@ -23,6 +23,7 @@ func ServerEngine() *gin.Engine {
 	regDebugRouter(router)
 	regColumnRouter(router)
 	regArticleRouter(router)
+	regCommentRouter(router)
 
 	return router
 }
@@ -69,5 +70,15 @@ func regArticleRouter(router *gin.Engine) {
 	group.Use(middleware.AuthMiddleware())
 	{
 		group.POST("/", ArticleCreateHandler)
+	}
+}
+
+func regCommentRouter(router *gin.Engine) {
+	group := router.Group("/comment")
+	group.GET("/", CommentGetListHandler)
+	group.GET("/:comment_id", CommentGetHandler)
+	group.Use(middleware.AuthMiddleware())
+	{
+		group.POST("/", CommentCreateHandler)
 	}
 }
