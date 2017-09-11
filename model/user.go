@@ -1,18 +1,22 @@
 package model
 
 import (
+	"time"
+
 	e "wangqingang/cunxun/error"
 )
 
 // User 对应于数据库user表中的一行
 type User struct {
-	ID             int    `json:"id" column:"id"`
-	Phone          string `json:"phone" column:"phone"`
-	NickName       string `json:"nickname" column:"nickname"`
-	HashedPassword string `json:"hashed_password" column:"hashed_password"`
-	PasswordLevel  int    `json:"password_level" column:"password_level"`
-	RegisterSource string `json:"register_source" column:"register_source"`
-	Avatar         string `json:"avatar" column:"avatar"`
+	ID             int       `json:"id" column:"id"`
+	Phone          string    `json:"phone" column:"phone"`
+	NickName       string    `json:"nickname" column:"nickname"`
+	HashedPassword string    `json:"hashed_password" column:"hashed_password"`
+	PasswordLevel  int       `json:"password_level" column:"password_level"`
+	RegisterSource string    `json:"register_source" column:"register_source"`
+	Avatar         string    `json:"avatar" column:"avatar"`
+	CreatedAt      time.Time `json:"created_at" column:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at" column:"updated_at"`
 }
 
 func GetUserByPhone(db sqlExec, phone string) (*User, error) {

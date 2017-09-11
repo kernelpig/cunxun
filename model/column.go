@@ -1,13 +1,17 @@
 package model
 
 import (
+	"time"
+
 	e "wangqingang/cunxun/error"
 )
 
 type Column struct {
-	ID         int    `json:"id" column:"id"`
-	Name       string `json:"name" column:"name"`
-	CreaterUid int    `json:"creater_uid" column:"creater_uid"`
+	ID         int       `json:"id" column:"id"`
+	Name       string    `json:"name" column:"name"`
+	CreaterUid int       `json:"creater_uid" column:"creater_uid"`
+	CreatedAt  time.Time `json:"created_at" column:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at" column:"updated_at"`
 }
 
 func GetColumnByID(db sqlExec, columnID int) (*Column, error) {

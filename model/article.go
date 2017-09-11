@@ -2,7 +2,7 @@ package model
 
 import (
 	"time"
-	
+
 	e "wangqingang/cunxun/error"
 )
 
