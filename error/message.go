@@ -120,14 +120,15 @@ func initSubErrors() {
 			SmsDecodeResponse: "Response content decoding failure.",
 		},
 		MParamsErr: {
-			_ParamsErrMin:         "Basic params error information.",
-			ParamsInvalidPhone:    "Invalid cell number.",
-			ParamsInvalidSource:   "Invalid source.",
-			ParamsInvalidPurpose:  "Invalid purpose.",
-			ParamsBindErr:         "Parameter parsing error.",
-			ParamsInvalidColumnID: "Invalid column id.",
-			ParamsInvalidPageNum:  "Invalid page number.",
-			ParamsInvalidPageSize: "Invalid page size.",
+			_ParamsErrMin:          "Basic params error information.",
+			ParamsInvalidPhone:     "Invalid cell number.",
+			ParamsInvalidSource:    "Invalid source.",
+			ParamsInvalidPurpose:   "Invalid purpose.",
+			ParamsBindErr:          "Parameter parsing error.",
+			ParamsInvalidColumnID:  "Invalid column id.",
+			ParamsInvalidPageNum:   "Invalid page number.",
+			ParamsInvalidPageSize:  "Invalid page size.",
+			ParamsInvalidArticleID: "Invalid article id.",
 		},
 		MAuthErr: {
 			_AuthErrMin:       "Basic auth error information.",
@@ -210,5 +211,6 @@ func initInterfaceErr() {
 		IArticleCreate:          "post /article/",
 		IColumnGetAll:           "get /column/",
 		IArticleGetList:         "get /article/",
+		IArticleGet:             "get /article/:article_id",
 	}
 }

@@ -47,6 +47,23 @@ func ArticleCreateHandler(c *gin.Context) {
 	})
 }
 
+func ArticleGetHandler(c *gin.Context) {
+	articleID, err := strconv.ParseInt(c.Param("article_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGet, e.MParamsErr, e.ParamsInvalidArticleID, err))
+		return
+	}
+	article, err := model.GetArticleByID(db.Mysql, int(articleID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleGet, e.MArticleErr, e.ArticleGetErr, err))
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+		"item": article,
+	})
+}
+
 // columnID, pageNum, pageSize
 func ArticleGetListHandler(c *gin.Context) {
 	columnID, err := strconv.ParseInt(c.Query("column_id"), 10, 64)
@@ -71,7 +88,7 @@ func ArticleGetListHandler(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": e.OK,
-		"end": isOver,
+		"end":  isOver,
 		"list": list,
 	})
 }

@@ -164,3 +164,81 @@ func testArticleGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	list := testArticleGetList(t, e, columnID, 1, 10)
 	assert.Equal(5, len(list))
 }
+
+func testArticleGet(t *testing.T, e *httpexpect.Expect, articleID int) *model.Article {
+	assert := assert.New(t)
+
+	resp := e.GET("/article/{article_id}").
+		WithPath("article_id", articleID).
+		Expect().Status(http.StatusOK)
+
+	respObject := resp.JSON().Object()
+	respObject.Value("code").Number().Equal(0)
+	var result struct {
+		Code int            `json:"code"`
+		Item *model.Article `json:"item"`
+	}
+
+	err := json.Unmarshal([]byte(resp.Body().Raw()), &result)
+	assert.Nil(err)
+	return result.Item
+}
+
+func testArticleGetHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+	assert := assert.New(t)
+
+	captchaId := testCaptchaCreate(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
+
+	sendRequest := &CheckcodeSendRequest{
+		Phone:        test.GenFakePhone(),
+		Purpose:      test.TestSignupPurpose,
+		Source:       test.TestWebSource,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	testCheckcodeSend(t, e, sendRequest)
+
+	checkcodeKey := &checkcode.CheckCodeKey{
+		Phone:   sendRequest.Phone,
+		Purpose: sendRequest.Purpose,
+		Source:  sendRequest.Source,
+	}
+	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
+
+	signupRequest := &UserSignupRequest{
+		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
+		Source:     sendRequest.Source,
+		Password:   test.GenFakePassword(),
+		VerifyCode: code,
+	}
+	testUserSignup(t, e, signupRequest)
+
+	captchaId = testCaptchaCreate(t, e)
+	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
+
+	loginRequest := &UserLoginRequest{
+		Phone:        sendRequest.Phone,
+		Source:       sendRequest.Source,
+		Password:     signupRequest.Password,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	xToken := testUserLogin(t, e, loginRequest)
+
+	createColumnRequest := &ColumnCreateRequest{
+		Name: test.GenRandString(),
+	}
+	columnID := testColumnCreate(t, e, xToken, createColumnRequest)
+
+	createArticleRequest := &ArticleCreateRequest{
+		ColumnId: columnID,
+		Title:    test.GenRandString(),
+		Content:  test.GenRandString() + test.GenRandString(),
+	}
+	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
+	article := testArticleGet(t, e, articleID)
+	assert.Equal(articleID, article.ID)
+}

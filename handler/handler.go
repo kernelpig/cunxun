@@ -65,6 +65,7 @@ func regColumnRouter(router *gin.Engine) {
 func regArticleRouter(router *gin.Engine) {
 	group := router.Group("/article")
 	group.GET("/", ArticleGetListHandler)
+	group.GET("/:article_id", ArticleGetHandler)
 	group.Use(middleware.AuthMiddleware())
 	{
 		group.POST("/", ArticleCreateHandler)
