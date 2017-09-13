@@ -16,12 +16,14 @@ import (
 )
 
 const (
-	testUserSQLPath    = "../sql/user.sql"
-	testArticleSQLPath = "../sql/article.sql"
-	testColumnSQLPath  = "../sql/column.sql"
-	testCommentSQLPath = "../sql/comment.sql"
-	testPrivateKeyPath = "../conf/ecdsa_prv.pem"
-	testPublicKeyPath  = "../conf/ecdsa_pub.pem"
+	testUserSQLPath          = "../sql/user.sql"
+	testArticleSQLPath       = "../sql/article.sql"
+	testColumnSQLPath        = "../sql/column.sql"
+	testCommentSQLPath       = "../sql/comment.sql"
+	testCommentListSQLPath   = "../sql/commentlistview.sql"
+	testArticleDetailSQLPath = "../sql/articledetailview.sql"
+	testPrivateKeyPath       = "../conf/ecdsa_prv.pem"
+	testPublicKeyPath        = "../conf/ecdsa_pub.pem"
 )
 
 func init() {
@@ -34,6 +36,20 @@ func init() {
 
 	token_lib.InitKeyPem(testPublicKeyPath, testPrivateKeyPath)
 	rand.Seed(time.Now().UTC().UnixNano())
+}
+
+func initMySQLView(t *testing.T, sqlPath, viewName string) {
+	assert := assert.New(t)
+
+	f, err := ioutil.ReadFile(sqlPath)
+	assert.Nil(err)
+	assert.NotNil(f)
+
+	_, err = db.Mysql.Exec(fmt.Sprintf("DROP VIEW IF EXISTS `%s`;", viewName))
+	assert.Nil(err)
+
+	_, err = db.Mysql.Exec(string(f))
+	assert.Nil(err)
 }
 
 func initMySQLTable(t *testing.T, sqlPath, tableName string) {
@@ -64,4 +80,6 @@ func InitTestCaseEnv(t *testing.T) {
 	initMySQLTable(t, testColumnSQLPath, "column")
 	initMySQLTable(t, testArticleSQLPath, "article")
 	initMySQLTable(t, testCommentSQLPath, "comment")
+	initMySQLView(t, testCommentListSQLPath, "commentlistview")
+	initMySQLView(t, testArticleDetailSQLPath, "articledetailview")
 }

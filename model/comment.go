@@ -15,6 +15,16 @@ type Comment struct {
 	UpdatedAt  time.Time `json:"updated_at" column:"updated_at"`
 }
 
+type CommentListView struct {
+	ID         int       `json:"id" column:"id"`
+	ArticleId  int       `json:"article_id" column:"article_id"`
+	Content    string    `json:"content" column:"content"`
+	CreaterUid int       `json:"creater_uid" column:"creater_uid"`
+	CreatedAt  time.Time `json:"created_at" column:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at" column:"updated_at"`
+	Nickname   string    `json:"nickname" column:"nickname"`
+}
+
 func CreateComment(db sqlExec, comment *Comment) (*Comment, error) {
 	id, err := SQLInsert(db, comment)
 	if err != nil {
@@ -41,13 +51,13 @@ func GetCommentByID(db sqlExec, commentID int) (*Comment, error) {
 	}
 }
 
-func GetCommentList(db sqlExec, where map[string]interface{}, pageSize, pageNum int) ([]*Comment, bool, error) {
-	var list []*Comment
+func GetCommentList(db sqlExec, where map[string]interface{}, pageSize, pageNum int) ([]*CommentListView, bool, error) {
+	var list []*CommentListView
 
 	// 初始化缓冲区
 	var modelBuf = make([]interface{}, 0)
 	for i := 0; i < pageSize; i++ {
-		modelBuf = append(modelBuf, &Comment{})
+		modelBuf = append(modelBuf, &CommentListView{})
 	}
 
 	// 每次只取pageSize个
@@ -56,7 +66,7 @@ func GetCommentList(db sqlExec, where map[string]interface{}, pageSize, pageNum 
 		return nil, true, e.SP(e.MCommentErr, e.CommentGetListErr, err)
 	}
 	for _, item := range modelBuf {
-		if model, ok := item.(*Comment); ok {
+		if model, ok := item.(*CommentListView); ok {
 			list = append(list, model)
 		}
 	}

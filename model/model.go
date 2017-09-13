@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"wangqingang/cunxun/common"
 	e "wangqingang/cunxun/error"
 	"wangqingang/cunxun/utils"
 )
@@ -30,6 +31,13 @@ func isDBDuplicateErr(err error) bool {
 		return messageErr.Code.IsSubError(e.MMysqlErr, e.MysqlDuplicateErr)
 	}
 	return false
+}
+
+func dumpSQL(_SQL string) string {
+	if !common.Config.ReleaseMode {
+		fmt.Println("_SQL: ", _SQL)
+	}
+	return _SQL
 }
 
 // pageSize<=len(selects), pageNum待获取的页数数据, 数据页码从1开始, 遇到任何错误都返回处理完成, 不再处理后续页面
@@ -58,7 +66,7 @@ func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interfac
 	if wheres == nil || len(wheres) == 0 {
 		_SQL = fmt.Sprintf("SELECT %s FROM `%s` limit %d, %d",
 			strings.Join(f, ", "), tableName, pageOffset, pageSize)
-		rows, err = db.Query(_SQL)
+		rows, err = db.Query(dumpSQL(_SQL))
 	} else {
 		// 带有where查询条件
 		var w []string
@@ -70,7 +78,7 @@ func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interfac
 		}
 		_SQL = fmt.Sprintf("SELECT %s FROM `%s` WHERE %s limit %d, %d",
 			strings.Join(f, ", "), tableName, strings.Join(w, " and "), pageOffset, pageSize)
-		rows, err = db.Query(_SQL, q...)
+		rows, err = db.Query(dumpSQL(_SQL), q...)
 	}
 
 	if err != nil {
@@ -122,7 +130,7 @@ func SQLQueryRow(db sqlExec, selects interface{}, wheres map[string]interface{})
 	}
 
 	_SQL := fmt.Sprintf("SELECT %s FROM `%s` WHERE %s", strings.Join(f, ", "), tableName, strings.Join(w, " and "))
-	err := db.QueryRow(_SQL, q...).Scan(s...)
+	err := db.QueryRow(dumpSQL(_SQL), q...).Scan(s...)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return false, nil
@@ -151,7 +159,7 @@ func SQLUpdate(db sqlExec, updates interface{}, wheres map[string]interface{}) (
 	}
 
 	_SQL := fmt.Sprintf("UPDATE `%s` SET %s WHERE %s", tableName, strings.Join(u, ", "), strings.Join(w, " and "))
-	sqlResult, err := db.Exec(_SQL, q...)
+	sqlResult, err := db.Exec(dumpSQL(_SQL), q...)
 	if err != nil {
 		if isMysqlDuplicateErr(err) {
 			return 0, e.SP(e.MMysqlErr, e.MysqlDuplicateErr, err)
@@ -178,7 +186,7 @@ func SQLInsert(db sqlExec, inserts interface{}) (int64, error) {
 	}
 
 	_SQL := fmt.Sprintf("INSERT INTO `%s` SET %s", tableName, strings.Join(u, ", "))
-	sqlResult, err := db.Exec(_SQL, q...)
+	sqlResult, err := db.Exec(dumpSQL(_SQL), q...)
 
 	if err != nil {
 		if isMysqlDuplicateErr(err) {

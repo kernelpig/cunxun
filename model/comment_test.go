@@ -32,12 +32,25 @@ func TestGetCommentList(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
+	u := &User{
+		Phone:          test.GenFakePhone(),
+		NickName:       test.GenRandString(),
+		HashedPassword: test.GenRandString(),
+		PasswordLevel:  test.GenRandInt(5),
+		RegisterSource: test.TestWebSource,
+		Avatar:         test.GenRandString(),
+	}
+
+	u, err := CreateUser(db.Mysql, u)
+	assert.Nil(err)
+	assert.NotNil(u)
+
 	var cs []*Comment
 	for i := 0; i < 10; i++ {
 		c := &Comment{
 			ArticleId:  1,
 			Content:    test.GenRandString(),
-			CreaterUid: test.GenRandInt(5),
+			CreaterUid: u.ID,
 		}
 		_, err := CreateComment(db.Mysql, c)
 		assert.Nil(err)

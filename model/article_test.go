@@ -13,21 +13,34 @@ func TestCreateArticle(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
+	u := &User{
+		Phone:          test.GenFakePhone(),
+		NickName:       test.GenRandString(),
+		HashedPassword: test.GenRandString(),
+		PasswordLevel:  test.GenRandInt(5),
+		RegisterSource: test.TestWebSource,
+		Avatar:         test.GenRandString(),
+	}
+
+	u, err := CreateUser(db.Mysql, u)
+	assert.Nil(err)
+	assert.NotNil(u)
+
 	c := &Article{
 		ColumnId:   test.GenRandInt(5),
 		Title:      test.GenRandString(),
 		Content:    test.GenRandString(),
-		CreaterUid: test.GenRandInt(5),
-		UpdaterUid: test.GenRandInt(5),
+		CreaterUid: u.ID,
+		UpdaterUid: u.ID,
 	}
 
-	c, err := CreateArticle(db.Mysql, c)
+	c, err = CreateArticle(db.Mysql, c)
 	assert.Nil(err)
 	assert.NotNil(c)
 
-	c, err = GetArticleByID(db.Mysql, c.ID)
+	cd, err := GetArticleByID(db.Mysql, c.ID)
 	assert.Nil(err)
-	assert.NotNil(c)
+	assert.NotNil(cd)
 }
 
 func TestGetArticleList(t *testing.T) {
