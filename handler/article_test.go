@@ -87,6 +87,7 @@ func testArticleGetList(t *testing.T, e *httpexpect.Expect, columnID, pageNum, p
 
 	resp := e.GET("/article/").
 		WithQuery("column_id", columnID).
+		WithQuery("order_by", "comment_count").
 		WithQuery("page_num", pageNum).
 		WithQuery("page_size", pageSize).
 		Expect().Status(http.StatusOK)

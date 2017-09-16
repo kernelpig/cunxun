@@ -61,7 +61,7 @@ func GetCommentList(db sqlExec, where map[string]interface{}, pageSize, pageNum 
 	}
 
 	// 每次只取pageSize个
-	isOver, err := SQLQueryRows(db, &modelBuf, where, pageSize, pageNum)
+	isOver, err := SQLQueryRows(db, &modelBuf, where, OrderByIgnore, pageSize, pageNum)
 	if err != nil {
 		return nil, true, e.SP(e.MCommentErr, e.CommentGetListErr, err)
 	}

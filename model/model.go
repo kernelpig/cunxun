@@ -10,11 +10,29 @@ import (
 	"wangqingang/cunxun/utils"
 )
 
+// orm处理常量定义
 const (
 	columnTagKey = "column"
 	pageNumStart = 1
 	pageSize     = 20
 )
+
+// 排序方式枚举定义,禁止用户输入DB字段映射,防止SQL注入
+const (
+	OrderByCreateDate   = "create_date"
+	OrderByCommentCount = "comment_count"
+	OrderByIgnore       = ""
+)
+
+// 参数与DB字段映射表, 禁止用户输入DB字段映射,防止SQL注入
+var OrderByMap map[string]string
+
+func init() {
+	OrderByMap = make(map[string]string)
+	OrderByMap[OrderByIgnore] = "order by created_at desc"
+	OrderByMap[OrderByCreateDate] = "order by created_at desc"
+	OrderByMap[OrderByCommentCount] = "order by comment_count desc"
+}
 
 type sqlExec interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)
@@ -41,11 +59,19 @@ func dumpSQL(_SQL string) string {
 }
 
 // pageSize<=len(selects), pageNum待获取的页数数据, 数据页码从1开始, 遇到任何错误都返回处理完成, 不再处理后续页面
-func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interface{}, pageSize, pageNum int) (bool, error) {
+func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interface{}, orderByKey string, pageSize, pageNum int) (bool, error) {
 	var f []string
 	var _SQL string
 	var rows *sql.Rows
 	var err error
+	var orderBy string
+
+	// 如果有排序则必须符合orderMap
+	if orderByStr, ok := OrderByMap[orderByKey]; ok {
+		orderBy = orderByStr
+	} else {
+		return true, e.SD(e.MMysqlErr, e.MysqlInvalidOrderType, orderByKey)
+	}
 
 	// 数据页码从1开始
 	if pageNum < pageNumStart {
@@ -64,8 +90,8 @@ func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interfac
 
 	// 不带有where查询条件
 	if wheres == nil || len(wheres) == 0 {
-		_SQL = fmt.Sprintf("SELECT %s FROM `%s` limit %d, %d",
-			strings.Join(f, ", "), tableName, pageOffset, pageSize)
+		_SQL = fmt.Sprintf("SELECT %s FROM `%s` %s limit %d, %d",
+			strings.Join(f, ", "), tableName, orderBy, pageOffset, pageSize)
 		rows, err = db.Query(dumpSQL(_SQL))
 	} else {
 		// 带有where查询条件
@@ -76,8 +102,8 @@ func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interfac
 			w = append(w, fmt.Sprintf("%s = ?", key))
 			q = append(q, value)
 		}
-		_SQL = fmt.Sprintf("SELECT %s FROM `%s` WHERE %s limit %d, %d",
-			strings.Join(f, ", "), tableName, strings.Join(w, " and "), pageOffset, pageSize)
+		_SQL = fmt.Sprintf("SELECT %s FROM `%s` WHERE %s %s limit %d, %d",
+			strings.Join(f, ", "), tableName, strings.Join(w, " and "), orderBy, pageOffset, pageSize)
 		rows, err = db.Query(dumpSQL(_SQL), q...)
 	}
 

@@ -51,7 +51,7 @@ func GetAllColumn(db sqlExec) ([]*Column, error) {
 
 	// 每次只取pageSize个
 	for pageNum := 1; true; pageNum++ {
-		isOver, err := SQLQueryRows(db, &modelBuf, map[string]interface{}{}, pageSize, pageNum)
+		isOver, err := SQLQueryRows(db, &modelBuf, map[string]interface{}{}, OrderByIgnore, pageSize, pageNum)
 		if err != nil {
 			return nil, e.SP(e.MColumnErr, e.ColumnGetAllErr, err)
 		}

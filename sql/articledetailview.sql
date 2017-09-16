@@ -1,4 +1,4 @@
 -- 评论列表视图
 CREATE VIEW `articledetailview` AS (
-  SELECT `article`.*, `user`.nickname FROM `article`, `user` WHERE `article`.creater_uid = `user`.id
+  select a.*, IFNULL(u.nickname, "") as nickname from article a left join user u on a.creater_uid = u.id
 );

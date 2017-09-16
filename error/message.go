@@ -102,6 +102,7 @@ func initSubErrors() {
 			MysqlDuplicateErr:     "Unique key dumplicate.",
 			MysqlInvalidPageNum:   "Invalid page number.",
 			MysqlNoEnoughModelBuf: "No enough model buffer size.",
+			MysqlInvalidOrderType: "Invalid order type.",
 		},
 		MRedisErr: {
 			_RedisErrMin:           "Basic redis error information.",
@@ -130,6 +131,7 @@ func initSubErrors() {
 			ParamsInvalidPageSize:  "Invalid page size.",
 			ParamsInvalidArticleID: "Invalid article id.",
 			ParamsInvalidCommentID: "Invalid comment id.",
+			ParamsInvalidOrderBy:   "Invalid order by.",
 		},
 		MAuthErr: {
 			_AuthErrMin:       "Basic auth error information.",

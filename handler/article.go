@@ -64,7 +64,8 @@ func ArticleGetHandler(c *gin.Context) {
 	})
 }
 
-// columnID, pageNum, pageSize
+// columnID, orderBy, pageNum, pageSize
+// TODO: 热贴需要支持时间范围过滤
 func ArticleGetListHandler(c *gin.Context) {
 	columnID, err := strconv.ParseInt(c.Query("column_id"), 10, 64)
 	if err != nil {
@@ -81,7 +82,7 @@ func ArticleGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidPageSize, err))
 		return
 	}
-	list, isOver, err := model.GetArticleList(db.Mysql, map[string]interface{}{"column_id": columnID}, int(pageSize), int(pageNum))
+	list, isOver, err := model.GetArticleList(db.Mysql, map[string]interface{}{"column_id": columnID}, c.Query("order_by"), int(pageSize), int(pageNum))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleGetList, e.MArticleErr, e.ArticleGetListErr, err))
 		return
