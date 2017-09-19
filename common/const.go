@@ -19,6 +19,11 @@ const (
 	AppSource = "app"
 )
 
+const (
+	// 默认头像标识, TEXT字段NULL处理问题
+	UserAvatarDefulatFlag = "default avatar"
+)
+
 var SourceRange []string
 var PurposeRange []string
 

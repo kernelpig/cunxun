@@ -61,6 +61,7 @@ const (
 	ICommentCreate
 	ICommentGetList
 	ICommentGet
+	IUserGetAvatar
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -101,6 +102,7 @@ const (
 	ConfigLoadErr
 	ConfigParseErr
 	ConfigParseTimeErr
+	ConfigLoadAvatarErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -124,6 +126,7 @@ const (
 	UserAlreadyExist
 	UserNotExist
 	UserCreateErr
+	UserAvatarDecodeErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -271,6 +274,7 @@ const (
 	ParamsInvalidArticleID
 	ParamsInvalidCommentID
 	ParamsInvalidOrderBy
+	ParamsInvalidUserId
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 

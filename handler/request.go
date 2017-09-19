@@ -21,6 +21,7 @@ type UserSignupRequest struct {
 	NickName   string `json:"nickname" binding:"required,min=1,max=32"`
 	Password   string `json:"password" binding:"required,min=8,max=16"`
 	VerifyCode string `json:"verify_code" binding:"required"`
+	Avatar     string `json:"avatar" binding:"omitempty"`
 }
 
 type UserLoginRequest struct {

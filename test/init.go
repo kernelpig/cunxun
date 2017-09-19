@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"wangqingang/cunxun/avatar"
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
@@ -25,6 +26,7 @@ const (
 	testArticleListSQLPath   = "../sql/articlelistview.sql"
 	testPrivateKeyPath       = "../conf/ecdsa_prv.pem"
 	testPublicKeyPath        = "../conf/ecdsa_pub.pem"
+	testAvatarPath           = "../conf/avatar.png"
 )
 
 func init() {
@@ -33,6 +35,7 @@ func init() {
 	db.InitRedis(common.Config.Redis)
 	db.InitMysql(common.Config.Mysql)
 
+	avatar.InitAvatar(testAvatarPath)
 	captcha.InitCaptcha(common.Config.Captcha.TTL.D())
 
 	token_lib.InitKeyPem(testPublicKeyPath, testPrivateKeyPath)

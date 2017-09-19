@@ -45,3 +45,6 @@ level = "debug"
 [sms]
 aliAccessId = "YOUR_ALIYUN_ACCESS_ID"
 aliAccessSecret = "YOUR_ALIYUN_ACCESS_SECRET"
+
+[user]
+DefaultAvatarPath = "./conf/avatar.png"

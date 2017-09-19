@@ -22,6 +22,7 @@ type Configs struct {
 	Checkcode   *CheckcodeConfig
 	Login       *LoginConfig
 	Sms         *SmsConfig
+	User        *UserConfig
 }
 
 type TokenConfig struct {
@@ -77,6 +78,11 @@ type LogConfig struct {
 type SmsConfig struct {
 	AliAccessId     string
 	AliAccessSecret string
+}
+
+// 用户相关配置
+type UserConfig struct {
+	DefaultAvatarPath string
 }
 
 // Config 全局配置信息

@@ -116,6 +116,17 @@ func testUserLogout(t *testing.T, e *httpexpect.Expect, token string) {
 		Value("code").Number().Equal(error.OK)
 }
 
+func testUserGetAvatar(t *testing.T, e *httpexpect.Expect, userId int) {
+	e.GET("/u/{user_id}/avatar").
+		WithPath("user_id", userId).
+		Expect().Status(http.StatusOK).ContentType("image/png")
+}
+
+func testUserGetAvatarHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+	testUserGetAvatar(t, e, 0)
+}
+
 func testUserLogoutHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 

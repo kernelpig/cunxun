@@ -24,21 +24,23 @@ func initSubErrors() {
 			_SubModuleErrMin: "Basic sub modules error information.",
 		},
 		MConfigErr: {
-			_ConfigErrMin:      "Basic configuration error information.",
-			ConfigLoadErr:      "Failed to load profile.",
-			ConfigParseErr:     "Parsing configuration file failed.",
-			ConfigParseTimeErr: "Parse time configuration field failed.",
+			_ConfigErrMin:       "Basic configuration error information.",
+			ConfigLoadErr:       "Failed to load profile.",
+			ConfigParseErr:      "Parsing configuration file failed.",
+			ConfigParseTimeErr:  "Parse time configuration field failed.",
+			ConfigLoadAvatarErr: "Load avatar image file failed.",
 		},
 		MLogErr: {
 			_LogErrMin:        "Basic log error information.",
 			LogDumpRequestErr: "Dump request parameter failed.",
 		},
 		MUserErr: {
-			_UserErrMin:      "Basic user error information.",
-			UserGetErr:       "Failed to obtain user information.",
-			UserAlreadyExist: "User already exists.",
-			UserNotExist:     "User does not exist.",
-			UserCreateErr:    "Failed to create user.",
+			_UserErrMin:         "Basic user error information.",
+			UserGetErr:          "Failed to obtain user information.",
+			UserAlreadyExist:    "User already exists.",
+			UserNotExist:        "User does not exist.",
+			UserCreateErr:       "Failed to create user.",
+			UserAvatarDecodeErr: "Failed to decode user's avatar.",
 		},
 		MLoginErr: {
 			_LoginErrMin:   "Basic logon error information.",
@@ -132,6 +134,7 @@ func initSubErrors() {
 			ParamsInvalidArticleID: "Invalid article id.",
 			ParamsInvalidCommentID: "Invalid comment id.",
 			ParamsInvalidOrderBy:   "Invalid order by.",
+			ParamsInvalidUserId:    "Invalid user id.",
 		},
 		MAuthErr: {
 			_AuthErrMin:       "Basic auth error information.",
@@ -227,5 +230,6 @@ func initInterfaceErr() {
 		ICommentCreate:          "post /comment/",
 		ICommentGetList:         "get /comment/",
 		ICommentGet:             "get /comment/:comment_id",
+		IUserGetAvatar:          "get /u/:user_id/avatar",
 	}
 }

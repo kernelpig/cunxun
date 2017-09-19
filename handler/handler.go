@@ -33,6 +33,7 @@ func regUserRouter(router *gin.Engine) {
 	group.POST("/signup", UserSignupHandler)
 	group.POST("/login", UserLoginHandler)
 	group.POST("/logout", UserLogoutHandler)
+	group.GET("/:user_id/avatar", UserGetAvatarHandler)
 }
 
 func regCaptchaRouter(router *gin.Engine) {

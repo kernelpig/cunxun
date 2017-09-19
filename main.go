@@ -6,6 +6,7 @@ import (
 	"runtime"
 	"time"
 
+	"wangqingang/cunxun/avatar"
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
@@ -22,6 +23,7 @@ func main() {
 		runtime.GOMAXPROCS(common.Config.Gomaxprocs)
 	}
 
+	avatar.InitAvatar(common.Config.User.DefaultAvatarPath)
 	db.InitRedis(common.Config.Redis)
 	db.InitMysql(common.Config.Mysql)
 	captcha.InitCaptcha(common.Config.Captcha.TTL.D())

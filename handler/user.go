@@ -1,12 +1,15 @@
 package handler
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/ahmetb/go-linq"
 	"github.com/gin-gonic/gin"
 
+	"wangqingang/cunxun/avatar"
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
@@ -57,6 +60,11 @@ func UserSignupHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IUserSignup, e.MPasswordErr, e.PasswordLevelErr, err))
 		return
 	}
+	
+	// 处理头像数据, 没有携带使用默认头像
+	if req.Avatar == "" {
+		req.Avatar = common.UserAvatarDefulatFlag
+	}
 
 	user := &model.User{
 		Phone:          req.Phone,
@@ -64,6 +72,7 @@ func UserSignupHandler(c *gin.Context) {
 		HashedPassword: hashedPassword,
 		PasswordLevel:  passwordLevel,
 		RegisterSource: req.Source,
+		Avatar:         req.Avatar,
 	}
 
 	user, err = model.CreateUser(db.Mysql, user)
@@ -175,4 +184,23 @@ func UserLogoutHandler(c *gin.Context) {
 		"code": e.OK,
 	})
 	return
+}
+
+func UserGetAvatarHandler(c *gin.Context) {
+	userId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserGetAvatar, e.MParamsErr, e.ParamsInvalidUserId, err))
+		return
+	}
+
+	// 用户头像存在, 使用用户头像
+	user, err := model.GetUserByID(db.Mysql, int(userId))
+	if err == nil && user != nil && user.Avatar != common.UserAvatarDefulatFlag {
+		avatarBytes, err := base64.StdEncoding.DecodeString(user.Avatar)
+		if err == nil {
+			c.Data(http.StatusOK, "image/png", avatarBytes)
+			return
+		}
+	}
+	c.Data(http.StatusOK, "image/png", avatar.AvatarBytes)
 }

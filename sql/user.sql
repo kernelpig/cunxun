@@ -6,8 +6,8 @@ CREATE TABLE `user` (
   `nickname` VARCHAR(64) NOT NULL DEFAULT "" COMMENT "用户昵称",
   `hashed_password` VARCHAR(64) NOT NULL COMMENT "密码",
   `password_level` INT NOT NULL DEFAULT 0 COMMENT "密码级别",
-  `avatar` VARCHAR(256) NOT NULL DEFAULT "" COMMENT "头像",
   `register_source` VARCHAR(256) NOT NULL DEFAULT "" COMMENT "注册来源",
+  `avatar` TEXT NOT NULL COMMENT "用户头像",
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_phone` (`phone`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
