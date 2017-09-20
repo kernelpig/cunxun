@@ -3,11 +3,15 @@ package handler
 import (
 	"encoding/base64"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"path"
 	"strconv"
+	"strings"
 
 	"github.com/ahmetb/go-linq"
 	"github.com/gin-gonic/gin"
+	"github.com/satori/go.uuid"
 
 	"wangqingang/cunxun/avatar"
 	"wangqingang/cunxun/captcha"
@@ -21,6 +25,27 @@ import (
 	"wangqingang/cunxun/phone"
 	"wangqingang/cunxun/token"
 )
+
+// 写入头像文件, 并生成头像文件名, DB不存储路径, 读取时根据配置读取
+func writeAvatarFile(reqAvatar string) (string, error) {
+	if reqAvatar == "" {
+		return "", nil
+	}
+	var index int
+	if index = strings.Index(reqAvatar, ","); index == -1 {
+		return "", e.SD(e.MUserErr, e.UserAvatarDecodeErr, "Not found decode flag.")
+	}
+	bytes, err := base64.StdEncoding.DecodeString(reqAvatar[index+1:])
+	if err != nil {
+		return "", e.SP(e.MUserErr, e.UserAvatarDecodeErr, err)
+	}
+	fileName := uuid.NewV4().String()
+	pathName := path.Join(common.Config.User.DefaultAvatarDir, fileName)
+	if err := ioutil.WriteFile(pathName, bytes, 444); err != nil {
+		return "", e.SP(e.MUserErr, e.UserAvatarDecodeErr, err)
+	}
+	return fileName, nil
+}
 
 func UserSignupHandler(c *gin.Context) {
 	var req UserSignupRequest
@@ -60,11 +85,8 @@ func UserSignupHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IUserSignup, e.MPasswordErr, e.PasswordLevelErr, err))
 		return
 	}
-	
-	// 处理头像数据, 没有携带使用默认头像
-	if req.Avatar == "" {
-		req.Avatar = common.UserAvatarDefulatFlag
-	}
+
+	fileName, err := writeAvatarFile(req.Avatar)
 
 	user := &model.User{
 		Phone:          req.Phone,
@@ -72,7 +94,7 @@ func UserSignupHandler(c *gin.Context) {
 		HashedPassword: hashedPassword,
 		PasswordLevel:  passwordLevel,
 		RegisterSource: req.Source,
-		Avatar:         req.Avatar,
+		Avatar:         fileName,
 	}
 
 	user, err = model.CreateUser(db.Mysql, user)
@@ -195,12 +217,17 @@ func UserGetAvatarHandler(c *gin.Context) {
 
 	// 用户头像存在, 使用用户头像
 	user, err := model.GetUserByID(db.Mysql, int(userId))
-	if err == nil && user != nil && user.Avatar != common.UserAvatarDefulatFlag {
-		avatarBytes, err := base64.StdEncoding.DecodeString(user.Avatar)
-		if err == nil {
-			c.Data(http.StatusOK, "image/png", avatarBytes)
-			return
-		}
+	if err != nil || user == nil || user.Avatar == "" {
+		bytes := avatar.GetDefaultAvatar(common.Config.User.DefaultAvatarDir, common.Config.User.DefaultAvatarFile)
+		c.Data(http.StatusOK, "image/png", bytes)
+		return
 	}
-	c.Data(http.StatusOK, "image/png", avatar.AvatarBytes)
+	// 用户头像文件读取失败, 使用默认头像
+	bytes, err := ioutil.ReadFile(path.Join(common.Config.User.DefaultAvatarDir, user.Avatar))
+	if err != nil {
+		bytes := avatar.GetDefaultAvatar(common.Config.User.DefaultAvatarDir, common.Config.User.DefaultAvatarFile)
+		c.Data(http.StatusOK, "image/png", bytes)
+		return
+	}
+	c.Data(http.StatusOK, "image/png", bytes)
 }

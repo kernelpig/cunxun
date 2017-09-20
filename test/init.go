@@ -26,7 +26,8 @@ const (
 	testArticleListSQLPath   = "../sql/articlelistview.sql"
 	testPrivateKeyPath       = "../conf/ecdsa_prv.pem"
 	testPublicKeyPath        = "../conf/ecdsa_pub.pem"
-	testAvatarPath           = "../conf/avatar.png"
+	testAvatarDir            = "../conf/avatar/"
+	testAvatarFile           = "avatar.png"
 )
 
 func init() {
@@ -35,7 +36,7 @@ func init() {
 	db.InitRedis(common.Config.Redis)
 	db.InitMysql(common.Config.Mysql)
 
-	avatar.InitAvatar(testAvatarPath)
+	avatar.InitAvatar(testAvatarDir, testAvatarFile)
 	captcha.InitCaptcha(common.Config.Captcha.TTL.D())
 
 	token_lib.InitKeyPem(testPublicKeyPath, testPrivateKeyPath)

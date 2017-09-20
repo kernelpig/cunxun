@@ -82,7 +82,8 @@ type SmsConfig struct {
 
 // 用户相关配置
 type UserConfig struct {
-	DefaultAvatarPath string
+	DefaultAvatarFile string
+	DefaultAvatarDir  string
 }
 
 // Config 全局配置信息

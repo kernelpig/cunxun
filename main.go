@@ -23,7 +23,7 @@ func main() {
 		runtime.GOMAXPROCS(common.Config.Gomaxprocs)
 	}
 
-	avatar.InitAvatar(common.Config.User.DefaultAvatarPath)
+	avatar.InitAvatar(common.Config.User.DefaultAvatarDir, common.Config.User.DefaultAvatarFile)
 	db.InitRedis(common.Config.Redis)
 	db.InitMysql(common.Config.Mysql)
 	captcha.InitCaptcha(common.Config.Captcha.TTL.D())
