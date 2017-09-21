@@ -16,7 +16,7 @@ import (
 )
 
 func testCommentCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *CommentCreateRequest) int {
-	resp := e.POST("/comment/").
+	resp := e.POST("/api/comment/").
 		WithHeader(common.AuthHeaderKey, xToken).
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
@@ -91,7 +91,7 @@ func testCommentCreateHandler(t *testing.T, e *httpexpect.Expect) {
 func testCommentGetList(t *testing.T, e *httpexpect.Expect, articleID, pageNum, pageSize int) []*model.Comment {
 	assert := assert.New(t)
 
-	resp := e.GET("/comment/").
+	resp := e.GET("/api/comment/").
 		WithQuery("article_id", articleID).
 		WithQuery("page_num", pageNum).
 		WithQuery("page_size", pageSize).
@@ -180,7 +180,7 @@ func testCommentGetListHandler(t *testing.T, e *httpexpect.Expect) {
 func testCommentGet(t *testing.T, e *httpexpect.Expect, commentID int) *model.Comment {
 	assert := assert.New(t)
 
-	resp := e.GET("/comment/{comment_id}").
+	resp := e.GET("/api/comment/{comment_id}").
 		WithPath("comment_id", commentID).
 		Expect().Status(http.StatusOK)
 

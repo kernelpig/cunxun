@@ -12,7 +12,7 @@ import (
 )
 
 func testCheckcodeSend(t *testing.T, e *httpexpect.Expect, request *CheckcodeSendRequest) {
-	resp := e.POST("/checkcode/send").
+	resp := e.POST("/api/checkcode/send").
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
@@ -38,7 +38,7 @@ func testCheckcodeSendHandler(t *testing.T, e *httpexpect.Expect) {
 }
 
 func testCheckcodeVerify(t *testing.T, e *httpexpect.Expect, request *CheckVerifyCodeRequest) {
-	resp := e.POST("/checkcode/check").
+	resp := e.POST("/api/checkcode/check").
 		WithJSON(request).
 		Expect().Status(http.StatusOK).
 		JSON().Object()

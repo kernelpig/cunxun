@@ -16,7 +16,7 @@ import (
 )
 
 func testArticleCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *ArticleCreateRequest) int {
-	resp := e.POST("/article/").
+	resp := e.POST("/api/article/").
 		WithHeader(common.AuthHeaderKey, xToken).
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
@@ -85,7 +85,7 @@ func testArticleCreateHandler(t *testing.T, e *httpexpect.Expect) {
 func testArticleGetList(t *testing.T, e *httpexpect.Expect, columnID, pageNum, pageSize int) []*model.Article {
 	assert := assert.New(t)
 
-	resp := e.GET("/article/").
+	resp := e.GET("/api/article/").
 		WithQuery("column_id", columnID).
 		WithQuery("order_by", "comment_count").
 		WithQuery("page_num", pageNum).
@@ -169,7 +169,7 @@ func testArticleGetListHandler(t *testing.T, e *httpexpect.Expect) {
 func testArticleGet(t *testing.T, e *httpexpect.Expect, articleID int) *model.Article {
 	assert := assert.New(t)
 
-	resp := e.GET("/article/{article_id}").
+	resp := e.GET("/api/article/{article_id}").
 		WithPath("article_id", articleID).
 		Expect().Status(http.StatusOK)
 

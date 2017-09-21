@@ -16,7 +16,7 @@ import (
 )
 
 func testUserSignup(t *testing.T, e *httpexpect.Expect, request *UserSignupRequest) {
-	resp := e.POST("/u/signup").WithJSON(request).
+	resp := e.POST("/api/u/signup").WithJSON(request).
 		Expect().Status(http.StatusOK)
 
 	respObj := resp.JSON().Object()
@@ -56,7 +56,7 @@ func testUserSignupHandler(t *testing.T, e *httpexpect.Expect) {
 }
 
 func testUserLogin(t *testing.T, e *httpexpect.Expect, request *UserLoginRequest) string {
-	resp := e.POST("/u/login").
+	resp := e.POST("/api/u/login").
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
@@ -109,7 +109,7 @@ func testUserLoginHandler(t *testing.T, e *httpexpect.Expect) {
 }
 
 func testUserLogout(t *testing.T, e *httpexpect.Expect, token string) {
-	resp := e.POST("/u/logout").
+	resp := e.POST("/api/u/logout").
 		WithHeader(common.AuthHeaderKey, token).
 		Expect().Status(http.StatusOK)
 	resp.JSON().Object().
@@ -117,7 +117,7 @@ func testUserLogout(t *testing.T, e *httpexpect.Expect, token string) {
 }
 
 func testUserGetAvatar(t *testing.T, e *httpexpect.Expect, userId int) {
-	e.GET("/u/{user_id}/avatar").
+	e.GET("/api/u/{user_id}/avatar").
 		WithPath("user_id", userId).
 		Expect().Status(http.StatusOK).ContentType("image/png")
 }
@@ -213,7 +213,7 @@ func testUserSignupHandler_UserAlreadyExist(t *testing.T, e *httpexpect.Expect) 
 		Password:   test.GenFakePassword(),
 		VerifyCode: code,
 	}
-	resp := e.POST("/u/signup").WithJSON(signupRequest).
+	resp := e.POST("/api/u/signup").WithJSON(signupRequest).
 		Expect().Status(http.StatusBadRequest)
 
 	userAlreadyExistCode := error.Code{

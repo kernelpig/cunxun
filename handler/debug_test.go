@@ -12,7 +12,7 @@ import (
 )
 
 func testDebugPing(t *testing.T, e *httpexpect.Expect) {
-	e.GET("/debug/ping").
+	e.GET("/api/debug/ping").
 		Expect().
 		Status(http.StatusOK)
 }
@@ -23,7 +23,7 @@ func testDebugPingHandler(t *testing.T, e *httpexpect.Expect) {
 }
 
 func testDebugGetCaptchaValue(t *testing.T, e *httpexpect.Expect, captchaId string) string {
-	resp := e.GET("/debug/captcha/{captcha_id}").
+	resp := e.GET("/api/debug/captcha/{captcha_id}").
 		WithPath("captcha_id", captchaId).
 		Expect().Status(http.StatusOK).
 		JSON().Object()
@@ -42,7 +42,7 @@ func testDebugCaptchaGetValueHandler(t *testing.T, e *httpexpect.Expect) {
 }
 
 func testDebugCheckcodeGetValue(t *testing.T, e *httpexpect.Expect, key *checkcode.CheckCodeKey) string {
-	resp := e.GET("/debug/checkcode/").
+	resp := e.GET("/api/debug/checkcode/").
 		WithQuery("phone", key.Phone).
 		WithQuery("purpose", key.Purpose).
 		WithQuery("source", key.Source).

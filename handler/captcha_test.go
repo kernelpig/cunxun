@@ -11,7 +11,7 @@ import (
 )
 
 func testCaptchaCreate(t *testing.T, e *httpexpect.Expect) string {
-	resp := e.POST("/captcha").
+	resp := e.POST("/api/captcha").
 		Expect().Status(http.StatusOK).
 		JSON().Object()
 
@@ -20,7 +20,7 @@ func testCaptchaCreate(t *testing.T, e *httpexpect.Expect) string {
 }
 
 func testCaptchaGetImage(t *testing.T, e *httpexpect.Expect, id string) {
-	e.GET("/captcha/{captcha_id}").
+	e.GET("/api/captcha/{captcha_id}").
 		WithPath("captcha_id", id).
 		Expect().Status(http.StatusOK)
 }

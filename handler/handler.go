@@ -29,7 +29,7 @@ func ServerEngine() *gin.Engine {
 }
 
 func regUserRouter(router *gin.Engine) {
-	group := router.Group("/u")
+	group := router.Group("/api/u")
 	group.POST("/signup", UserSignupHandler)
 	group.POST("/login", UserLoginHandler)
 	group.POST("/logout", UserLogoutHandler)
@@ -37,26 +37,26 @@ func regUserRouter(router *gin.Engine) {
 }
 
 func regCaptchaRouter(router *gin.Engine) {
-	group := router.Group("/captcha")
+	group := router.Group("/api/captcha")
 	group.GET("/:captcha_id", CaptchaGetImageHandler)
 	group.POST("/", CaptchaCreateHandler)
 }
 
 func regCheckCodeRouter(router *gin.Engine) {
-	group := router.Group("/checkcode")
+	group := router.Group("/api/checkcode")
 	group.POST("/send", CheckcodeSendHandler)
 	group.POST("/check", CheckcodeVerifyHandler)
 }
 
 func regDebugRouter(router *gin.Engine) {
-	group := router.Group("/debug")
+	group := router.Group("/api/debug")
 	group.GET("/ping", DebugPingHandler)
 	group.GET("/captcha/:captcha_id", DebugCaptchaGetValueHandler)
 	group.GET("/checkcode", DebugCheckcodeGetValueHandler)
 }
 
 func regColumnRouter(router *gin.Engine) {
-	group := router.Group("/column")
+	group := router.Group("/api/column")
 	group.GET("/", ColumnGetAllHandler)
 	group.Use(middleware.AuthMiddleware())
 	{
@@ -65,7 +65,7 @@ func regColumnRouter(router *gin.Engine) {
 }
 
 func regArticleRouter(router *gin.Engine) {
-	group := router.Group("/article")
+	group := router.Group("/api/article")
 	group.GET("/", ArticleGetListHandler)
 	group.GET("/:article_id", ArticleGetHandler)
 	group.Use(middleware.AuthMiddleware())
@@ -75,7 +75,7 @@ func regArticleRouter(router *gin.Engine) {
 }
 
 func regCommentRouter(router *gin.Engine) {
-	group := router.Group("/comment")
+	group := router.Group("/api/comment")
 	group.GET("/", CommentGetListHandler)
 	group.GET("/:comment_id", CommentGetHandler)
 	group.Use(middleware.AuthMiddleware())

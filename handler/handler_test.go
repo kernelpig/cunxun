@@ -24,10 +24,10 @@ func TestHandlers(t *testing.T) {
 func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
 	testCaptchaCreateHandler(t, e)
 	testCaptchaGetImageHandler(t, e)
-
+	
 	testCheckcodeSendHandler(t, e)
 	testCheckcodeVerifyHandler(t, e)
-
+	
 	testUserSignupHandler(t, e)
 	testUserLoginHandler(t, e)
 	testUserLogoutHandler(t, e)
@@ -35,7 +35,7 @@ func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
 
 	testColumnCreateHandler(t, e)
 	testColumnGetAllHandler(t, e)
-	
+
 	testArticleCreateHandler(t, e)
 	testArticleGetListHandler(t, e)
 	testArticleGetHandler(t, e)
