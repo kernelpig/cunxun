@@ -22,6 +22,7 @@ const (
 	OrderByCreateDate   = "create_date"
 	OrderByCommentCount = "comment_count"
 	OrderByIgnore       = ""
+	OrderById           = "id"
 )
 
 // 参数与DB字段映射表, 禁止用户输入DB字段映射,防止SQL注入
@@ -32,6 +33,7 @@ func init() {
 	OrderByMap[OrderByIgnore] = "order by created_at desc"
 	OrderByMap[OrderByCreateDate] = "order by created_at desc"
 	OrderByMap[OrderByCommentCount] = "order by comment_count desc"
+	OrderByMap[OrderById] = "order by id asc"
 }
 
 type sqlExec interface {
