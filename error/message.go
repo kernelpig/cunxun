@@ -113,6 +113,7 @@ func initSubErrors() {
 			RedisSetErr:            "Saving information to redis failed.",
 			RedisGetErr:            "Failed to obtain information from redis.",
 			RedisDelErr:            "Deleting redis data failed.",
+			RedisKeyNotExist:       "Key not exist in redis data.",
 		},
 		MSmsErr: {
 			_SmsErrMin:        "Basic sms error information.",

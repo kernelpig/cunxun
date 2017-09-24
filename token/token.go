@@ -26,7 +26,7 @@ type Token struct {
 }
 
 func (k *TokenKey) GetTokenKey() string {
-	return fmt.Sprintf("%s:%s:%s", common.ModuleName, k.UserId, k.Source)
+	return fmt.Sprintf("%s:%d:%s", common.ModuleName, k.UserId, k.Source)
 }
 
 func (t *Token) Save() error {
@@ -78,7 +78,7 @@ func (k *TokenKey) GetToken() (*Token, error) {
 	bs, err := db.Redis.Get(key).Bytes()
 	if err == redis.Nil {
 		// key不存在则返回redis.Nil
-		return nil, nil
+		return nil, e.SD(e.MRedisErr, e.RedisKeyNotExist, key)
 	} else if err != nil {
 		return nil, e.SP(e.MRedisErr, e.RedisGetErr, err)
 	}
