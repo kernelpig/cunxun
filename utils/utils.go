@@ -12,11 +12,19 @@ func IsTypeDefaultValue(v interface{}) bool {
 	vType := reflect.TypeOf(v)
 
 	if vType.Name() == "string" {
-		if v == "" {
+		if value, ok := v.(string); ok && value == "" {
 			return true
 		}
-	} else if vType.Name() == "int" || vType.Name() == "int32" || vType.Name() == "int64" {
-		if v == 0 {
+	} else if vType.Name() == "int" {
+		if value, ok := v.(int); ok && value == 0 {
+			return true
+		}
+	} else if vType.Name() == "int32" {
+		if value, ok := v.(int32); ok && value == 0 {
+			return true
+		}
+	} else if vType.Name() == "int64" {
+		if value, ok := v.(int64); ok && value == 0 {
 			return true
 		}
 	} else if vType.Name() == "Time" {

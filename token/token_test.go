@@ -35,7 +35,7 @@ func TestTokenCreate(t *testing.T) {
 
 	token.Clean()
 	token, err = testTokenKey.GetToken()
-	assert.Nil(err)
+	assert.NotNil(err)
 	assert.Nil(token)
 }
 
@@ -50,7 +50,7 @@ func TestTokenTimeout(t *testing.T) {
 
 	time.Sleep(time.Duration(2) * time.Second)
 	token, err = testTokenKey.GetToken()
-	assert.Nil(err)
+	assert.NotNil(err)
 	assert.Nil(token)
 }
 

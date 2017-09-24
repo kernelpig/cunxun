@@ -101,12 +101,22 @@ func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interfac
 		var q []interface{}
 
 		for key, value := range wheres {
-			w = append(w, fmt.Sprintf("%s = ?", key))
-			q = append(q, value)
+			// 为类型的默认值则不增加此查询条件
+			if !utils.IsTypeDefaultValue(value) {
+				w = append(w, fmt.Sprintf("%s = ?", key))
+				q = append(q, value)
+			}
 		}
-		_SQL = fmt.Sprintf("SELECT %s FROM `%s` WHERE %s %s limit %d, %d",
-			strings.Join(f, ", "), tableName, strings.Join(w, " and "), orderBy, pageOffset, pageSize)
-		rows, err = db.Query(dumpSQL(_SQL), q...)
+		// 过滤掉类型默认值后无查询条件
+		if len(w) == 0 || len(q) == 0 {
+			_SQL = fmt.Sprintf("SELECT %s FROM `%s` %s limit %d, %d",
+				strings.Join(f, ", "), tableName, orderBy, pageOffset, pageSize)
+			rows, err = db.Query(dumpSQL(_SQL))
+		} else {
+			_SQL = fmt.Sprintf("SELECT %s FROM `%s` WHERE %s %s limit %d, %d",
+				strings.Join(f, ", "), tableName, strings.Join(w, " and "), orderBy, pageOffset, pageSize)
+			rows, err = db.Query(dumpSQL(_SQL), q...)
+		}
 	}
 
 	if err != nil {
@@ -140,9 +150,13 @@ func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interfac
 }
 
 func SQLQueryRow(db sqlExec, selects interface{}, wheres map[string]interface{}) (bool, error) {
+	// 没有查询条件
+	if wheres == nil || len(wheres) == 0 {
+		return false, nil
+	}
+
 	var f []string
 	var s []interface{}
-
 	tableName, selectsMap := utils.Struct2MapWithAddr(selects, columnTagKey)
 	for key, value := range selectsMap {
 		f = append(f, key)
@@ -151,10 +165,16 @@ func SQLQueryRow(db sqlExec, selects interface{}, wheres map[string]interface{})
 
 	var w []string
 	var q []interface{}
-
 	for key, value := range wheres {
-		w = append(w, fmt.Sprintf("%s = ?", key))
-		q = append(q, value)
+		// 过滤掉类型默认值查询条件
+		if !utils.IsTypeDefaultValue(value) {
+			w = append(w, fmt.Sprintf("%s = ?", key))
+			q = append(q, value)
+		}
+	}
+	// 过滤掉类型默认值后无查询条件
+	if len(w) == 0 || len(q) == 0 {
+		return false, nil
 	}
 
 	_SQL := fmt.Sprintf("SELECT %s FROM `%s` WHERE %s", strings.Join(f, ", "), tableName, strings.Join(w, " and "))
@@ -171,14 +191,25 @@ func SQLQueryRow(db sqlExec, selects interface{}, wheres map[string]interface{})
 
 // nullValue直接使用对应model类型的空结构, 只是为了获得表名
 func SQLDelete(db sqlExec, nullValue interface{}, wheres map[string]interface{}) (int64, error) {
-	var q []interface{}
-
 	tableName, _ := utils.Struct2MapWithValue(nullValue, columnTagKey, true)
 
 	var w []string
+	var q []interface{}
+
+	// 没有查询条件
+	if wheres == nil || len(wheres) == 0 {
+		return 0, nil
+	}
 	for key, value := range wheres {
-		w = append(w, fmt.Sprintf("%s = ?", key))
-		q = append(q, value)
+		if !utils.IsTypeDefaultValue(value) {
+			// 过滤掉类型默认值筛选条件
+			w = append(w, fmt.Sprintf("%s = ?", key))
+			q = append(q, value)
+		}
+	}
+	// 过滤掉类型默认值无筛选条件
+	if len(w) == 0 || len(q) == 0 {
+		return 0, nil
 	}
 
 	_SQL := fmt.Sprintf("DELETE FROM `%s` WHERE %s", tableName, strings.Join(w, " and "))
@@ -196,11 +227,14 @@ func SQLDelete(db sqlExec, nullValue interface{}, wheres map[string]interface{})
 
 // updates使用新的对象, 不要使用携带多余字段值的对象, 防止误修改
 func SQLUpdate(db sqlExec, updates interface{}, wheres map[string]interface{}) (int64, error) {
-	var q []interface{}
+	// 无筛选条件
+	if wheres == nil || len(wheres) == 0 {
+		return 0, nil
+	}
 
 	var u []string
+	var q []interface{}
 	tableName, updatesMap := utils.Struct2MapWithValue(updates, columnTagKey, true)
-
 	for key, value := range updatesMap {
 		u = append(u, fmt.Sprintf("%s = ?", key))
 		q = append(q, value)
@@ -208,8 +242,15 @@ func SQLUpdate(db sqlExec, updates interface{}, wheres map[string]interface{}) (
 
 	var w []string
 	for key, value := range wheres {
-		w = append(w, fmt.Sprintf("%s = ?", key))
-		q = append(q, value)
+		if !utils.IsTypeDefaultValue(value) {
+			// 过滤掉类型默认值条件
+			w = append(w, fmt.Sprintf("%s = ?", key))
+			q = append(q, value)
+		}
+	}
+	// 筛选后无条件
+	if len(w) == 0 || len(q) == 0 {
+		return 0, nil
 	}
 
 	_SQL := fmt.Sprintf("UPDATE `%s` SET %s WHERE %s", tableName, strings.Join(u, ", "), strings.Join(w, " and "))
