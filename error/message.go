@@ -235,5 +235,6 @@ func initInterfaceErr() {
 		ICommentGet:             "get /comment/:comment_id",
 		IUserGetAvatar:          "get /u/:user_id/avatar",
 		IColumnUpdateById:       "put /column/:column_id",
+		IColumnDeleteById:       "delete /column/:column_id",
 	}
 }

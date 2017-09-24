@@ -62,6 +62,7 @@ func regColumnRouter(router *gin.Engine) {
 	{
 		group.POST("/", ColumnCreateHandler)
 		group.PUT("/:column_id", ColumnUpdateByIdHandler)
+		group.DELETE("/:column_id", ColumnDeleteByIdHandler)
 	}
 }
 

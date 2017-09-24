@@ -85,3 +85,23 @@ func ColumnUpdateByIdHandler(c *gin.Context) {
 		"code": e.OK,
 	})
 }
+
+func ColumnDeleteByIdHandler(c *gin.Context) {
+	columnID, err := strconv.ParseInt(c.Param("column_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IColumnDeleteById, e.MParamsErr, e.ParamsInvalidColumnID, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.IColumnDeleteById, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+	if _, err := model.DeleteColumnById(db.Mysql, int(columnID)); err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IColumnDeleteById, e.MColumnErr, e.ColumnUpdateById, err))
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+	})
+}
