@@ -169,6 +169,31 @@ func SQLQueryRow(db sqlExec, selects interface{}, wheres map[string]interface{})
 	return true, nil
 }
 
+// nullValue直接使用对应model类型的空结构, 只是为了获得表名
+func SQLDelete(db sqlExec, nullValue interface{}, wheres map[string]interface{}) (int64, error) {
+	var q []interface{}
+
+	tableName, _ := utils.Struct2MapWithValue(nullValue, columnTagKey, true)
+
+	var w []string
+	for key, value := range wheres {
+		w = append(w, fmt.Sprintf("%s = ?", key))
+		q = append(q, value)
+	}
+
+	_SQL := fmt.Sprintf("DELETE FROM `%s` WHERE %s", tableName, strings.Join(w, " and "))
+	sqlResult, err := db.Exec(dumpSQL(_SQL), q...)
+	if err != nil {
+		return 0, e.SP(e.MMysqlErr, e.MysqlDeleteErr, err)
+	}
+
+	rowAffected, err := sqlResult.RowsAffected()
+	if err != nil {
+		return 0, e.SP(e.MMysqlErr, e.MysqlRowAffectErr, err)
+	}
+	return rowAffected, nil
+}
+
 // updates使用新的对象, 不要使用携带多余字段值的对象, 防止误修改
 func SQLUpdate(db sqlExec, updates interface{}, wheres map[string]interface{}) (int64, error) {
 	var q []interface{}

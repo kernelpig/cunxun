@@ -59,8 +59,21 @@ func UpdateColumnList(db sqlExec, wheres map[string]interface{}, valueWillSet *C
 	}
 }
 
+func DeleteColumnList(db sqlExec, wheres map[string]interface{}) (int64, error) {
+	count, err := SQLDelete(db, &Column{}, wheres)
+	if err != nil {
+		return 0, e.SP(e.MColumnErr, e.ColumnDeleteErr, err)
+	} else {
+		return count, nil
+	}
+}
+
 func UpdateColumnById(db sqlExec, columnId int, valueWillSet *Column) (int64, error) {
 	return UpdateColumnList(db, map[string]interface{}{"id": columnId}, valueWillSet)
+}
+
+func DeleteColumnById(db sqlExec, columnId int) (int64, error) {
+	return DeleteColumnList(db, map[string]interface{}{"id": columnId})
 }
 
 func GetColumnList(db sqlExec) ([]*ColumnListView, error) {

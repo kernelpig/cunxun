@@ -337,6 +337,7 @@ const (
 	ColumnGetOnePageErr
 	ColumnGetAllErr
 	ColumnUpdateById
+	ColumnDeleteErr
 )
 
 // 文章错误

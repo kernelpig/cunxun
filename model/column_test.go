@@ -75,3 +75,29 @@ func TestUpdateColumnById(t *testing.T) {
 	assert.NotNil(c)
 	assert.Equal(newName, c.Name)
 }
+
+func TestDeleteColumnById(t *testing.T) {
+	test.InitTestCaseEnv(t)
+	assert := assert.New(t)
+
+	c := &Column{
+		Name:       test.GenRandString(),
+		CreaterUid: test.GenRandInt(5),
+	}
+
+	c, err := CreateColumn(db.Mysql, c)
+	assert.Nil(err)
+	assert.NotNil(c)
+
+	c, err = GetColumnByID(db.Mysql, c.ID)
+	assert.Nil(err)
+	assert.NotNil(c)
+
+	count, err := DeleteColumnById(db.Mysql, c.ID)
+	assert.Nil(err)
+	assert.Equal(int64(1), count)
+
+	c, err = GetColumnByID(db.Mysql, c.ID)
+	assert.Nil(err)
+	assert.Nil(c)
+}

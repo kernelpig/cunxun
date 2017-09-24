@@ -166,6 +166,7 @@ func initSubErrors() {
 			ColumnGetOnePageErr: "Failed to obtain one page column.",
 			ColumnGetAllErr:     "Failed to obtain all column information.",
 			ColumnUpdateById:    "Failed to update column information by id.",
+			ColumnDeleteErr:     "Failed to delete column information by id.",
 		},
 		MArticleErr: {
 			_ArticleErrMin:      "Basic article error information.",
