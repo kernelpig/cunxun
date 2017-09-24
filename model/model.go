@@ -169,6 +169,7 @@ func SQLQueryRow(db sqlExec, selects interface{}, wheres map[string]interface{})
 	return true, nil
 }
 
+// updates使用新的对象, 不要使用携带多余字段值的对象, 防止误修改
 func SQLUpdate(db sqlExec, updates interface{}, wheres map[string]interface{}) (int64, error) {
 	var q []interface{}
 

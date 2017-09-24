@@ -50,6 +50,15 @@ func CreateColumn(db sqlExec, column *Column) (*Column, error) {
 	return column, nil
 }
 
+func UpdateColumnList(db sqlExec, wheres map[string]interface{}, valueWillSet *Column) (int64, error) {
+	count, err := SQLUpdate(db, valueWillSet, wheres)
+	if err != nil {
+		return 0, e.SP(e.MColumnErr, e.ColumnGetErr, err)
+	} else {
+		return count, nil
+	}
+}
+
 func GetColumnList(db sqlExec) ([]*ColumnListView, error) {
 	var list []*ColumnListView
 
