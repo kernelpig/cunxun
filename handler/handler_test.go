@@ -14,27 +14,27 @@ func TestHandlers(t *testing.T) {
 
 	e := httpexpect.New(t, server.URL)
 
-	testBaseHandler(t, e)
 	testDebugHandler(t, e)
 	testInternelHandler(t, e)
 	testExceptions(t, e)
+	testBaseHandler(t, e)
 }
 
 // 接口基础功能测试
 func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
 	testCaptchaCreateHandler(t, e)
 	testCaptchaGetImageHandler(t, e)
-	
+
 	testCheckcodeSendHandler(t, e)
 	testCheckcodeVerifyHandler(t, e)
-	
+
 	testUserSignupHandler(t, e)
 	testUserLoginHandler(t, e)
 	testUserLogoutHandler(t, e)
 	testUserGetAvatarHandler(t, e)
 
 	testColumnCreateHandler(t, e)
-	testColumnGetAllHandler(t, e)
+	testColumnGetListHandler(t, e)
 
 	testArticleCreateHandler(t, e)
 	testArticleGetListHandler(t, e)

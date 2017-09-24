@@ -57,7 +57,7 @@ func regDebugRouter(router *gin.Engine) {
 
 func regColumnRouter(router *gin.Engine) {
 	group := router.Group("/api/column")
-	group.GET("/", ColumnGetAllHandler)
+	group.GET("/", ColumnGetListHandler)
 	group.Use(middleware.AuthMiddleware())
 	{
 		group.POST("/", ColumnCreateHandler)

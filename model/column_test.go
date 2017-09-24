@@ -27,7 +27,7 @@ func TestCreateColumn(t *testing.T) {
 	assert.NotNil(c)
 }
 
-func TestGetAllColumn(t *testing.T) {
+func TestGetColumnList(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
@@ -42,7 +42,7 @@ func TestGetAllColumn(t *testing.T) {
 		cs = append(cs, c)
 	}
 
-	items, err := GetAllColumn(db.Mysql)
+	items, err := GetColumnList(db.Mysql)
 	assert.Nil(err)
 	assert.NotNil(items)
 	assert.Equal(10, len(items))

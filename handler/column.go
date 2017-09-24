@@ -11,8 +11,8 @@ import (
 	"wangqingang/cunxun/model"
 )
 
-func ColumnGetAllHandler(c *gin.Context) {
-	list, err := model.GetAllColumn(db.Mysql)
+func ColumnGetListHandler(c *gin.Context) {
+	list, err := model.GetColumnList(db.Mysql)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IColumnGetAll, e.MColumnErr, e.ColumnGetAllErr, err))
 		return

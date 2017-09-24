@@ -24,6 +24,7 @@ const (
 	testCommentListSQLPath   = "../sql/commentlistview.sql"
 	testArticleDetailSQLPath = "../sql/articledetailview.sql"
 	testArticleListSQLPath   = "../sql/articlelistview.sql"
+	testColumnListSQLPath    = "../sql/columnlistview.sql"
 	testPrivateKeyPath       = "../conf/ecdsa_prv.pem"
 	testPublicKeyPath        = "../conf/ecdsa_pub.pem"
 	testAvatarDir            = "../conf/avatar/"
@@ -88,4 +89,5 @@ func InitTestCaseEnv(t *testing.T) {
 	initMySQLView(t, testCommentListSQLPath, "commentlistview")
 	initMySQLView(t, testArticleDetailSQLPath, "articledetailview")
 	initMySQLView(t, testArticleListSQLPath, "articlelistview")
+	initMySQLView(t, testColumnListSQLPath, "columnlistview")
 }

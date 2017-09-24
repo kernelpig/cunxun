@@ -75,7 +75,7 @@ func testColumnCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	testColumnCreate(t, e, xToken, createRequest)
 }
 
-func testColumnGetAll(t *testing.T, e *httpexpect.Expect, xToken string) []*model.Column {
+func testColumnGetList(t *testing.T, e *httpexpect.Expect, xToken string) []*model.Column {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/column").
@@ -94,7 +94,7 @@ func testColumnGetAll(t *testing.T, e *httpexpect.Expect, xToken string) []*mode
 	return result.List
 }
 
-func testColumnGetAllHandler(t *testing.T, e *httpexpect.Expect) {
+func testColumnGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
@@ -145,6 +145,6 @@ func testColumnGetAllHandler(t *testing.T, e *httpexpect.Expect) {
 		testColumnCreate(t, e, xToken, createRequest)
 	}
 
-	list := testColumnGetAll(t, e, xToken)
+	list := testColumnGetList(t, e, xToken)
 	assert.Equal(2, len(list))
 }
