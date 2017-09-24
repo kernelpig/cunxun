@@ -2,6 +2,8 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -51,5 +53,35 @@ func ColumnCreateHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":      e.OK,
 		"column_id": column.ID,
+	})
+}
+
+func ColumnUpdateByIdHandler(c *gin.Context) {
+	var req ColumnUpdateRequest
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IColumnUpdateById, e.MParamsErr, e.ParamsBindErr, err))
+		return
+	}
+	columnID, err := strconv.ParseInt(c.Param("column_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IColumnUpdateById, e.MParamsErr, e.ParamsInvalidColumnID, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.IColumnUpdateById, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+
+	column := &model.Column{
+		Name:      req.Name,
+		UpdatedAt: time.Now(),
+	}
+	if _, err := model.UpdateColumnById(db.Mysql, int(columnID), column); err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IColumnUpdateById, e.MColumnErr, e.ColumnUpdateById, err))
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
 	})
 }

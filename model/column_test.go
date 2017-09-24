@@ -48,7 +48,7 @@ func TestGetColumnList(t *testing.T) {
 	assert.Equal(10, len(items))
 }
 
-func TestUpdateColumnList(t *testing.T) {
+func TestUpdateColumnById(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
@@ -66,7 +66,7 @@ func TestUpdateColumnList(t *testing.T) {
 	assert.NotNil(c)
 
 	newName := test.GenRandString()
-	count, err := UpdateColumnList(db.Mysql, map[string]interface{}{"id": c.ID}, &Column{Name: newName})
+	count, err := UpdateColumnById(db.Mysql, c.ID, &Column{Name: newName})
 	assert.Nil(err)
 	assert.NotZero(count)
 

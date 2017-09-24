@@ -61,6 +61,7 @@ func regColumnRouter(router *gin.Engine) {
 	group.Use(middleware.AuthMiddleware())
 	{
 		group.POST("/", ColumnCreateHandler)
+		group.PUT("/:column_id", ColumnUpdateByIdHandler)
 	}
 }
 

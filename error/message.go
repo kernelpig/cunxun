@@ -164,6 +164,7 @@ func initSubErrors() {
 			ColumnCreateErr:     "Failed to create column.",
 			ColumnGetOnePageErr: "Failed to obtain one page column.",
 			ColumnGetAllErr:     "Failed to obtain all column information.",
+			ColumnUpdateById:    "Failed to update column information by id.",
 		},
 		MArticleErr: {
 			_ArticleErrMin:      "Basic article error information.",
@@ -231,5 +232,6 @@ func initInterfaceErr() {
 		ICommentGetList:         "get /comment/",
 		ICommentGet:             "get /comment/:comment_id",
 		IUserGetAvatar:          "get /u/:user_id/avatar",
+		IColumnUpdateById:       "put /column/:column_id",
 	}
 }

@@ -59,6 +59,10 @@ func UpdateColumnList(db sqlExec, wheres map[string]interface{}, valueWillSet *C
 	}
 }
 
+func UpdateColumnById(db sqlExec, columnId int, valueWillSet *Column) (int64, error) {
+	return UpdateColumnList(db, map[string]interface{}{"id": columnId}, valueWillSet)
+}
+
 func GetColumnList(db sqlExec) ([]*ColumnListView, error) {
 	var list []*ColumnListView
 

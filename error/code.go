@@ -62,6 +62,7 @@ const (
 	ICommentGetList
 	ICommentGet
 	IUserGetAvatar
+	IColumnUpdateById
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -334,6 +335,7 @@ const (
 	ColumnCreateErr
 	ColumnGetOnePageErr
 	ColumnGetAllErr
+	ColumnUpdateById
 )
 
 // 文章错误
