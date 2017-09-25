@@ -44,7 +44,7 @@ type ColumnCreateRequest struct {
 }
 
 type ColumnUpdateRequest struct {
-	Name string `json:"name"`
+	Name string `json:"name" binding:"omitempty"`
 }
 
 type ArticleCreateRequest struct {
@@ -54,9 +54,9 @@ type ArticleCreateRequest struct {
 }
 
 type ArticleUpdateRequest struct {
-	ColumnId int    `json:"column_id" binding:"required"`
-	Title    string `json:"title" binding:"required"`
-	Content  string `json:"content" binding:"required"`
+	ColumnId int    `json:"column_id" binding:"omitempty"`
+	Title    string `json:"title" binding:"omitempty"`
+	Content  string `json:"content" binding:"omitempty"`
 }
 
 type CommentCreateRequest struct {
@@ -65,6 +65,6 @@ type CommentCreateRequest struct {
 }
 
 type CommentUpdateRequest struct {
-	ArticleId int    `json:"article_id" binding:"required"`
-	Content   string `json:"content" binding:"required"`
+	ArticleId int    `json:"article_id" binding:"omitempty"`
+	Content   string `json:"content" binding:"omitempty"`
 }
