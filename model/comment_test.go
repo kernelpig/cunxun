@@ -63,3 +63,59 @@ func TestGetCommentList(t *testing.T) {
 	assert.True(isOver)
 	assert.Equal(10, len(items))
 }
+
+func TestUpdateCommentById(t *testing.T) {
+	test.InitTestCaseEnv(t)
+	assert := assert.New(t)
+
+	c := &Comment{
+		ArticleId:  test.GenRandInt(5),
+		Content:    test.GenRandString(),
+		CreaterUid: test.GenRandInt(5),
+	}
+
+	c, err := CreateComment(db.Mysql, c)
+	assert.Nil(err)
+	assert.NotNil(c)
+
+	c, err = GetCommentByID(db.Mysql, c.ID)
+	assert.Nil(err)
+	assert.NotNil(c)
+
+	newContent := test.GenRandString()
+	count, err := UpdateCommentById(db.Mysql, c.ID, &Comment{Content: newContent})
+	assert.Nil(err)
+	assert.NotZero(count)
+
+	c, err = GetCommentByID(db.Mysql, c.ID)
+	assert.Nil(err)
+	assert.NotNil(c)
+	assert.Equal(newContent, c.Content)
+}
+
+func TestDeleteCommentById(t *testing.T) {
+	test.InitTestCaseEnv(t)
+	assert := assert.New(t)
+
+	c := &Comment{
+		ArticleId:  test.GenRandInt(5),
+		Content:    test.GenRandString(),
+		CreaterUid: test.GenRandInt(5),
+	}
+
+	c, err := CreateComment(db.Mysql, c)
+	assert.Nil(err)
+	assert.NotNil(c)
+
+	c, err = GetCommentByID(db.Mysql, c.ID)
+	assert.Nil(err)
+	assert.NotNil(c)
+
+	count, err := DeleteCommentById(db.Mysql, c.ID)
+	assert.Nil(err)
+	assert.NotZero(count)
+
+	c, err = GetCommentByID(db.Mysql, c.ID)
+	assert.Nil(err)
+	assert.Nil(c)
+}

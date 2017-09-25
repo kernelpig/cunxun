@@ -72,3 +72,29 @@ func GetCommentList(db sqlExec, where map[string]interface{}, pageSize, pageNum 
 	}
 	return list, isOver, nil
 }
+
+func UpdateCommentList(db sqlExec, wheres map[string]interface{}, valueWillSet *Comment) (int64, error) {
+	count, err := SQLUpdate(db, valueWillSet, wheres)
+	if err != nil {
+		return 0, e.SP(e.MCommentErr, e.CommentGetErr, err)
+	} else {
+		return count, nil
+	}
+}
+
+func DeleteCommentList(db sqlExec, wheres map[string]interface{}) (int64, error) {
+	count, err := SQLDelete(db, &Comment{}, wheres)
+	if err != nil {
+		return 0, e.SP(e.MCommentErr, e.CommentDeleteErr, err)
+	} else {
+		return count, nil
+	}
+}
+
+func UpdateCommentById(db sqlExec, commentId int, valueWillSet *Comment) (int64, error) {
+	return UpdateCommentList(db, map[string]interface{}{"id": commentId}, valueWillSet)
+}
+
+func DeleteCommentById(db sqlExec, commentId int) (int64, error) {
+	return DeleteCommentList(db, map[string]interface{}{"id": commentId})
+}

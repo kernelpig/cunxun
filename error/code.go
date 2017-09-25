@@ -363,6 +363,7 @@ const (
 	CommentNotExist
 	CommentCreateErr
 	CommentGetListErr
+	CommentDeleteErr
 )
 
 type Code struct {

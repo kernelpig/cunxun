@@ -185,6 +185,7 @@ func initSubErrors() {
 			CommentNotExist:     "Comment does not exist.",
 			CommentCreateErr:    "Failed to create comment.",
 			CommentGetListErr:   "Failed to get comment list.",
+			CommentDeleteErr:    "Failed to delete comment list.",
 		},
 	}
 }
