@@ -108,7 +108,8 @@ func UserSignupHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+		"code":    e.OK,
+		"user_id": user.ID,
 	})
 	return
 }
@@ -230,4 +231,33 @@ func UserGetAvatarHandler(c *gin.Context) {
 		return
 	}
 	c.Data(http.StatusOK, "image/png", bytes)
+}
+
+func UserGetInfoHandler(c *gin.Context) {
+	userId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserGetInfo, e.MParamsErr, e.ParamsInvalidUserId, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.IUserGetInfo, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+	user, err := model.GetUserByID(db.Mysql, int(userId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IUserGetInfo, e.MUserErr, e.UserGetErr, err))
+		return
+	} else if user == nil {
+		detail := fmt.Sprintf("userid: %d", userId)
+		c.JSON(http.StatusBadRequest, e.ID(e.IUserGetInfo, e.MUserErr, e.UserNotExist, detail))
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":     e.OK,
+		"id":       user.ID,
+		"nickname": user.NickName,
+		"phone":    user.Phone,
+		"avatar":   user.Avatar,
+	})
 }
