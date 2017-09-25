@@ -10,13 +10,14 @@ import (
 )
 
 const (
-	testAccountId       = 1234
+	testUserId          = 1234
+	testUserRole        = 2
 	testTokenString     = "adcfbgfdfsfdsfsadfdfdsfda"
 	testTokenTimeoutTTL = 1
 )
 
 var testTokenKey = &TokenKey{
-	UserId: testAccountId,
+	UserId: testUserId,
 	Source: test.TestWebSource,
 }
 
@@ -58,8 +59,8 @@ func TestTokenCreateAndStore(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
-	token, err := TokenCreateAndStore(testAccountId, test.TestWebSource, time.Duration(1)*time.Minute)
+	token, err := TokenCreateAndStore(testUserId, testUserRole, test.TestWebSource, time.Duration(1)*time.Minute)
 	assert.Nil(err)
 	assert.NotEmpty(token)
-	TokenClean(testAccountId, test.TestWebSource)
+	TokenClean(testUserId, test.TestWebSource)
 }

@@ -89,13 +89,14 @@ func (k *TokenKey) GetToken() (*Token, error) {
 	return t, nil
 }
 
-func TokenCreateAndStore(userID int, source string, ttl time.Duration) (string, error) {
+func TokenCreateAndStore(userID, userRole int, source string, ttl time.Duration) (string, error) {
 	issueTime := time.Now()
 
 	// payload中ttl单位为分钟
 	accessToken, err := token_lib.Encrypt(common.Config.Token.TokenLibVersion, &token_lib.Payload{
 		IssueTime:   uint32(uint64(issueTime.Unix())),
 		TTL:         uint16(ttl.Minutes()),
+		Role:        uint16(userRole),
 		UserId:      uint32(userID),
 		LoginSource: source,
 	})

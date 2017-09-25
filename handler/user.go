@@ -182,7 +182,7 @@ func UserLoginHandler(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := token.TokenCreateAndStore(user.ID, req.Source, common.Config.Token.AccessTokenTTL.D())
+	accessToken, err := token.TokenCreateAndStore(user.ID, user.Role, req.Source, common.Config.Token.AccessTokenTTL.D())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IUserLogin, e.MTokenErr, e.TokenCreateErr, err))
 		return

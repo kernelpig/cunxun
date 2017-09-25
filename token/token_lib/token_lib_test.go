@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	testTicketAccoutId    = 123
+	testTicketUserId      = 123
+	testTicketUserRole    = 2
 	testTicketLoginSource = common.WebSource
 	testTicketTTL         = 0Xffff
 )
@@ -32,8 +33,9 @@ gBU28nrAKjjwQUmSu1ZPyJw/YrOxYrr92h6oOVNAK0pF6qAka6nryXZjQQ==
 )
 
 var accessPayload = Payload{
-	UserId:      testTicketAccoutId,
+	UserId:      testTicketUserId,
 	IssueTime:   uint32(time.Now().Unix()),
+	Role:        testTicketUserRole,
 	TTL:         testTicketTTL,
 	LoginSource: testTicketLoginSource,
 }

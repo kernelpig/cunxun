@@ -6,6 +6,12 @@ import (
 	e "wangqingang/cunxun/error"
 )
 
+const (
+	UserRoleNormal     = 0
+	UserRoleAdmin      = 1
+	UserRoleSuperAdmin = 2
+)
+
 // User 对应于数据库user表中的一行
 type User struct {
 	ID             int       `json:"id" column:"id"`
@@ -17,6 +23,7 @@ type User struct {
 	Avatar         string    `json:"avatar" column:"avatar"`
 	CreatedAt      time.Time `json:"created_at" column:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at" column:"updated_at"`
+	Role           int       `json:"role" column:"role"`
 }
 
 func GetUserByPhone(db sqlExec, phone string) (*User, error) {
@@ -58,41 +65,3 @@ func CreateUser(db sqlExec, user *User) (*User, error) {
 	user.ID = int(id)
 	return user, nil
 }
-
-//// 根据id更新用户信息
-//func UpdateUserById(db sqlExecutor, id string, fieldValues map[string]interface{}) (int64, error) {
-//	_SQLTemp := "update user set %s where id = ?"
-//
-//	sqlArgs := make([]interface{}, 0)
-//	sqlFields := make([]string, 0)
-//	for key, value := range fieldValues {
-//		sqlFields = append(sqlFields, fmt.Sprintf("`%s` = ?", key))
-//		sqlArgs = append(sqlArgs, value)
-//	}
-//	sqlArgs = append(sqlArgs, id)
-//	_SQL := fmt.Sprintf(_SQLTemp, strings.Join(sqlFields, ","))
-//	result, err := db.Exec(_SQL, sqlArgs...)
-//	if err != nil {
-//		return 0, err
-//	}
-//
-//	rowCnt, err := result.RowsAffected()
-//	if err != nil {
-//		return 0, err
-//	}
-//
-//	return rowCnt, nil
-//
-//}
-//
-//// 根据id删除用户
-//func DeleteUserById(db sqlExecutor, id string) error {
-//	_SQL := "delete from user where id = ?"
-//
-//	_, err := db.Exec(_SQL, id)
-//	if err != nil {
-//		return err
-//	}
-//
-//	return nil
-//}
