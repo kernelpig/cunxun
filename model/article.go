@@ -113,6 +113,14 @@ func UpdateArticleById(db sqlExec, articleId int, valueWillSet *Article) (int64,
 	return UpdateArticleList(db, map[string]interface{}{"id": articleId}, valueWillSet)
 }
 
+func UpdateArticleByIdOfSelf(db sqlExec, articleId, userID int, valueWillSet *Article) (int64, error) {
+	return UpdateArticleList(db, map[string]interface{}{"id": articleId, "creater_uid": userID}, valueWillSet)
+}
+
 func DeleteArticleById(db sqlExec, articleId int) (int64, error) {
 	return DeleteArticleList(db, map[string]interface{}{"id": articleId})
+}
+
+func DeleteArticleByIdOfSelf(db sqlExec, articleId, userId int) (int64, error) {
+	return DeleteArticleList(db, map[string]interface{}{"id": articleId, "creater_uid": userId})
 }

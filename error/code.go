@@ -357,6 +357,9 @@ const (
 	ArticleGetListErr
 	ArticleDeleteErr
 	ArticleUpdateByIdErr
+	ArticleUpdateByIdSelfErr
+	ArticleDeleteByIdErr
+	ArticleDeleteByIdSelfErr
 )
 
 // 评论错误

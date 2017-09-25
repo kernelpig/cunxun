@@ -119,8 +119,18 @@ func ArticleUpdateByIdHandler(c *gin.Context) {
 		UpdatedAt:  time.Now(),
 		UpdaterUid: int(currentCtx.Payload.UserId),
 	}
-	if _, err := model.UpdateArticleById(db.Mysql, int(articleID), article); err != nil {
-		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleUpdateById, e.MArticleErr, e.ArticleUpdateByIdErr, err))
+	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
+		// 管理员操作
+		if _, err := model.UpdateArticleById(db.Mysql, int(articleID), article); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.IArticleUpdateById, e.MArticleErr, e.ArticleUpdateByIdErr, err))
+			return
+		}
+	} else {
+		// 创建者操作
+		if _, err := model.UpdateArticleByIdOfSelf(db.Mysql, int(articleID), int(currentCtx.Payload.UserId), article); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.IArticleUpdateById, e.MArticleErr, e.ArticleUpdateByIdErr, err))
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -139,8 +149,14 @@ func ArticleDeleteByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.IArticleDeleteById, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-	if _, err := model.DeleteArticleById(db.Mysql, int(articleID)); err != nil {
-		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleDeleteById, e.MArticleErr, e.ArticleDeleteErr, err))
+	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
+		if _, err := model.DeleteArticleById(db.Mysql, int(articleID)); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.IArticleDeleteById, e.MArticleErr, e.ArticleDeleteByIdErr, err))
+		}
+	} else {
+		if _, err := model.DeleteArticleByIdOfSelf(db.Mysql, int(articleID), int(currentCtx.Payload.UserId)); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.IArticleDeleteById, e.MArticleErr, e.ArticleDeleteByIdSelfErr, err))
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
