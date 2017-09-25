@@ -39,3 +39,28 @@ func TestCreateUser(t *testing.T) {
 	assert.Nil(err)
 	assert.NotNil(u)
 }
+
+func TestGetUserList(t *testing.T) {
+	test.InitTestCaseEnv(t)
+	assert := assert.New(t)
+
+	var cs []*User
+	for i := 0; i < 10; i++ {
+		c := &User{
+			Phone:          test.GenFakePhone(),
+			NickName:       test.GenRandString(),
+			HashedPassword: test.GenRandString(),
+			PasswordLevel:  test.GenRandInt(5),
+			RegisterSource: test.TestWebSource,
+			Avatar:         test.GenRandString(),
+		}
+		_, err := CreateUser(db.Mysql, c)
+		assert.Nil(err)
+		cs = append(cs, c)
+	}
+
+	items, err := GetUserList(db.Mysql, map[string]interface{}{})
+	assert.Nil(err)
+	assert.NotNil(items)
+	assert.Equal(10, len(items))
+}
