@@ -243,3 +243,145 @@ func testArticleGetHandler(t *testing.T, e *httpexpect.Expect) {
 	article := testArticleGet(t, e, articleID)
 	assert.Equal(articleID, article.ID)
 }
+
+func testArticleUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, articleId int, request *ArticleUpdateRequest) {
+	resp := e.PUT("/api/article/{article_id}").
+		WithPath("article_id", articleId).
+		WithHeader(common.AuthHeaderKey, xToken).
+		WithJSON(request).
+		Expect().Status(http.StatusOK)
+
+	respObj := resp.JSON().Object()
+	respObj.Value("code").Number().Equal(error.OK)
+}
+
+func testArticleUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+
+	captchaId := testCaptchaCreate(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
+
+	sendRequest := &CheckcodeSendRequest{
+		Phone:        test.GenFakePhone(),
+		Purpose:      test.TestSignupPurpose,
+		Source:       test.TestWebSource,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	testCheckcodeSend(t, e, sendRequest)
+
+	checkcodeKey := &checkcode.CheckCodeKey{
+		Phone:   sendRequest.Phone,
+		Purpose: sendRequest.Purpose,
+		Source:  sendRequest.Source,
+	}
+	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
+
+	signupRequest := &UserSignupRequest{
+		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
+		Source:     sendRequest.Source,
+		Password:   test.GenFakePassword(),
+		VerifyCode: code,
+	}
+	testUserSignup(t, e, signupRequest)
+
+	captchaId = testCaptchaCreate(t, e)
+	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
+
+	loginRequest := &UserLoginRequest{
+		Phone:        sendRequest.Phone,
+		Source:       sendRequest.Source,
+		Password:     signupRequest.Password,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	xToken := testUserLogin(t, e, loginRequest)
+
+	createColumnRequest := &ColumnCreateRequest{
+		Name: test.GenRandString(),
+	}
+	columnID := testColumnCreate(t, e, xToken, createColumnRequest)
+
+	createArticleRequest := &ArticleCreateRequest{
+		ColumnId: columnID,
+		Title:    test.GenRandString(),
+		Content:  test.GenRandString() + test.GenRandString(),
+	}
+	articleId := testArticleCreate(t, e, xToken, createArticleRequest)
+
+	updateArticleRequest := &ArticleUpdateRequest{
+		ColumnId: columnID,
+		Title:    test.GenRandString(),
+		Content:  test.GenRandString() + test.GenRandString(),
+	}
+	testArticleUpdateById(t, e, xToken, articleId, updateArticleRequest)
+}
+
+func testArticleDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, articleId int) {
+	resp := e.DELETE("/api/article/{article_id}").
+		WithPath("article_id", articleId).
+		WithHeader(common.AuthHeaderKey, xToken).
+		Expect().Status(http.StatusOK)
+
+	respObj := resp.JSON().Object()
+	respObj.Value("code").Number().Equal(error.OK)
+}
+
+func testArticleDeleteByIdHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+
+	captchaId := testCaptchaCreate(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
+
+	sendRequest := &CheckcodeSendRequest{
+		Phone:        test.GenFakePhone(),
+		Purpose:      test.TestSignupPurpose,
+		Source:       test.TestWebSource,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	testCheckcodeSend(t, e, sendRequest)
+
+	checkcodeKey := &checkcode.CheckCodeKey{
+		Phone:   sendRequest.Phone,
+		Purpose: sendRequest.Purpose,
+		Source:  sendRequest.Source,
+	}
+	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
+
+	signupRequest := &UserSignupRequest{
+		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
+		Source:     sendRequest.Source,
+		Password:   test.GenFakePassword(),
+		VerifyCode: code,
+	}
+	testUserSignup(t, e, signupRequest)
+
+	captchaId = testCaptchaCreate(t, e)
+	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
+
+	loginRequest := &UserLoginRequest{
+		Phone:        sendRequest.Phone,
+		Source:       sendRequest.Source,
+		Password:     signupRequest.Password,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	xToken := testUserLogin(t, e, loginRequest)
+
+	createColumnRequest := &ColumnCreateRequest{
+		Name: test.GenRandString(),
+	}
+	columnID := testColumnCreate(t, e, xToken, createColumnRequest)
+
+	createArticleRequest := &ArticleCreateRequest{
+		ColumnId: columnID,
+		Title:    test.GenRandString(),
+		Content:  test.GenRandString() + test.GenRandString(),
+	}
+	articleId := testArticleCreate(t, e, xToken, createArticleRequest)
+
+	testArticleDeleteById(t, e, xToken, articleId)
+}

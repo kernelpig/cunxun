@@ -98,7 +98,7 @@ func ColumnDeleteByIdHandler(c *gin.Context) {
 		return
 	}
 	if _, err := model.DeleteColumnById(db.Mysql, int(columnID)); err != nil {
-		c.JSON(http.StatusInternalServerError, e.IP(e.IColumnDeleteById, e.MColumnErr, e.ColumnUpdateById, err))
+		c.JSON(http.StatusInternalServerError, e.IP(e.IColumnDeleteById, e.MColumnErr, e.ColumnDeleteErr, err))
 	}
 
 	c.JSON(http.StatusOK, gin.H{

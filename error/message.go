@@ -169,13 +169,14 @@ func initSubErrors() {
 			ColumnDeleteErr:     "Failed to delete column information by id.",
 		},
 		MArticleErr: {
-			_ArticleErrMin:      "Basic article error information.",
-			ArticleGetErr:       "Failed to obtain article information.",
-			ArticleAlreadyExist: "Article already exists.",
-			ArticleNotExist:     "Article does not exist.",
-			ArticleCreateErr:    "Failed to create article.",
-			ArticleGetListErr:   "Failed to get article list.",
-			ArticleDeleteErr:    "Failed to delete article list.",
+			_ArticleErrMin:       "Basic article error information.",
+			ArticleGetErr:        "Failed to obtain article information.",
+			ArticleAlreadyExist:  "Article already exists.",
+			ArticleNotExist:      "Article does not exist.",
+			ArticleCreateErr:     "Failed to create article.",
+			ArticleGetListErr:    "Failed to get article list.",
+			ArticleDeleteErr:     "Failed to delete article list.",
+			ArticleUpdateByIdErr: "Failed to update article information by id.",
 		},
 		MCommentErr: {
 			_CommentErrMin:      "Basic comment error information.",
@@ -237,5 +238,7 @@ func initInterfaceErr() {
 		IUserGetAvatar:          "get /u/:user_id/avatar",
 		IColumnUpdateById:       "put /column/:column_id",
 		IColumnDeleteById:       "delete /column/:column_id",
+		IArticleUpdateById:      "put /article/:article_id",
+		IArticleDeleteById:      "delete /article/:article_id",
 	}
 }

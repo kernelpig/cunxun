@@ -73,6 +73,8 @@ func regArticleRouter(router *gin.Engine) {
 	group.Use(middleware.AuthMiddleware())
 	{
 		group.POST("/", ArticleCreateHandler)
+		group.PUT("/:article_id", ArticleUpdateByIdHandler)
+		group.DELETE("/:article_id", ArticleDeleteByIdHandler)
 	}
 }
 

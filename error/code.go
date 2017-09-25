@@ -64,6 +64,8 @@ const (
 	IUserGetAvatar
 	IColumnUpdateById
 	IColumnDeleteById
+	IArticleUpdateById
+	IArticleDeleteById
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -350,6 +352,7 @@ const (
 	ArticleCreateErr
 	ArticleGetListErr
 	ArticleDeleteErr
+	ArticleUpdateByIdErr
 )
 
 // 评论错误

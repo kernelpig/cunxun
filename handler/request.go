@@ -53,6 +53,12 @@ type ArticleCreateRequest struct {
 	Content  string `json:"content" binding:"required"`
 }
 
+type ArticleUpdateRequest struct {
+	ColumnId int    `json:"column_id" binding:"required"`
+	Title    string `json:"title" binding:"required"`
+	Content  string `json:"content" binding:"required"`
+}
+
 type CommentCreateRequest struct {
 	ArticleId int    `json:"article_id" binding:"required"`
 	Content   string `json:"content" binding:"required"`

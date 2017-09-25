@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -91,5 +92,58 @@ func ArticleGetListHandler(c *gin.Context) {
 		"code": e.OK,
 		"end":  isOver,
 		"list": list,
+	})
+}
+
+func ArticleUpdateByIdHandler(c *gin.Context) {
+	var req ArticleUpdateRequest
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleUpdateById, e.MParamsErr, e.ParamsBindErr, err))
+		return
+	}
+	articleID, err := strconv.ParseInt(c.Param("article_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleUpdateById, e.MParamsErr, e.ParamsInvalidArticleID, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.IArticleUpdateById, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+
+	article := &model.Article{
+		ColumnId:   req.ColumnId,
+		Title:      req.Title,
+		Content:    req.Content,
+		UpdatedAt:  time.Now(),
+		UpdaterUid: int(currentCtx.Payload.UserId),
+	}
+	if _, err := model.UpdateArticleById(db.Mysql, int(articleID), article); err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleUpdateById, e.MArticleErr, e.ArticleUpdateByIdErr, err))
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+	})
+}
+
+func ArticleDeleteByIdHandler(c *gin.Context) {
+	articleID, err := strconv.ParseInt(c.Param("article_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleDeleteById, e.MParamsErr, e.ParamsInvalidArticleID, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.IArticleDeleteById, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+	if _, err := model.DeleteArticleById(db.Mysql, int(articleID)); err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleDeleteById, e.MArticleErr, e.ArticleDeleteErr, err))
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
 	})
 }
