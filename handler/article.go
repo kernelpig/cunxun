@@ -65,9 +65,14 @@ func ArticleGetHandler(c *gin.Context) {
 	})
 }
 
-// columnID, orderBy, pageNum, pageSize
+// columnID, orderBy, pageNum, pageSize, 为默认值则忽略此查询条件
 // TODO: 热贴需要支持时间范围过滤
 func ArticleGetListHandler(c *gin.Context) {
+	createrUid, err := strconv.ParseInt(c.Query("creater_uid"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidUserId, err))
+		return
+	}
 	columnID, err := strconv.ParseInt(c.Query("column_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidColumnID, err))
@@ -83,7 +88,8 @@ func ArticleGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidPageSize, err))
 		return
 	}
-	list, isOver, err := model.GetArticleList(db.Mysql, map[string]interface{}{"column_id": columnID}, c.Query("order_by"), int(pageSize), int(pageNum))
+	where := map[string]interface{}{"column_id": columnID, "creater_uid": createrUid}
+	list, isOver, err := model.GetArticleList(db.Mysql, where, c.Query("order_by"), int(pageSize), int(pageNum))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleGetList, e.MArticleErr, e.ArticleGetListErr, err))
 		return
@@ -111,7 +117,6 @@ func ArticleUpdateByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.IArticleUpdateById, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-
 	article := &model.Article{
 		ColumnId:   req.ColumnId,
 		Title:      req.Title,
@@ -132,7 +137,6 @@ func ArticleUpdateByIdHandler(c *gin.Context) {
 			return
 		}
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"code": e.OK,
 	})
