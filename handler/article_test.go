@@ -68,11 +68,12 @@ func testArticleCreateHandler(t *testing.T, e *httpexpect.Expect) {
 		CaptchaValue: captchaValue,
 	}
 	xToken := testUserLogin(t, e, loginRequest)
+	xSuperToken := testSuperAdminLogin(t, e)
 
 	createColumnRequest := &ColumnCreateRequest{
 		Name: test.GenRandString(),
 	}
-	columnID := testColumnCreate(t, e, xToken, createColumnRequest)
+	columnID := testColumnCreate(t, e, xSuperToken, createColumnRequest)
 
 	createArticleRequest := &ArticleCreateRequest{
 		ColumnId: columnID,
@@ -86,6 +87,7 @@ func testArticleGetList(t *testing.T, e *httpexpect.Expect, columnID, pageNum, p
 	assert := assert.New(t)
 
 	resp := e.GET("/api/article/").
+		WithQuery("creater_uid", 0).
 		WithQuery("column_id", columnID).
 		WithQuery("order_by", "comment_count").
 		WithQuery("page_num", pageNum).
@@ -147,11 +149,12 @@ func testArticleGetListHandler(t *testing.T, e *httpexpect.Expect) {
 		CaptchaValue: captchaValue,
 	}
 	xToken := testUserLogin(t, e, loginRequest)
+	xSuperToken := testSuperAdminLogin(t, e)
 
 	createColumnRequest := &ColumnCreateRequest{
 		Name: test.GenRandString(),
 	}
-	columnID := testColumnCreate(t, e, xToken, createColumnRequest)
+	columnID := testColumnCreate(t, e, xSuperToken, createColumnRequest)
 
 	for i := 0; i < 5; i++ {
 		createArticleRequest := &ArticleCreateRequest{
@@ -228,11 +231,12 @@ func testArticleGetHandler(t *testing.T, e *httpexpect.Expect) {
 		CaptchaValue: captchaValue,
 	}
 	xToken := testUserLogin(t, e, loginRequest)
+	xSuperToken := testSuperAdminLogin(t, e)
 
 	createColumnRequest := &ColumnCreateRequest{
 		Name: test.GenRandString(),
 	}
-	columnID := testColumnCreate(t, e, xToken, createColumnRequest)
+	columnID := testColumnCreate(t, e, xSuperToken, createColumnRequest)
 
 	createArticleRequest := &ArticleCreateRequest{
 		ColumnId: columnID,
@@ -297,11 +301,12 @@ func testArticleUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 		CaptchaValue: captchaValue,
 	}
 	xToken := testUserLogin(t, e, loginRequest)
+	xSuperToken := testSuperAdminLogin(t, e)
 
 	createColumnRequest := &ColumnCreateRequest{
 		Name: test.GenRandString(),
 	}
-	columnID := testColumnCreate(t, e, xToken, createColumnRequest)
+	columnID := testColumnCreate(t, e, xSuperToken, createColumnRequest)
 
 	createArticleRequest := &ArticleCreateRequest{
 		ColumnId: columnID,
@@ -370,11 +375,12 @@ func testArticleDeleteByIdHandler(t *testing.T, e *httpexpect.Expect) {
 		CaptchaValue: captchaValue,
 	}
 	xToken := testUserLogin(t, e, loginRequest)
+	xSuperToken := testSuperAdminLogin(t, e)
 
 	createColumnRequest := &ColumnCreateRequest{
 		Name: test.GenRandString(),
 	}
-	columnID := testColumnCreate(t, e, xToken, createColumnRequest)
+	columnID := testColumnCreate(t, e, xSuperToken, createColumnRequest)
 
 	createArticleRequest := &ArticleCreateRequest{
 		ColumnId: columnID,

@@ -303,6 +303,20 @@ func testUserGetList(t *testing.T, e *httpexpect.Expect, xToken string) []*model
 	return result.List
 }
 
+func testSuperAdminLogin(t *testing.T, e *httpexpect.Expect) string {
+	captchaId := testCaptchaCreate(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
+
+	loginRequest := &UserLoginRequest{
+		Phone:        "86 " + common.Config.User.SuperAdminPhone,
+		Source:       test.TestWebSource,
+		Password:     common.Config.User.SuperAdminPassword,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	return testUserLogin(t, e, loginRequest)
+}
+
 func testUserGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
@@ -335,18 +349,8 @@ func testUserGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	}
 	testUserSignup(t, e, signupRequest)
 
-	captchaId = testCaptchaCreate(t, e)
-	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
+	xSuperToken := testSuperAdminLogin(t, e)
 
-	loginRequest := &UserLoginRequest{
-		Phone:        "86 " + common.Config.User.SuperAdminPhone,
-		Source:       test.TestWebSource,
-		Password:     common.Config.User.SuperAdminPassword,
-		CaptchaId:    captchaId,
-		CaptchaValue: captchaValue,
-	}
-	xTokenOfSuperAdmin := testUserLogin(t, e, loginRequest)
-
-	list := testUserGetList(t, e, xTokenOfSuperAdmin)
+	list := testUserGetList(t, e, xSuperToken)
 	assert.Equal(2, len(list))
 }
