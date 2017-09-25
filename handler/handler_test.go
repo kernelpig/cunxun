@@ -43,9 +43,12 @@ func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
 	testArticleGetHandler(t, e)
 	testArticleUpdateByIdHandler(t, e)
 	testArticleDeleteByIdHandler(t, e)
+
 	testCommentCreateHandler(t, e)
 	testCommentGetListHandler(t, e)
 	testCommentGetHandler(t, e)
+	testCommentDeleteByIdHandler(t, e)
+	testCommentUpdateByIdHandler(t, e)
 }
 
 // debug接口测试

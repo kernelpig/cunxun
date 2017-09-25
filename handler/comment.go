@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -88,5 +89,56 @@ func CommentGetListHandler(c *gin.Context) {
 		"code": e.OK,
 		"end":  isOver,
 		"list": list,
+	})
+}
+
+func CommentUpdateByIdHandler(c *gin.Context) {
+	var req CommentUpdateRequest
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.ICommentUpdateById, e.MParamsErr, e.ParamsBindErr, err))
+		return
+	}
+	commentID, err := strconv.ParseInt(c.Param("comment_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.ICommentUpdateById, e.MParamsErr, e.ParamsInvalidCommentID, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.ICommentUpdateById, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+
+	comment := &model.Comment{
+		ArticleId: req.ArticleId,
+		Content:   req.Content,
+		UpdatedAt: time.Now(),
+	}
+	if _, err := model.UpdateCommentById(db.Mysql, int(commentID), comment); err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.ICommentUpdateById, e.MCommentErr, e.CommentUpdateErr, err))
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+	})
+}
+
+func CommentDeleteByIdHandler(c *gin.Context) {
+	commentID, err := strconv.ParseInt(c.Param("comment_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.ICommentDeleteById, e.MParamsErr, e.ParamsInvalidCommentID, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.ICommentDeleteById, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+	if _, err := model.DeleteCommentById(db.Mysql, int(commentID)); err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.ICommentDeleteById, e.MCommentErr, e.CommentDeleteErr, err))
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
 	})
 }

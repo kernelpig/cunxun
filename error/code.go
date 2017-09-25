@@ -66,6 +66,8 @@ const (
 	IColumnDeleteById
 	IArticleUpdateById
 	IArticleDeleteById
+	ICommentUpdateById
+	ICommentDeleteById
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -364,6 +366,7 @@ const (
 	CommentCreateErr
 	CommentGetListErr
 	CommentDeleteErr
+	CommentUpdateErr
 )
 
 type Code struct {

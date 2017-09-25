@@ -85,5 +85,7 @@ func regCommentRouter(router *gin.Engine) {
 	group.Use(middleware.AuthMiddleware())
 	{
 		group.POST("/", CommentCreateHandler)
+		group.PUT("/:comment_id", CommentUpdateByIdHandler)
+		group.DELETE("/:comment_id", CommentDeleteByIdHandler)
 	}
 }

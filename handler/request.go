@@ -63,3 +63,8 @@ type CommentCreateRequest struct {
 	ArticleId int    `json:"article_id" binding:"required"`
 	Content   string `json:"content" binding:"required"`
 }
+
+type CommentUpdateRequest struct {
+	ArticleId int    `json:"article_id" binding:"required"`
+	Content   string `json:"content" binding:"required"`
+}

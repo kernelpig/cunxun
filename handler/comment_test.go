@@ -260,3 +260,156 @@ func testCommentGetHandler(t *testing.T, e *httpexpect.Expect) {
 	comment := testCommentGet(t, e, commentID)
 	assert.Equal(commentID, comment.ID)
 }
+
+func testCommentUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, commentId int, request *CommentCreateRequest) {
+	resp := e.PUT("/api/comment/{comment_id}").
+		WithPath("comment_id", commentId).
+		WithHeader(common.AuthHeaderKey, xToken).
+		WithJSON(request).
+		Expect().Status(http.StatusOK)
+
+	respObj := resp.JSON().Object()
+	respObj.Value("code").Number().Equal(error.OK)
+}
+
+func testCommentUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+
+	captchaId := testCaptchaCreate(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
+
+	sendRequest := &CheckcodeSendRequest{
+		Phone:        test.GenFakePhone(),
+		Purpose:      test.TestSignupPurpose,
+		Source:       test.TestWebSource,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	testCheckcodeSend(t, e, sendRequest)
+
+	checkcodeKey := &checkcode.CheckCodeKey{
+		Phone:   sendRequest.Phone,
+		Purpose: sendRequest.Purpose,
+		Source:  sendRequest.Source,
+	}
+	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
+
+	signupRequest := &UserSignupRequest{
+		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
+		Source:     sendRequest.Source,
+		Password:   test.GenFakePassword(),
+		VerifyCode: code,
+	}
+	testUserSignup(t, e, signupRequest)
+
+	captchaId = testCaptchaCreate(t, e)
+	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
+
+	loginRequest := &UserLoginRequest{
+		Phone:        sendRequest.Phone,
+		Source:       sendRequest.Source,
+		Password:     signupRequest.Password,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	xToken := testUserLogin(t, e, loginRequest)
+
+	createColumnRequest := &ColumnCreateRequest{
+		Name: test.GenRandString(),
+	}
+	columnID := testColumnCreate(t, e, xToken, createColumnRequest)
+
+	createArticleRequest := &ArticleCreateRequest{
+		ColumnId: columnID,
+		Title:    test.GenRandString(),
+		Content:  test.GenRandString() + test.GenRandString(),
+	}
+	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
+
+	createCommentRequest := &CommentCreateRequest{
+		ArticleId: articleID,
+		Content:   test.GenRandString() + test.GenRandString(),
+	}
+	commentId := testCommentCreate(t, e, xToken, createCommentRequest)
+
+	updateCommentRequest := &CommentCreateRequest{
+		ArticleId: articleID,
+		Content:   test.GenRandString() + test.GenRandString(),
+	}
+	testCommentUpdateById(t, e, xToken, commentId, updateCommentRequest)
+}
+
+func testCommentDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, commentId int) {
+	resp := e.DELETE("/api/comment/{comment_id}").
+		WithPath("comment_id", commentId).
+		WithHeader(common.AuthHeaderKey, xToken).
+		Expect().Status(http.StatusOK)
+
+	respObj := resp.JSON().Object()
+	respObj.Value("code").Number().Equal(error.OK)
+}
+
+func testCommentDeleteByIdHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+
+	captchaId := testCaptchaCreate(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
+
+	sendRequest := &CheckcodeSendRequest{
+		Phone:        test.GenFakePhone(),
+		Purpose:      test.TestSignupPurpose,
+		Source:       test.TestWebSource,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	testCheckcodeSend(t, e, sendRequest)
+
+	checkcodeKey := &checkcode.CheckCodeKey{
+		Phone:   sendRequest.Phone,
+		Purpose: sendRequest.Purpose,
+		Source:  sendRequest.Source,
+	}
+	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
+
+	signupRequest := &UserSignupRequest{
+		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
+		Source:     sendRequest.Source,
+		Password:   test.GenFakePassword(),
+		VerifyCode: code,
+	}
+	testUserSignup(t, e, signupRequest)
+
+	captchaId = testCaptchaCreate(t, e)
+	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
+
+	loginRequest := &UserLoginRequest{
+		Phone:        sendRequest.Phone,
+		Source:       sendRequest.Source,
+		Password:     signupRequest.Password,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	xToken := testUserLogin(t, e, loginRequest)
+
+	createColumnRequest := &ColumnCreateRequest{
+		Name: test.GenRandString(),
+	}
+	columnID := testColumnCreate(t, e, xToken, createColumnRequest)
+
+	createArticleRequest := &ArticleCreateRequest{
+		ColumnId: columnID,
+		Title:    test.GenRandString(),
+		Content:  test.GenRandString() + test.GenRandString(),
+	}
+	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
+
+	createCommentRequest := &CommentCreateRequest{
+		ArticleId: articleID,
+		Content:   test.GenRandString() + test.GenRandString(),
+	}
+	commentId := testCommentCreate(t, e, xToken, createCommentRequest)
+
+	testCommentDeleteById(t, e, xToken, commentId)
+}

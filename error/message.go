@@ -186,6 +186,7 @@ func initSubErrors() {
 			CommentCreateErr:    "Failed to create comment.",
 			CommentGetListErr:   "Failed to get comment list.",
 			CommentDeleteErr:    "Failed to delete comment list.",
+			CommentUpdateErr:    "Failed to update comment information.",
 		},
 	}
 }
@@ -241,5 +242,7 @@ func initInterfaceErr() {
 		IColumnDeleteById:       "delete /column/:column_id",
 		IArticleUpdateById:      "put /article/:article_id",
 		IArticleDeleteById:      "delete /article/:article_id",
+		ICommentUpdateById:      "put /comment/:comment_id",
+		ICommentDeleteById:      "delete /comment/:comment_id",
 	}
 }
