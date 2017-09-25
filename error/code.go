@@ -375,6 +375,8 @@ const (
 	CommentGetListErr
 	CommentDeleteErr
 	CommentUpdateErr
+	CommentUpdateByIdSelf
+	CommentDeleteByIdSelf
 )
 
 type Code struct {

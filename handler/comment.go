@@ -117,16 +117,22 @@ func CommentUpdateByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.ICommentUpdateById, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-
 	comment := &model.Comment{
 		ArticleId: req.ArticleId,
 		Content:   req.Content,
 		UpdatedAt: time.Now(),
 	}
-	if _, err := model.UpdateCommentById(db.Mysql, int(commentID), comment); err != nil {
-		c.JSON(http.StatusInternalServerError, e.IP(e.ICommentUpdateById, e.MCommentErr, e.CommentUpdateErr, err))
+	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
+		if _, err := model.UpdateCommentById(db.Mysql, int(commentID), comment); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.ICommentUpdateById, e.MCommentErr, e.CommentUpdateErr, err))
+			return
+		}
+	} else {
+		if _, err := model.UpdateCommentByIdOfSelf(db.Mysql, int(commentID), int(currentCtx.Payload.UserId), comment); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.ICommentUpdateById, e.MCommentErr, e.CommentUpdateByIdSelf, err))
+			return
+		}
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"code": e.OK,
 	})
@@ -143,10 +149,17 @@ func CommentDeleteByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.ICommentDeleteById, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-	if _, err := model.DeleteCommentById(db.Mysql, int(commentID)); err != nil {
-		c.JSON(http.StatusInternalServerError, e.IP(e.ICommentDeleteById, e.MCommentErr, e.CommentDeleteErr, err))
+	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
+		if _, err := model.DeleteCommentById(db.Mysql, int(commentID)); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.ICommentDeleteById, e.MCommentErr, e.CommentDeleteErr, err))
+			return
+		}
+	} else {
+		if _, err := model.DeleteCommentByIdOfSelf(db.Mysql, int(commentID), int(currentCtx.Payload.UserId)); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.ICommentDeleteById, e.MCommentErr, e.CommentDeleteByIdSelf, err))
+			return
+		}
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"code": e.OK,
 	})

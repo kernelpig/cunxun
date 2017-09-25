@@ -95,6 +95,14 @@ func UpdateCommentById(db sqlExec, commentId int, valueWillSet *Comment) (int64,
 	return UpdateCommentList(db, map[string]interface{}{"id": commentId}, valueWillSet)
 }
 
+func UpdateCommentByIdOfSelf(db sqlExec, commentId, userId int, valueWillSet *Comment) (int64, error) {
+	return UpdateCommentList(db, map[string]interface{}{"id": commentId, "creater_uid": userId}, valueWillSet)
+}
+
 func DeleteCommentById(db sqlExec, commentId int) (int64, error) {
 	return DeleteCommentList(db, map[string]interface{}{"id": commentId})
+}
+
+func DeleteCommentByIdOfSelf(db sqlExec, commentId, userId int) (int64, error) {
+	return DeleteCommentList(db, map[string]interface{}{"id": commentId, "creater_uid": userId})
 }

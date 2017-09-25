@@ -79,10 +79,12 @@ func ColumnUpdateByIdHandler(c *gin.Context) {
 	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
 		if _, err := model.UpdateColumnById(db.Mysql, int(columnID), column); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnUpdateById, e.MColumnErr, e.ColumnUpdateById, err))
+			return
 		}
 	} else {
 		if _, err := model.UpdateColumnByIdOfSelf(db.Mysql, int(columnID), int(currentCtx.Payload.UserId), column); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnUpdateById, e.MColumnErr, e.ColumnUpdateByIdSelf, err))
+			return
 		}
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -104,10 +106,12 @@ func ColumnDeleteByIdHandler(c *gin.Context) {
 	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
 		if _, err := model.DeleteColumnById(db.Mysql, int(columnID)); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnDeleteById, e.MColumnErr, e.ColumnDeleteById, err))
+			return
 		}
 	} else {
 		if _, err := model.DeleteColumnByIdOfSelf(db.Mysql, int(columnID), int(currentCtx.Payload.UserId)); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnDeleteById, e.MColumnErr, e.ColumnDeleteByIdSelf, err))
+			return
 		}
 	}
 	c.JSON(http.StatusOK, gin.H{

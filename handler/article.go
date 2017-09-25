@@ -152,10 +152,12 @@ func ArticleDeleteByIdHandler(c *gin.Context) {
 	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
 		if _, err := model.DeleteArticleById(db.Mysql, int(articleID)); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IArticleDeleteById, e.MArticleErr, e.ArticleDeleteByIdErr, err))
+			return
 		}
 	} else {
 		if _, err := model.DeleteArticleByIdOfSelf(db.Mysql, int(articleID), int(currentCtx.Payload.UserId)); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IArticleDeleteById, e.MArticleErr, e.ArticleDeleteByIdSelfErr, err))
+			return
 		}
 	}
 
