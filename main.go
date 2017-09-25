@@ -11,6 +11,7 @@ import (
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
 	"wangqingang/cunxun/handler"
+	"wangqingang/cunxun/initial"
 	"wangqingang/cunxun/token/token_lib"
 )
 
@@ -29,7 +30,12 @@ func main() {
 	captcha.InitCaptcha(common.Config.Captcha.TTL.D())
 	token_lib.InitKeyPem(common.Config.Token.PublicKeyPath, common.Config.Token.PrivateKeyPath)
 
-	// TODO: init log
+	// 执行数据初始化
+	if err := initial.UserCreateSuperAdmin(common.Config.User); err != nil {
+		panic(err)
+	}
+
+	// TODO: initial log
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	router := handler.ServerEngine()

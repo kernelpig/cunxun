@@ -33,7 +33,7 @@ func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
 	testUserLogoutHandler(t, e)
 	testUserGetAvatarHandler(t, e)
 	testUserGetInfoHandler(t, e)
-
+	testUserGetListHandler(t, e)
 	testColumnCreateHandler(t, e)
 	testColumnGetListHandler(t, e)
 	testColumnUpdateByIdHandler(t, e)

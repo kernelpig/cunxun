@@ -36,6 +36,7 @@ func regUserRouter(router *gin.Engine) {
 	group.GET("/:user_id/avatar", UserGetAvatarHandler)
 	group.Use(middleware.AuthMiddleware())
 	{
+		group.GET("/", UserGetListHandler)
 		group.GET("/:user_id", UserGetInfoHandler)
 	}
 }

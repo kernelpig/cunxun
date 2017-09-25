@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 	"testing"
 
@@ -280,4 +281,72 @@ func testUserGetInfoHandler(t *testing.T, e *httpexpect.Expect) {
 	token := testUserLogin(t, e, loginRequest)
 
 	testUserGetInfo(t, e, token, userId)
+}
+
+func testUserGetList(t *testing.T, e *httpexpect.Expect, xToken string) []*model.User {
+	assert := assert.New(t)
+
+	resp := e.GET("/api/u").
+		WithHeader(common.AuthHeaderKey, xToken).
+		Expect().Status(http.StatusOK)
+
+	respObj := resp.JSON().Object()
+	respObj.Value("code").Number().Equal(error.OK)
+
+	var result struct {
+		Code int           `json:"code"`
+		List []*model.User `json:"list"`
+	}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), &result)
+	assert.Nil(err)
+
+	return result.List
+}
+
+func testUserGetListHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+	assert := assert.New(t)
+
+	captchaId := testCaptchaCreate(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
+
+	sendRequest := &CheckcodeSendRequest{
+		Phone:        test.GenFakePhone(),
+		Purpose:      test.TestSignupPurpose,
+		Source:       test.TestWebSource,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	testCheckcodeSend(t, e, sendRequest)
+
+	checkcodeKey := &checkcode.CheckCodeKey{
+		Phone:   sendRequest.Phone,
+		Purpose: sendRequest.Purpose,
+		Source:  sendRequest.Source,
+	}
+	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
+
+	signupRequest := &UserSignupRequest{
+		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
+		Source:     sendRequest.Source,
+		Password:   test.GenFakePassword(),
+		VerifyCode: code,
+	}
+	testUserSignup(t, e, signupRequest)
+
+	captchaId = testCaptchaCreate(t, e)
+	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
+
+	loginRequest := &UserLoginRequest{
+		Phone:        "86 " + common.Config.User.SuperAdminPhone,
+		Source:       test.TestWebSource,
+		Password:     common.Config.User.SuperAdminPassword,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	xTokenOfSuperAdmin := testUserLogin(t, e, loginRequest)
+
+	list := testUserGetList(t, e, xTokenOfSuperAdmin)
+	assert.Equal(2, len(list))
 }

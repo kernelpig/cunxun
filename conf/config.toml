@@ -47,8 +47,10 @@ aliAccessId = "YOUR_ALIYUN_ACCESS_ID"
 aliAccessSecret = "YOUR_ALIYUN_ACCESS_SECRET"
 
 [user]
-DefaultAvatarFile = "avatar.png"
-DefaultAvatarDir = "./conf/avatar/"
+defaultAvatarFile = "avatar.png"
+defaultAvatarDir = "./conf/avatar/"
+superAdminPhone = "18653193004"
+superAdminPassword = "Gz9197891"
 
 [comment]
 DefaultMaxLength = 200

@@ -83,8 +83,10 @@ type SmsConfig struct {
 
 // 用户相关配置
 type UserConfig struct {
-	DefaultAvatarFile string
-	DefaultAvatarDir  string
+	DefaultAvatarFile  string
+	DefaultAvatarDir   string
+	SuperAdminPhone    string
+	SuperAdminPassword string
 }
 
 // 评论相关配置

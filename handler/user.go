@@ -262,3 +262,24 @@ func UserGetInfoHandler(c *gin.Context) {
 		"phone":    user.Phone,
 	})
 }
+
+func UserGetListHandler(c *gin.Context) {
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.IUserGetList, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+	if currentCtx.Payload.Role != model.UserRoleSuperAdmin {
+		c.JSON(http.StatusBadRequest, e.I(e.IUserGetList, e.MUserErr, e.UserNotPermit))
+		return
+	}
+	list, err := model.GetUserList(db.Mysql, map[string]interface{}{})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IUserGetList, e.MColumnErr, e.ColumnGetAllErr, err))
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+		"list": list,
+	})
+}

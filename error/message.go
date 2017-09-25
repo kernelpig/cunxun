@@ -256,5 +256,6 @@ func initInterfaceErr() {
 		ICommentUpdateById:      "put /api/comment/:comment_id",
 		ICommentDeleteById:      "delete /api/comment/:comment_id",
 		IUserGetInfo:            "get /api/u/:user_id",
+		IUserGetList:            "get /api/u",
 	}
 }
