@@ -23,6 +23,7 @@ type Configs struct {
 	Login       *LoginConfig
 	Sms         *SmsConfig
 	User        *UserConfig
+	Comment     *CommentConfig
 }
 
 type TokenConfig struct {
@@ -84,6 +85,11 @@ type SmsConfig struct {
 type UserConfig struct {
 	DefaultAvatarFile string
 	DefaultAvatarDir  string
+}
+
+// 评论相关配置
+type CommentConfig struct {
+	DefaultMaxLength int
 }
 
 // Config 全局配置信息

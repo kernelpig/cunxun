@@ -49,3 +49,6 @@ aliAccessSecret = "YOUR_ALIYUN_ACCESS_SECRET"
 [user]
 DefaultAvatarFile = "avatar.png"
 DefaultAvatarDir = "./conf/avatar/"
+
+[comment]
+DefaultMaxLength = 200

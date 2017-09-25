@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
 	e "wangqingang/cunxun/error"
 	"wangqingang/cunxun/middleware"
@@ -17,6 +18,10 @@ func CommentCreateHandler(c *gin.Context) {
 	var req CommentCreateRequest
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentCreate, e.MParamsErr, e.ParamsBindErr, err))
+		return
+	}
+	if len([]rune(req.Content)) > common.Config.Comment.DefaultMaxLength {
+		c.JSON(http.StatusBadRequest, e.I(e.ICommentCreate, e.MParamsErr, e.ParamsCommentLengthLimit))
 		return
 	}
 
@@ -101,6 +106,10 @@ func CommentUpdateByIdHandler(c *gin.Context) {
 	commentID, err := strconv.ParseInt(c.Param("comment_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentUpdateById, e.MParamsErr, e.ParamsInvalidCommentID, err))
+		return
+	}
+	if len([]rune(req.Content)) > common.Config.Comment.DefaultMaxLength {
+		c.JSON(http.StatusBadRequest, e.I(e.ICommentUpdateById, e.MParamsErr, e.ParamsCommentLengthLimit))
 		return
 	}
 	currentCtx := middleware.GetCurrentAuth(c)
