@@ -349,6 +349,7 @@ const (
 	ArticleNotExist
 	ArticleCreateErr
 	ArticleGetListErr
+	ArticleDeleteErr
 )
 
 // 评论错误

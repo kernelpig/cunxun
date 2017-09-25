@@ -90,3 +90,29 @@ func GetArticleList(db sqlExec, where map[string]interface{}, orderBy string, pa
 	}
 	return list, isOver, nil
 }
+
+func UpdateArticleList(db sqlExec, wheres map[string]interface{}, valueWillSet *Article) (int64, error) {
+	count, err := SQLUpdate(db, valueWillSet, wheres)
+	if err != nil {
+		return 0, e.SP(e.MArticleErr, e.ArticleGetErr, err)
+	} else {
+		return count, nil
+	}
+}
+
+func DeleteArticleList(db sqlExec, wheres map[string]interface{}) (int64, error) {
+	count, err := SQLDelete(db, &Article{}, wheres)
+	if err != nil {
+		return 0, e.SP(e.MArticleErr, e.ArticleDeleteErr, err)
+	} else {
+		return count, nil
+	}
+}
+
+func UpdateArticleById(db sqlExec, articleId int, valueWillSet *Article) (int64, error) {
+	return UpdateArticleList(db, map[string]interface{}{"id": articleId}, valueWillSet)
+}
+
+func DeleteArticleById(db sqlExec, articleId int) (int64, error) {
+	return DeleteArticleList(db, map[string]interface{}{"id": articleId})
+}

@@ -175,6 +175,7 @@ func initSubErrors() {
 			ArticleNotExist:     "Article does not exist.",
 			ArticleCreateErr:    "Failed to create article.",
 			ArticleGetListErr:   "Failed to get article list.",
+			ArticleDeleteErr:    "Failed to delete article list.",
 		},
 		MCommentErr: {
 			_CommentErrMin:      "Basic comment error information.",
