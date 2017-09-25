@@ -190,6 +190,7 @@ func UserLoginHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":       e.OK,
+		"user_id":    user.ID,
 		"user_token": accessToken,
 	})
 	return
@@ -253,11 +254,11 @@ func UserGetInfoHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.ID(e.IUserGetInfo, e.MUserErr, e.UserNotExist, detail))
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"code":     e.OK,
 		"id":       user.ID,
 		"nickname": user.NickName,
 		"phone":    user.Phone,
-		"avatar":   user.Avatar,
 	})
 }
