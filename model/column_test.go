@@ -42,7 +42,7 @@ func TestGetColumnList(t *testing.T) {
 		cs = append(cs, c)
 	}
 
-	items, err := GetColumnList(db.Mysql)
+	items, err := GetColumnList(db.Mysql, map[string]interface{}{})
 	assert.Nil(err)
 	assert.NotNil(items)
 	assert.Equal(10, len(items))

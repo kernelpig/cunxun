@@ -84,7 +84,7 @@ func DeleteColumnByIdOfSelf(db sqlExec, columnId, userId int) (int64, error) {
 	return DeleteColumnList(db, map[string]interface{}{"id": columnId, "creater_uid": userId})
 }
 
-func GetColumnList(db sqlExec) ([]*ColumnListView, error) {
+func GetColumnList(db sqlExec, where map[string]interface{}) ([]*ColumnListView, error) {
 	var list []*ColumnListView
 
 	// 初始化缓冲区
@@ -95,7 +95,7 @@ func GetColumnList(db sqlExec) ([]*ColumnListView, error) {
 
 	// 每次只取pageSize个
 	for pageNum := 1; true; pageNum++ {
-		isOver, err := SQLQueryRows(db, &modelBuf, map[string]interface{}{}, OrderById, pageSize, pageNum)
+		isOver, err := SQLQueryRows(db, &modelBuf, where, OrderById, pageSize, pageNum)
 		if err != nil {
 			return nil, e.SP(e.MColumnErr, e.ColumnGetAllErr, err)
 		}

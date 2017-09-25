@@ -41,6 +41,7 @@ func initSubErrors() {
 			UserNotExist:        "User does not exist.",
 			UserCreateErr:       "Failed to create user.",
 			UserAvatarDecodeErr: "Failed to decode user's avatar.",
+			UserNotPermit:       "The user does not have permission.",
 		},
 		MLoginErr: {
 			_LoginErrMin:   "Basic logon error information.",

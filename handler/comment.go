@@ -70,6 +70,11 @@ func CommentGetHandler(c *gin.Context) {
 
 // columnID, pageNum, pageSize
 func CommentGetListHandler(c *gin.Context) {
+	createrUid, err := strconv.ParseInt(c.Query("creater_uid"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidUserId, err))
+		return
+	}
 	articleID, err := strconv.ParseInt(c.Query("article_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentGetList, e.MParamsErr, e.ParamsInvalidCommentID, err))
@@ -85,7 +90,8 @@ func CommentGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentGetList, e.MParamsErr, e.ParamsInvalidPageSize, err))
 		return
 	}
-	list, isOver, err := model.GetCommentList(db.Mysql, map[string]interface{}{"article_id": articleID}, int(pageSize), int(pageNum))
+	where := map[string]interface{}{"article_id": articleID, "creater_uid": createrUid}
+	list, isOver, err := model.GetCommentList(db.Mysql, where, int(pageSize), int(pageNum))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.ICommentGetList, e.MCommentErr, e.CommentGetListErr, err))
 		return

@@ -14,7 +14,12 @@ import (
 )
 
 func ColumnGetListHandler(c *gin.Context) {
-	list, err := model.GetColumnList(db.Mysql)
+	createrUid, err := strconv.ParseInt(c.Query("creater_uid"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidUserId, err))
+		return
+	}
+	list, err := model.GetColumnList(db.Mysql, map[string]interface{}{"creater_uid": createrUid})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IColumnGetAll, e.MColumnErr, e.ColumnGetAllErr, err))
 		return
@@ -31,13 +36,15 @@ func ColumnCreateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IColumnCreate, e.MParamsErr, e.ParamsBindErr, err))
 		return
 	}
-
 	currentCtx := middleware.GetCurrentAuth(c)
 	if currentCtx == nil {
 		c.JSON(http.StatusBadRequest, e.I(e.IColumnCreate, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-
+	if currentCtx.Payload.Role != model.UserRoleSuperAdmin {
+		c.JSON(http.StatusBadRequest, e.I(e.ICommentCreate, e.MUserErr, e.UserNotPermit))
+		return
+	}
 	column := &model.Column{
 		Name:       req.Name,
 		CreaterUid: int(currentCtx.Payload.UserId),
@@ -49,7 +56,6 @@ func ColumnCreateHandler(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnCreate, e.MColumnErr, e.ColumnCreateErr, err))
 		}
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"code":      e.OK,
 		"column_id": column.ID,
