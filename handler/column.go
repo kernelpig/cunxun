@@ -72,15 +72,19 @@ func ColumnUpdateByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.IColumnUpdateById, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-
 	column := &model.Column{
 		Name:      req.Name,
 		UpdatedAt: time.Now(),
 	}
-	if _, err := model.UpdateColumnById(db.Mysql, int(columnID), column); err != nil {
-		c.JSON(http.StatusInternalServerError, e.IP(e.IColumnUpdateById, e.MColumnErr, e.ColumnUpdateById, err))
+	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
+		if _, err := model.UpdateColumnById(db.Mysql, int(columnID), column); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnUpdateById, e.MColumnErr, e.ColumnUpdateById, err))
+		}
+	} else {
+		if _, err := model.UpdateColumnByIdOfSelf(db.Mysql, int(columnID), int(currentCtx.Payload.UserId), column); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnUpdateById, e.MColumnErr, e.ColumnUpdateByIdSelf, err))
+		}
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"code": e.OK,
 	})
@@ -97,10 +101,15 @@ func ColumnDeleteByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.IColumnDeleteById, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-	if _, err := model.DeleteColumnById(db.Mysql, int(columnID)); err != nil {
-		c.JSON(http.StatusInternalServerError, e.IP(e.IColumnDeleteById, e.MColumnErr, e.ColumnDeleteErr, err))
+	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
+		if _, err := model.DeleteColumnById(db.Mysql, int(columnID)); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnDeleteById, e.MColumnErr, e.ColumnDeleteById, err))
+		}
+	} else {
+		if _, err := model.DeleteColumnByIdOfSelf(db.Mysql, int(columnID), int(currentCtx.Payload.UserId)); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnDeleteById, e.MColumnErr, e.ColumnDeleteByIdSelf, err))
+		}
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"code": e.OK,
 	})

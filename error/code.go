@@ -345,6 +345,9 @@ const (
 	ColumnGetAllErr
 	ColumnUpdateById
 	ColumnDeleteErr
+	ColumnUpdateByIdSelf
+	ColumnDeleteById
+	ColumnDeleteByIdSelf
 )
 
 // 文章错误

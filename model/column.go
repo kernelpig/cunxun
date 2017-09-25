@@ -72,8 +72,16 @@ func UpdateColumnById(db sqlExec, columnId int, valueWillSet *Column) (int64, er
 	return UpdateColumnList(db, map[string]interface{}{"id": columnId}, valueWillSet)
 }
 
+func UpdateColumnByIdOfSelf(db sqlExec, columnId, userId int, valueWillSet *Column) (int64, error) {
+	return UpdateColumnList(db, map[string]interface{}{"id": columnId, "creater_uid": userId}, valueWillSet)
+}
+
 func DeleteColumnById(db sqlExec, columnId int) (int64, error) {
 	return DeleteColumnList(db, map[string]interface{}{"id": columnId})
+}
+
+func DeleteColumnByIdOfSelf(db sqlExec, columnId, userId int) (int64, error) {
+	return DeleteColumnList(db, map[string]interface{}{"id": columnId, "creater_uid": userId})
 }
 
 func GetColumnList(db sqlExec) ([]*ColumnListView, error) {
