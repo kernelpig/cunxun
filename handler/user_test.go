@@ -12,6 +12,7 @@ import (
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
 	"wangqingang/cunxun/error"
+	"wangqingang/cunxun/initial"
 	"wangqingang/cunxun/model"
 	"wangqingang/cunxun/test"
 )
@@ -283,10 +284,13 @@ func testUserGetInfoHandler(t *testing.T, e *httpexpect.Expect) {
 	testUserGetInfo(t, e, token, userId)
 }
 
-func testUserGetList(t *testing.T, e *httpexpect.Expect, xToken string) []*model.User {
+func testUserGetList(t *testing.T, e *httpexpect.Expect, xToken string, pageNum, pageSize int) []*model.User {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/u").
+		WithQuery("order_by", model.OrderByCreateDate).
+		WithQuery("page_num", pageNum).
+		WithQuery("page_size", pageSize).
 		WithHeader(common.AuthHeaderKey, xToken).
 		Expect().Status(http.StatusOK)
 
@@ -304,6 +308,10 @@ func testUserGetList(t *testing.T, e *httpexpect.Expect, xToken string) []*model
 }
 
 func testSuperAdminLogin(t *testing.T, e *httpexpect.Expect) string {
+	assert := assert.New(t)
+	err := initial.UserCreateSuperAdmin(common.Config.User)
+	assert.Nil(err)
+
 	captchaId := testCaptchaCreate(t, e)
 	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
 
@@ -351,6 +359,6 @@ func testUserGetListHandler(t *testing.T, e *httpexpect.Expect) {
 
 	xSuperToken := testSuperAdminLogin(t, e)
 
-	list := testUserGetList(t, e, xSuperToken)
+	list := testUserGetList(t, e, xSuperToken, 1, 20)
 	assert.Equal(2, len(list))
 }

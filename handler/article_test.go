@@ -89,7 +89,7 @@ func testArticleGetList(t *testing.T, e *httpexpect.Expect, columnID, pageNum, p
 	resp := e.GET("/api/article/").
 		WithQuery("creater_uid", 0).
 		WithQuery("column_id", columnID).
-		WithQuery("order_by", "comment_count").
+		WithQuery("order_by", model.OrderByCommentCount).
 		WithQuery("page_num", pageNum).
 		WithQuery("page_size", pageSize).
 		Expect().Status(http.StatusOK)

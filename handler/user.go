@@ -264,6 +264,16 @@ func UserGetInfoHandler(c *gin.Context) {
 }
 
 func UserGetListHandler(c *gin.Context) {
+	pageNum, err := strconv.ParseInt(c.Query("page_num"), 10, 64)
+	if err != nil || pageNum == 0 {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidPageNum, err))
+		return
+	}
+	pageSize, err := strconv.ParseInt(c.Query("page_size"), 10, 64)
+	if err != nil || pageSize == 0 {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidPageSize, err))
+		return
+	}
 	currentCtx := middleware.GetCurrentAuth(c)
 	if currentCtx == nil {
 		c.JSON(http.StatusBadRequest, e.I(e.IUserGetList, e.MAuthErr, e.AuthGetCurrentErr))
@@ -273,13 +283,14 @@ func UserGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.IUserGetList, e.MUserErr, e.UserNotPermit))
 		return
 	}
-	list, err := model.GetUserList(db.Mysql, map[string]interface{}{})
+	list, isOver, err := model.GetUserList(db.Mysql, map[string]interface{}{}, c.Query("order_by"), int(pageSize), int(pageNum))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IUserGetList, e.MColumnErr, e.ColumnGetAllErr, err))
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": e.OK,
+		"end":  isOver,
 		"list": list,
 	})
 }
