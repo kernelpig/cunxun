@@ -190,6 +190,7 @@ func UserLoginHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":       e.OK,
+		"user_role":  user.Role,
 		"user_id":    user.ID,
 		"user_token": accessToken,
 	})
