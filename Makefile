@@ -16,6 +16,7 @@ glide:
 
 build:
 	go install $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)
+	go install $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/initial
 
 test:
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/error
@@ -28,6 +29,7 @@ test:
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/model
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/middleware
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/handler
+	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/initial
 
 clean:
 	@rm -rf vendor bin _project

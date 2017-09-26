@@ -1,36 +1,29 @@
-package initial
+package main
 
 import (
+	"flag"
+	"math/rand"
+	"time"
+
+	"wangqingang/cunxun/avatar"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
-	e "wangqingang/cunxun/error"
-	"wangqingang/cunxun/model"
-	"wangqingang/cunxun/password"
 )
 
-func UserCreateSuperAdmin(conf *common.UserConfig) error {
-	hashedPassword, err := password.Encrypt(conf.SuperAdminPassword)
-	if err != nil {
-		return e.SP(e.MPasswordErr, e.PasswordEncryptErr, err)
+func main() {
+	configPath := flag.String("config", "", "config file's path")
+	flag.Parse()
+
+	common.InitConfig(*configPath)
+
+	avatar.InitAvatar(common.Config.User.DefaultAvatarDir, common.Config.User.DefaultAvatarFile)
+	db.InitRedis(common.Config.Redis)
+	db.InitMysql(common.Config.Mysql)
+
+	// 1. 创建超级用户
+	if err := UserCreateSuperAdmin(common.Config.User); err != nil {
+		panic(err)
 	}
-	passwordLevel, err := password.PasswordStrength(conf.SuperAdminPassword)
-	if err != nil {
-		return e.SP(e.MPasswordErr, e.PasswordLevelErr, err)
-	}
-	user := &model.User{
-		Phone:          "86 " + conf.SuperAdminPhone,
-		NickName:       "admin",
-		HashedPassword: hashedPassword,
-		PasswordLevel:  passwordLevel,
-		RegisterSource: "web",
-		Role:           model.UserRoleSuperAdmin,
-	}
-	user, err = model.CreateUser(db.Mysql, user)
-	if err != nil {
-		if msgErr, ok := err.(e.Message); ok && msgErr.Code.IsSubError(e.MUserErr, e.UserAlreadyExist) {
-			return nil
-		}
-		return e.SP(e.MUserErr, e.UserCreateErr, err)
-	}
-	return nil
+
+	rand.Seed(time.Now().UTC().UnixNano())
 }
