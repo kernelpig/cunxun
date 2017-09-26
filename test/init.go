@@ -13,7 +13,6 @@ import (
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
-	"wangqingang/cunxun/initial"
 	"wangqingang/cunxun/token/token_lib"
 )
 
@@ -42,9 +41,7 @@ func init() {
 	captcha.InitCaptcha(common.Config.Captcha.TTL.D())
 
 	token_lib.InitKeyPem(testPublicKeyPath, testPrivateKeyPath)
-	if err := initial.UserCreateSuperAdmin(common.Config.User); err != nil {
-		panic(err)
-	}
+
 	rand.Seed(time.Now().UTC().UnixNano())
 }
 
@@ -85,7 +82,6 @@ func initRedis(t *testing.T) {
 
 // 初始化测试例环境
 func InitTestCaseEnv(t *testing.T) {
-	assert := assert.New(t)
 	initRedis(t)
 	initMySQLTable(t, testUserSQLPath, "user")
 	initMySQLTable(t, testColumnSQLPath, "column")
@@ -95,6 +91,4 @@ func InitTestCaseEnv(t *testing.T) {
 	initMySQLView(t, testArticleDetailSQLPath, "articledetailview")
 	initMySQLView(t, testArticleListSQLPath, "articlelistview")
 	initMySQLView(t, testColumnListSQLPath, "columnlistview")
-	err := initial.UserCreateSuperAdmin(common.Config.User)
-	assert.Nil(err)
 }

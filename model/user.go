@@ -66,7 +66,7 @@ func CreateUser(db sqlExec, user *User) (*User, error) {
 	return user, nil
 }
 
-func GetUserList(db sqlExec, where map[string]interface{}) ([]*User, error) {
+func GetUserList(db sqlExec, where map[string]interface{}, orderBy string, pageSize, pageNum int) ([]*User, bool, error) {
 	var list []*User
 
 	// 初始化缓冲区
@@ -76,19 +76,14 @@ func GetUserList(db sqlExec, where map[string]interface{}) ([]*User, error) {
 	}
 
 	// 每次只取pageSize个
-	for pageNum := 1; true; pageNum++ {
-		isOver, err := SQLQueryRows(db, &modelBuf, where, OrderById, pageSize, pageNum)
-		if err != nil {
-			return nil, e.SP(e.MUserErr, e.UserGetListErr, err)
-		}
-		for _, item := range modelBuf {
-			if model, ok := item.(*User); ok {
-				list = append(list, model)
-			}
-		}
-		if isOver {
-			break
+	isOver, err := SQLQueryRows(db, &modelBuf, where, orderBy, pageSize, pageNum)
+	if err != nil {
+		return nil, true, e.SP(e.MArticleErr, e.ArticleGetListErr, err)
+	}
+	for _, item := range modelBuf {
+		if model, ok := item.(*User); ok {
+			list = append(list, model)
 		}
 	}
-	return list, nil
+	return list, isOver, nil
 }
