@@ -12,8 +12,8 @@ import (
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
 	"wangqingang/cunxun/error"
-	"wangqingang/cunxun/initial"
 	"wangqingang/cunxun/model"
+	"wangqingang/cunxun/script"
 	"wangqingang/cunxun/test"
 )
 
@@ -309,7 +309,7 @@ func testUserGetList(t *testing.T, e *httpexpect.Expect, xToken string, pageNum,
 
 func testSuperAdminLogin(t *testing.T, e *httpexpect.Expect) string {
 	assert := assert.New(t)
-	err := initial.UserCreateSuperAdmin(common.Config.User)
+	err := script.UserCreateSuperAdmin(common.Config.User)
 	assert.Nil(err)
 
 	captchaId := testCaptchaCreate(t, e)

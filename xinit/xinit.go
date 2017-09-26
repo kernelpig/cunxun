@@ -8,6 +8,7 @@ import (
 	"wangqingang/cunxun/avatar"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
+	"wangqingang/cunxun/script"
 )
 
 func main() {
@@ -21,7 +22,7 @@ func main() {
 	db.InitMysql(common.Config.Mysql)
 
 	// 1. 创建超级用户
-	if err := UserCreateSuperAdmin(common.Config.User); err != nil {
+	if err := script.UserCreateSuperAdmin(common.Config.User); err != nil {
 		panic(err)
 	}
 

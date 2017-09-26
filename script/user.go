@@ -1,4 +1,4 @@
-package main
+package script
 
 import (
 	"wangqingang/cunxun/common"

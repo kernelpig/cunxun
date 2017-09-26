@@ -16,7 +16,7 @@ glide:
 
 build:
 	go install $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)
-	go install $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/initial
+	go install $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/xinit
 
 test:
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/error
