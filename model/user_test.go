@@ -65,3 +65,40 @@ func TestGetUserList(t *testing.T) {
 	assert.True(isOver)
 	assert.Equal(10, len(items))
 }
+
+func TestUpdateUserById(t *testing.T) {
+	test.InitTestCaseEnv(t)
+	assert := assert.New(t)
+
+	phone := test.GenFakePhone()
+	u, err := GetUserByPhone(db.Mysql, phone)
+	assert.Nil(err)
+	assert.Nil(u)
+
+	u = &User{
+		Phone:          phone,
+		NickName:       test.GenRandString(),
+		HashedPassword: test.GenRandString(),
+		PasswordLevel:  test.GenRandInt(5),
+		RegisterSource: test.TestWebSource,
+		Avatar:         test.GenRandString(),
+	}
+
+	u, err = CreateUser(db.Mysql, u)
+	assert.Nil(err)
+	assert.NotNil(u)
+
+	u, err = GetUserByPhone(db.Mysql, phone)
+	assert.Nil(err)
+	assert.NotNil(u)
+
+	count, err := UpdateUserById(db.Mysql, u.ID, &User{Role: UserRoleAdmin})
+	assert.Nil(err)
+	assert.NotZero(count)
+
+	uNew, err := GetUserByID(db.Mysql, u.ID)
+	assert.Nil(err)
+	assert.NotNil(uNew)
+	assert.Equal(UserRoleAdmin, uNew.Role)
+	assert.Equal(u.ID, uNew.ID)
+}

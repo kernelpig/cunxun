@@ -43,6 +43,7 @@ func initSubErrors() {
 			UserAvatarDecodeErr: "Failed to decode user's avatar.",
 			UserNotPermit:       "The user does not have permission.",
 			UserGetListErr:      "Failed to get user list.",
+			UserUpdateErr:       "Failed to update user information.",
 		},
 		MLoginErr: {
 			_LoginErrMin:   "Basic logon error information.",
@@ -173,6 +174,7 @@ func initSubErrors() {
 			ColumnUpdateByIdSelf: "Failed to update column information by creater user.",
 			ColumnDeleteById:     "Failed to delete column information by id.",
 			ColumnDeleteByIdSelf: "Failed to delete column information by creater user.",
+			ColumnUpdateErr:      "Failed to update column information.",
 		},
 		MArticleErr: {
 			_ArticleErrMin:           "Basic article error information.",

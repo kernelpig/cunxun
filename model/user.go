@@ -87,3 +87,16 @@ func GetUserList(db sqlExec, where map[string]interface{}, orderBy string, pageS
 	}
 	return list, isOver, nil
 }
+
+func UpdateUserList(db sqlExec, wheres map[string]interface{}, valueWillSet *User) (int64, error) {
+	count, err := SQLUpdate(db, valueWillSet, wheres)
+	if err != nil {
+		return 0, e.SP(e.MUserErr, e.UserUpdateErr, err)
+	} else {
+		return count, nil
+	}
+}
+
+func UpdateUserById(db sqlExec, userId int, valueWillSet *User) (int64, error) {
+	return UpdateUserList(db, map[string]interface{}{"id": userId}, valueWillSet)
+}

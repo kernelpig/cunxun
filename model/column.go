@@ -53,7 +53,7 @@ func CreateColumn(db sqlExec, column *Column) (*Column, error) {
 func UpdateColumnList(db sqlExec, wheres map[string]interface{}, valueWillSet *Column) (int64, error) {
 	count, err := SQLUpdate(db, valueWillSet, wheres)
 	if err != nil {
-		return 0, e.SP(e.MColumnErr, e.ColumnGetErr, err)
+		return 0, e.SP(e.MColumnErr, e.ColumnUpdateErr, err)
 	} else {
 		return count, nil
 	}

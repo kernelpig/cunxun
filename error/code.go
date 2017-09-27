@@ -138,6 +138,7 @@ const (
 	UserAvatarDecodeErr
 	UserNotPermit
 	UserGetListErr
+	UserUpdateErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -352,6 +353,7 @@ const (
 	ColumnUpdateByIdSelf
 	ColumnDeleteById
 	ColumnDeleteByIdSelf
+	ColumnUpdateErr
 )
 
 // 文章错误
