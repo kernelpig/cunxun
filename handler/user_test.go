@@ -404,7 +404,7 @@ func testUserUpdate(t *testing.T, e *httpexpect.Expect, xToken string, userId in
 		WithPath("user_id", userId).
 		WithHeader(common.AuthHeaderKey, xToken).
 		WithJSON(request).Expect()
-		
+
 	respObj := resp.Status(http.StatusOK).JSON().Object()
 	respObj.Value("code").Number().Equal(error.OK)
 }

@@ -44,6 +44,7 @@ func initSubErrors() {
 			UserNotPermit:       "The user does not have permission.",
 			UserGetListErr:      "Failed to get user list.",
 			UserUpdateErr:       "Failed to update user information.",
+			UserDeleteErr:       "Failed to delete user information.",
 		},
 		MLoginErr: {
 			_LoginErrMin:   "Basic logon error information.",

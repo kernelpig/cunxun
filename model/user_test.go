@@ -102,3 +102,38 @@ func TestUpdateUserById(t *testing.T) {
 	assert.Equal(UserRoleAdmin, uNew.Role)
 	assert.Equal(u.ID, uNew.ID)
 }
+
+func TestDeleteUserById(t *testing.T) {
+	test.InitTestCaseEnv(t)
+	assert := assert.New(t)
+
+	phone := test.GenFakePhone()
+	u, err := GetUserByPhone(db.Mysql, phone)
+	assert.Nil(err)
+	assert.Nil(u)
+
+	u = &User{
+		Phone:          phone,
+		NickName:       test.GenRandString(),
+		HashedPassword: test.GenRandString(),
+		PasswordLevel:  test.GenRandInt(5),
+		RegisterSource: test.TestWebSource,
+		Avatar:         test.GenRandString(),
+	}
+
+	u, err = CreateUser(db.Mysql, u)
+	assert.Nil(err)
+	assert.NotNil(u)
+
+	u, err = GetUserByPhone(db.Mysql, phone)
+	assert.Nil(err)
+	assert.NotNil(u)
+
+	count, err := DeleteUserById(db.Mysql, u.ID)
+	assert.Nil(err)
+	assert.NotZero(count)
+
+	u, err = GetUserByID(db.Mysql, u.ID)
+	assert.Nil(err)
+	assert.Nil(u)
+}

@@ -100,3 +100,16 @@ func UpdateUserList(db sqlExec, wheres map[string]interface{}, valueWillSet *Use
 func UpdateUserById(db sqlExec, userId int, valueWillSet *User) (int64, error) {
 	return UpdateUserList(db, map[string]interface{}{"id": userId}, valueWillSet)
 }
+
+func DeleteUserList(db sqlExec, wheres map[string]interface{}) (int64, error) {
+	count, err := SQLDelete(db, &User{}, wheres)
+	if err != nil {
+		return 0, e.SP(e.MUserErr, e.UserDeleteErr, err)
+	} else {
+		return count, nil
+	}
+}
+
+func DeleteUserById(db sqlExec, userId int) (int64, error) {
+	return DeleteUserList(db, map[string]interface{}{"id": userId})
+}
