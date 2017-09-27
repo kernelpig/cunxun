@@ -24,6 +24,7 @@ type Configs struct {
 	Sms         *SmsConfig
 	User        *UserConfig
 	Comment     *CommentConfig
+	Oss         *OssConfig
 }
 
 type TokenConfig struct {
@@ -79,6 +80,16 @@ type LogConfig struct {
 type SmsConfig struct {
 	AliAccessId     string
 	AliAccessSecret string
+}
+
+// Oss服务相关配置
+type OssConfig struct {
+	Endpoint        string
+	AliAccessId     string
+	AliAccessSecret string
+	Bucket          string
+	Domain          string
+	PermitImageType []string
 }
 
 // 用户相关配置

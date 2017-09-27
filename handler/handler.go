@@ -24,6 +24,7 @@ func ServerEngine() *gin.Engine {
 	regColumnRouter(router)
 	regArticleRouter(router)
 	regCommentRouter(router)
+	regImageRouter(router)
 
 	return router
 }
@@ -96,4 +97,9 @@ func regCommentRouter(router *gin.Engine) {
 		group.PUT("/:comment_id", CommentUpdateByIdHandler)
 		group.DELETE("/:comment_id", CommentDeleteByIdHandler)
 	}
+}
+
+func regImageRouter(router *gin.Engine) {
+	group := router.Group("/api/image")
+	group.POST("/", ImageCreateHandler)
 }

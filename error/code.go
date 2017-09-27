@@ -73,6 +73,7 @@ const (
 	IUserCreate
 	IUserUpdateById
 	IUserDeleteById
+	IImageCreate
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -101,10 +102,24 @@ const (
 	MColumnErr
 	MArticleErr
 	MCommentErr
+	MImageErr
+	MOssErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
 	_SubModuleErrMax
+)
+
+// OSS存储错误
+const (
+	_OssErrMin = iota
+	OssClientInitErr
+	OssBucketGetErr
+	OssPutObjectByBytesErr
+
+	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
+
+	_OssErrMax
 )
 
 // 配置错误
@@ -175,6 +190,19 @@ const (
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
 	_CheckcodeErrMax
+)
+
+// 图片服务错误
+const (
+	_CImageErrMin = iota
+	ImageGetErr
+	ImageNotFound
+	ImageSaveErr
+	ImageReadErr
+
+	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
+
+	_ImageErrMax
 )
 
 // Access Token错误
@@ -292,6 +320,7 @@ const (
 	ParamsInvalidOrderBy
 	ParamsInvalidUserId
 	ParamsCommentLengthLimit
+	ParamsInvalidMultiForm
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 

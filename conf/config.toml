@@ -46,6 +46,14 @@ level = "debug"
 aliAccessId = "YOUR_ALIYUN_ACCESS_ID"
 aliAccessSecret = "YOUR_ALIYUN_ACCESS_SECRET"
 
+[oss]
+endpoint = "oss-cn-zhangjiakou-internal.aliyuncs.com"
+aliAccessId = "YOUR_ALIYUN_ACCESS_ID"
+aliAccessSecret = "YOUR_ALIYUN_ACCESS_SECRET"
+bucket = "lunxue-cc"
+domain = "oss.lunxue.cc"
+permitImageType = ["png", "jpg", "jpeg"]
+
 [user]
 defaultAvatarFile = "avatar.png"
 defaultAvatarDir = "./conf/avatar/"

@@ -141,6 +141,7 @@ func initSubErrors() {
 			ParamsInvalidOrderBy:     "Invalid order by.",
 			ParamsInvalidUserId:      "Invalid user id.",
 			ParamsCommentLengthLimit: "Comment length limit.",
+			ParamsInvalidMultiForm:   "Invalid multipart form data.",
 		},
 		MAuthErr: {
 			_AuthErrMin:       "Basic auth error information.",
@@ -202,6 +203,17 @@ func initSubErrors() {
 			CommentUpdateByIdSelf: "Failed to update comment information by creater user.",
 			CommentDeleteByIdSelf: "Failed to delete comment information by creater user.",
 		},
+		MImageErr: {
+			ImageGetErr:   "Failed to get image.",
+			ImageNotFound: "Image file not found.",
+			ImageSaveErr:  "Failed to save image file.",
+			ImageReadErr:  "Failed to read image file.",
+		},
+		MOssErr: {
+			OssClientInitErr:       "Failed to init oss client.",
+			OssBucketGetErr:        "Failed to get oss bucket.",
+			OssPutObjectByBytesErr: "Failed to put object by bytes.",
+		},
 	}
 }
 
@@ -227,6 +239,8 @@ func initSubModuleErrs() {
 		MColumnErr:       "column",             // 栏目错误
 		MArticleErr:      "article",            // 文章错误
 		MCommentErr:      "comment",            // 评论错误
+		MImageErr:        "image",              // 图片错误
+		MOssErr:          "oss",                // oss存储错误
 	}
 }
 
@@ -263,5 +277,6 @@ func initInterfaceErr() {
 		IUserCreate:             "post /api/u",
 		IUserUpdateById:         "put /api/u/:user_id",
 		IUserDeleteById:         "delete /api/u/:user_id",
+		IImageCreate:            "post /api/image/",
 	}
 }
