@@ -262,5 +262,6 @@ func initInterfaceErr() {
 		IUserGetList:            "get /api/u",
 		IUserCreate:             "post /api/u",
 		IUserUpdateById:         "put /api/u/:user_id",
+		IUserDeleteById:         "delete /api/u/:user_id",
 	}
 }

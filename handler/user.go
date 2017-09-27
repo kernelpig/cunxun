@@ -376,3 +376,27 @@ func UserGetListHandler(c *gin.Context) {
 		"list": list,
 	})
 }
+
+func UserDeleteByIdHandler(c *gin.Context) {
+	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserDeleteById, e.MParamsErr, e.ParamsInvalidUserId, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.IUserDeleteById, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+	if currentCtx.Payload.Role != model.UserRoleSuperAdmin {
+		c.JSON(http.StatusBadRequest, e.I(e.IUserDeleteById, e.MUserErr, e.UserNotPermit))
+		return
+	}
+	if _, err := model.DeleteUserById(db.Mysql, int(userID)); err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IUserDeleteById, e.MUserErr, e.UserDeleteErr, err))
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+	})
+}
