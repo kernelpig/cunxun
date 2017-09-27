@@ -24,6 +24,8 @@ test:
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/login
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/password
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/phone
+	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/sms
+	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/oss
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/token/token_lib
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/token
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/model
