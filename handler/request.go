@@ -31,6 +31,10 @@ type UserCreateRequest struct {
 	Role     int    `json:"role"`
 }
 
+type UserUpdateRequest struct {
+	Role int `json:"role"`
+}
+
 type UserLoginRequest struct {
 	Phone        string `json:"phone" binding:"required"`
 	Source       string `json:"source" binding:"required"`

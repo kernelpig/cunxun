@@ -114,6 +114,36 @@ func UserSignupHandler(c *gin.Context) {
 	return
 }
 
+func UserUpdateHandler(c *gin.Context) {
+	var req UserUpdateRequest
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserUpdateById, e.MParamsErr, e.ParamsBindErr, err))
+		return
+	}
+	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserUpdateById, e.MParamsErr, e.ParamsInvalidColumnID, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.IUserUpdateById, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+	if currentCtx.Payload.Role != model.UserRoleSuperAdmin {
+		c.JSON(http.StatusBadRequest, e.I(e.IUserUpdateById, e.MUserErr, e.UserNotPermit))
+		return
+	}
+	if _, err := model.UpdateUserById(db.Mysql, int(userID), &model.User{Role: req.Role}); err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IUserUpdateById, e.MUserErr, e.UserCreateErr, err))
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+	})
+	return
+}
+
 func UserCreateHandler(c *gin.Context) {
 	var req UserCreateRequest
 	if err := c.BindJSON(&req); err != nil {

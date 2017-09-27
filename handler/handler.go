@@ -39,6 +39,7 @@ func regUserRouter(router *gin.Engine) {
 		group.GET("/", UserGetListHandler)
 		group.GET("/:user_id", UserGetInfoHandler)
 		group.POST("/", UserCreateHandler)
+		group.PUT("/:user_id", UserUpdateHandler)
 	}
 }
 

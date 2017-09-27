@@ -369,6 +369,7 @@ func testUserCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *
 		WithJSON(request).Expect()
 
 	respObj := resp.Status(http.StatusOK).JSON().Object()
+	respObj.Value("code").Number().Equal(error.OK)
 	return int(respObj.Value("user_id").Number().Raw())
 }
 
@@ -396,4 +397,52 @@ func testUserCreateHandler(t *testing.T, e *httpexpect.Expect) {
 		CaptchaValue: captchaValue,
 	}
 	testUserLogin(t, e, loginRequest)
+}
+
+func testUserUpdate(t *testing.T, e *httpexpect.Expect, xToken string, userId int, request *UserUpdateRequest) {
+	resp := e.PUT("/api/u/{user_id}").
+		WithPath("user_id", userId).
+		WithHeader(common.AuthHeaderKey, xToken).
+		WithJSON(request).Expect()
+		
+	respObj := resp.Status(http.StatusOK).JSON().Object()
+	respObj.Value("code").Number().Equal(error.OK)
+}
+
+func testUserUpdateHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+
+	captchaId := testCaptchaCreate(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
+
+	sendRequest := &CheckcodeSendRequest{
+		Phone:        test.GenFakePhone(),
+		Purpose:      test.TestSignupPurpose,
+		Source:       test.TestWebSource,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	testCheckcodeSend(t, e, sendRequest)
+
+	checkcodeKey := &checkcode.CheckCodeKey{
+		Phone:   sendRequest.Phone,
+		Purpose: sendRequest.Purpose,
+		Source:  sendRequest.Source,
+	}
+	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
+
+	signupRequest := &UserSignupRequest{
+		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
+		Source:     sendRequest.Source,
+		Password:   test.GenFakePassword(),
+		VerifyCode: code,
+	}
+	userId := testUserSignup(t, e, signupRequest)
+
+	xSuperToken := testSuperAdminLogin(t, e)
+	updateRequest := &UserUpdateRequest{
+		Role: model.UserRoleNormal,
+	}
+	testUserUpdate(t, e, xSuperToken, userId, updateRequest)
 }

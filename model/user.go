@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	UserRoleNormal     = 0
-	UserRoleAdmin      = 1
-	UserRoleSuperAdmin = 2
+	UserRoleNormal     = 1
+	UserRoleAdmin      = 2
+	UserRoleSuperAdmin = 3
 )
 
 // User 对应于数据库user表中的一行

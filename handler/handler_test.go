@@ -35,6 +35,7 @@ func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
 	testUserGetInfoHandler(t, e)
 	testUserGetListHandler(t, e)
 	testUserCreateHandler(t, e)
+	testUserUpdateHandler(t, e)
 
 	testColumnCreateHandler(t, e)
 	testColumnGetListHandler(t, e)
