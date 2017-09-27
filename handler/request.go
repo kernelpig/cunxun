@@ -24,6 +24,13 @@ type UserSignupRequest struct {
 	Avatar     string `json:"avatar" binding:"omitempty"`
 }
 
+type UserCreateRequest struct {
+	Phone    string `json:"phone" binding:"required"`
+	Password string `json:"password" binding:"required,min=8,max=16"`
+	NickName string `json:"nickname" binding:"required,min=1,max=32"`
+	Role     int    `json:"role"`
+}
+
 type UserLoginRequest struct {
 	Phone        string `json:"phone" binding:"required"`
 	Source       string `json:"source" binding:"required"`

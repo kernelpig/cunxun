@@ -362,3 +362,38 @@ func testUserGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	list := testUserGetList(t, e, xSuperToken, 1, 20)
 	assert.Equal(2, len(list))
 }
+
+func testUserCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *UserCreateRequest) int {
+	resp := e.POST("/api/u/").
+		WithHeader(common.AuthHeaderKey, xToken).
+		WithJSON(request).Expect()
+
+	respObj := resp.Status(http.StatusOK).JSON().Object()
+	return int(respObj.Value("user_id").Number().Raw())
+}
+
+func testUserCreateHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+
+	xSuperToken := testSuperAdminLogin(t, e)
+
+	createRequest := &UserCreateRequest{
+		Phone:    test.GenFakePhone(),
+		NickName: test.GenRandString(),
+		Password: test.GenFakePassword(),
+		Role:     model.UserRoleNormal,
+	}
+	testUserCreate(t, e, xSuperToken, createRequest)
+
+	captchaId := testCaptchaCreate(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
+
+	loginRequest := &UserLoginRequest{
+		Phone:        createRequest.Phone,
+		Source:       common.WebSource,
+		Password:     createRequest.Password,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	testUserLogin(t, e, loginRequest)
+}

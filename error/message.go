@@ -257,5 +257,6 @@ func initInterfaceErr() {
 		ICommentDeleteById:      "delete /api/comment/:comment_id",
 		IUserGetInfo:            "get /api/u/:user_id",
 		IUserGetList:            "get /api/u",
+		IUserCreate:             "post /api/u",
 	}
 }

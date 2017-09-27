@@ -114,6 +114,57 @@ func UserSignupHandler(c *gin.Context) {
 	return
 }
 
+func UserCreateHandler(c *gin.Context) {
+	var req UserCreateRequest
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserCreate, e.MParamsErr, e.ParamsBindErr, err))
+		return
+	}
+	if _, err := phone.ValidPhone(req.Phone); err != nil {
+		c.JSON(http.StatusBadRequest, e.ID(e.IUserCreate, e.MParamsErr, e.ParamsInvalidPhone, req.Phone))
+		return
+	}
+	hashedPassword, err := password.Encrypt(req.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.IUserCreate, e.MPasswordErr, e.PasswordEncryptErr, err))
+		return
+	}
+	passwordLevel, err := password.PasswordStrength(req.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserCreate, e.MPasswordErr, e.PasswordLevelErr, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.IUserCreate, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+	if currentCtx.Payload.Role != model.UserRoleSuperAdmin {
+		c.JSON(http.StatusBadRequest, e.I(e.IUserCreate, e.MUserErr, e.UserNotPermit))
+		return
+	}
+	user := &model.User{
+		Phone:          req.Phone,
+		NickName:       req.NickName,
+		HashedPassword: hashedPassword,
+		PasswordLevel:  passwordLevel,
+	}
+	user, err = model.CreateUser(db.Mysql, user)
+	if err != nil {
+		if msgErr, ok := err.(e.Message); ok && msgErr.Code.IsSubError(e.MUserErr, e.UserAlreadyExist) {
+			c.JSON(http.StatusBadRequest, e.IP(e.IUserCreate, e.MUserErr, e.UserAlreadyExist, err))
+		} else {
+			c.JSON(http.StatusInternalServerError, e.IP(e.IUserCreate, e.MUserErr, e.UserCreateErr, err))
+		}
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code":    e.OK,
+		"user_id": user.ID,
+	})
+	return
+}
+
 func UserLoginHandler(c *gin.Context) {
 	var req UserLoginRequest
 	if err := c.BindJSON(&req); err != nil {
