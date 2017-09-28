@@ -8,6 +8,7 @@ import (
 
 	"path"
 	e "wangqingang/cunxun/error"
+	"wangqingang/cunxun/middleware"
 	"wangqingang/cunxun/oss"
 )
 
@@ -28,6 +29,10 @@ func ImageCreateHandler(c *gin.Context) {
 	xToken, ok := form.Value["xToken"]
 	if !ok || xToken == nil || len(xToken) < 1 {
 		c.JSON(http.StatusBadRequest, e.I(e.IImageCreate, e.MTokenErr, e.TokenIsEmpty))
+		return
+	}
+	if _, err := middleware.CheckAccessToken(xToken[0]); err != nil {
+		c.JSON(http.StatusBadRequest, e.I(e.IImageCreate, e.MTokenErr, e.TokenSignVerifyErr))
 		return
 	}
 	files, ok := form.File["image_key"]

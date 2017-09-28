@@ -32,6 +32,7 @@ func InitOss() error {
 	return nil
 }
 
+// TODO: 增加oss回调函数
 func PutImageByFile(fileName string, reader io.Reader) (string, error) {
 	fileExt := path.Ext(fileName)
 	if fileExt == "" || fileExt == "." {
