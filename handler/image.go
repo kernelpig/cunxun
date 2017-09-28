@@ -2,11 +2,11 @@ package handler
 
 import (
 	"net/http"
+	"path"
 
 	"github.com/gin-gonic/gin"
 	"github.com/satori/go.uuid"
 
-	"path"
 	e "wangqingang/cunxun/error"
 	"wangqingang/cunxun/middleware"
 	"wangqingang/cunxun/oss"
