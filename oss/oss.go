@@ -1,11 +1,12 @@
 package oss
 
 import (
+	"fmt"
+	"io"
 	"path"
 
 	alioss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 
-	"io"
 	"wangqingang/cunxun/common"
 	e "wangqingang/cunxun/error"
 )
@@ -30,5 +31,6 @@ func PutImageByFile(fileName string, reader io.Reader) (string, error) {
 	if err != nil {
 		return "", e.SP(e.MOssErr, e.OssPutObjectByBytesErr, err)
 	}
-	return path.Join(common.Config.Oss.Domain, fileName), nil
+	imagePath := path.Join(common.Config.Oss.Domain, fileName)
+	return fmt.Sprintf("http://%s", imagePath), nil
 }
