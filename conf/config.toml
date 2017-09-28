@@ -53,6 +53,8 @@ aliAccessSecret = "YOUR_ALIYUN_ACCESS_SECRET"
 bucket = "lunxue-cc"
 domain = "oss.lunxue.cc"
 permitImageType = ["png", "jpg", "jpeg"]
+dialTimeout = "3s"
+readWriteTimeout = "3s"
 
 [user]
 defaultAvatarFile = "avatar.png"

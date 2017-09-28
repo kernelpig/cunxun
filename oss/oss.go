@@ -11,15 +11,28 @@ import (
 	e "wangqingang/cunxun/error"
 )
 
-func PutImageByFile(fileName string, reader io.Reader) (string, error) {
+var Client *alioss.Client
+var Bucket *alioss.Bucket
+
+func InitOss() error {
 	client, err := alioss.New(common.Config.Oss.Endpoint, common.Config.Oss.AliAccessId, common.Config.Oss.AliAccessSecret)
 	if err != nil {
-		return "", e.SP(e.MOssErr, e.OssClientInitErr, err)
+		return e.SP(e.MOssErr, e.OssClientInitErr, err)
+	}
+	client.Config.HTTPTimeout = alioss.HTTPTimeout{
+		ConnectTimeout:   common.Config.Oss.DialTimeout.Duration,
+		ReadWriteTimeout: common.Config.Oss.ReadWriteTimeout.Duration,
 	}
 	bucket, err := client.Bucket(common.Config.Oss.Bucket)
 	if err != nil {
-		return "", e.SP(e.MOssErr, e.OssBucketGetErr, err)
+		return e.SP(e.MOssErr, e.OssBucketGetErr, err)
 	}
+	Client = client
+	Bucket = bucket
+	return nil
+}
+
+func PutImageByFile(fileName string, reader io.Reader) (string, error) {
 	fileExt := path.Ext(fileName)
 	if fileExt == "" || fileExt == "." {
 		fileExt = ".png" // 默认使用png类型
@@ -27,7 +40,7 @@ func PutImageByFile(fileName string, reader io.Reader) (string, error) {
 	options := []alioss.Option{
 		alioss.ContentType("image/" + fileExt[1:]),
 	}
-	err = bucket.PutObject(fileName, reader, options...)
+	err := Bucket.PutObject(fileName, reader, options...)
 	if err != nil {
 		return "", e.SP(e.MOssErr, e.OssPutObjectByBytesErr, err)
 	}

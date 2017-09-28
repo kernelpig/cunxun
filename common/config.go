@@ -84,12 +84,14 @@ type SmsConfig struct {
 
 // Oss服务相关配置
 type OssConfig struct {
-	Endpoint        string
-	AliAccessId     string
-	AliAccessSecret string
-	Bucket          string
-	Domain          string
-	PermitImageType []string
+	Endpoint         string
+	AliAccessId      string
+	AliAccessSecret  string
+	Bucket           string
+	Domain           string
+	PermitImageType  []string
+	DialTimeout      Duration
+	ReadWriteTimeout Duration
 }
 
 // 用户相关配置

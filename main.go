@@ -11,6 +11,7 @@ import (
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
 	"wangqingang/cunxun/handler"
+	"wangqingang/cunxun/oss"
 	"wangqingang/cunxun/token/token_lib"
 )
 
@@ -28,8 +29,9 @@ func main() {
 	db.InitMysql(common.Config.Mysql)
 	captcha.InitCaptcha(common.Config.Captcha.TTL.D())
 	token_lib.InitKeyPem(common.Config.Token.PublicKeyPath, common.Config.Token.PrivateKeyPath)
-
-	// TODO: initial log
+	if err := oss.InitOss(); err != nil {
+		panic(err)
+	}
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	router := handler.ServerEngine()

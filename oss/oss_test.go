@@ -14,6 +14,9 @@ func TestPutObjectByBytes(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
+	err := InitOss()
+	assert.Nil(err)
+
 	originName := "avatar.png"
 	fileName := test.GenRandString() + path.Ext(originName)
 
