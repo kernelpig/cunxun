@@ -309,7 +309,7 @@ func testUserGetList(t *testing.T, e *httpexpect.Expect, xToken string, pageNum,
 
 func testSuperAdminLogin(t *testing.T, e *httpexpect.Expect) string {
 	assert := assert.New(t)
-	err := script.UserCreateSuperAdmin(common.Config.User)
+	_, err := script.CreateSuperAdmin()
 	assert.Nil(err)
 
 	captchaId := testCaptchaCreate(t, e)

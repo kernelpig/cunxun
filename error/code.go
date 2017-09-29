@@ -104,10 +104,20 @@ const (
 	MCommentErr
 	MImageErr
 	MOssErr
+	MScriptErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
 	_SubModuleErrMax
+)
+
+// 脚本错误
+const (
+	_ScriptErrMin = iota
+
+	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
+
+	_ScriptErrMax
 )
 
 // OSS存储错误
@@ -270,6 +280,12 @@ const (
 	MysqlInvalidPageNum
 	MysqlNoEnoughModelBuf
 	MysqlInvalidOrderType
+	MysqlCreateDatabase
+	MysqlWalkSqlUnkownErr
+	MysqlWalkSqlNotSupportSubDir
+	MysqlWalkSqlUnsupportType
+	MysqlWalkSqlReadFileErr
+	MysqlWalkSqlExecute
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 

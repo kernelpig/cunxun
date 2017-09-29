@@ -16,7 +16,6 @@ glide:
 
 build:
 	go install $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)
-	go install $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/xinit
 
 test:
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/error
@@ -31,7 +30,7 @@ test:
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/model
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/middleware
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/handler
-	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/initial
+	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/script
 
 clean:
 	@rm -rf vendor bin _project

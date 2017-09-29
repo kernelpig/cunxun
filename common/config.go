@@ -35,9 +35,11 @@ type TokenConfig struct {
 }
 
 type MysqlConfig struct {
-	Dsn     string
-	MaxIdle int
-	MaxOpen int
+	Dsn          string
+	MaxIdle      int
+	MaxOpen      int
+	SqlPathDir   string
+	DatabaseName string
 }
 
 type CaptchaConfig struct {
