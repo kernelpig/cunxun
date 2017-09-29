@@ -16,15 +16,7 @@ import (
 )
 
 const (
-	createDbFormat = "create database ?"
-	sqlFileType    = ".sql"
-)
-
-const (
-	columnNews       = "资讯"
-	columnBar        = "贴吧"
-	columnRental     = "租房"
-	columnCarpooling = "拼车"
+	sqlFileType = ".sql"
 )
 
 func CreateTables(sqlPathDir string) error {
@@ -54,11 +46,17 @@ func CreateTables(sqlPathDir string) error {
 }
 
 func CreateColumns(user *model.User) ([]*model.Column, error) {
-	columns := []string{columnNews, columnBar, columnRental, columnCarpooling}
+	columnIds := []int{
+		model.ColumnIdNews,
+		model.ColumnIdBar,
+		model.ColumnIdRental,
+		model.ColumnIdCarpooling,
+	}
 	models := make([]*model.Column, 0)
-	for _, c := range columns {
+	for _, id := range columnIds {
 		x := &model.Column{
-			Name:       c,
+			ID:         id,
+			Name:       model.ColumnsOfOrigin[id],
 			CreaterUid: user.ID,
 			CreatedAt:  time.Now(),
 		}

@@ -6,6 +6,33 @@ import (
 	e "wangqingang/cunxun/error"
 )
 
+// 固定类别ID
+const (
+	ColumnIdNews       = 1
+	ColumnIdBar        = 2
+	ColumnIdRental     = 3
+	ColumnIdCarpooling = 4
+)
+
+// 固定类别名称
+const (
+	ColumnNameNews       = "资讯"
+	ColumnNameBar        = "贴吧"
+	ColumnNameRental     = "租房"
+	ColumnNameCarpooling = "拼车"
+)
+
+// 初始化栏目列表
+var ColumnsOfOrigin map[int]string
+
+func init() {
+	ColumnsOfOrigin = make(map[int]string)
+	ColumnsOfOrigin[ColumnIdNews] = ColumnNameNews
+	ColumnsOfOrigin[ColumnIdBar] = ColumnNameBar
+	ColumnsOfOrigin[ColumnIdRental] = ColumnNameRental
+	ColumnsOfOrigin[ColumnIdCarpooling] = ColumnNameCarpooling
+}
+
 type Column struct {
 	ID         int       `json:"id" column:"id"`
 	Name       string    `json:"name" column:"name"`

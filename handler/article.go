@@ -19,13 +19,17 @@ func ArticleCreateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleCreate, e.MParamsErr, e.ParamsBindErr, err))
 		return
 	}
-
 	currentCtx := middleware.GetCurrentAuth(c)
 	if currentCtx == nil {
 		c.JSON(http.StatusBadRequest, e.I(e.IArticleCreate, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-
+	if req.ColumnId == model.ColumnIdNews {
+		if currentCtx.Payload.Role != model.UserRoleAdmin && currentCtx.Payload.Role != model.UserRoleSuperAdmin {
+			c.JSON(http.StatusBadRequest, e.I(e.IArticleCreate, e.MUserErr, e.UserNotPermit))
+			return
+		}
+	}
 	article := &model.Article{
 		ColumnId:   req.ColumnId,
 		Title:      req.Title,
