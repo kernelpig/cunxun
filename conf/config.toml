@@ -29,8 +29,7 @@ maxCaptchaTImes = 1
 dsn = "root:123456@tcp(127.0.0.1:3306)/cunxun?charset=utf8mb4,utf8&parseTime=True&loc=Local"
 maxIdle = 1
 maxOpen = 2
-sqlPathDir = "../sql"
-databaseName = "cunxun"
+sqlPathDir = "./sql"
 
 [redis]
 addr = "127.0.0.1:6379"

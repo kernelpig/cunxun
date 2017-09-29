@@ -27,29 +27,27 @@ const (
 	columnCarpooling = "拼车"
 )
 
-func CreateDatabase() error {
-	_, err := db.Mysql.Exec(createDbFormat, common.Config.Mysql.DatabaseName)
-	if err != nil {
-		return e.SP(e.MMysqlErr, e.MysqlCreateDatabase, err)
-	}
-	return nil
-}
-
 func CreateTables(sqlPathDir string) error {
 	return filepath.Walk(sqlPathDir, func(p string, f os.FileInfo, err error) error {
 		if err != nil {
 			return e.SP(e.MMysqlErr, e.MysqlWalkSqlUnkownErr, err)
-		} else if f.IsDir() {
+		} else if f.IsDir() && p == sqlPathDir {
+			// 为当前目录, 啥都不做
+			return nil
+		} else if f.IsDir() && p != sqlPathDir {
+			// 为子目录, 提示错误
 			return e.S(e.MMysqlErr, e.MysqlWalkSqlNotSupportSubDir)
 		} else if path.Ext(p) != sqlFileType {
+			// 当前目录有非sql文件提示
 			return e.S(e.MMysqlErr, e.MysqlWalkSqlUnsupportType)
 		}
+		// 正常的sql文件读取并执行
 		bytes, err := ioutil.ReadFile(p)
 		if err != nil {
-			return e.S(e.MMysqlErr, e.MysqlWalkSqlReadFileErr)
+			return e.SP(e.MMysqlErr, e.MysqlWalkSqlReadFileErr, err)
 		}
 		if _, err := db.Mysql.Exec(string(bytes)); err != nil {
-			return e.S(e.MMysqlErr, e.MysqlWalkSqlExecute)
+			return e.SP(e.MMysqlErr, e.MysqlWalkSqlExecute, err)
 		}
 		return nil
 	})
