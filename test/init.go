@@ -17,18 +17,27 @@ import (
 )
 
 const (
-	testUserSQLPath          = "../sql/user.sql"
-	testArticleSQLPath       = "../sql/article.sql"
-	testColumnSQLPath        = "../sql/column.sql"
-	testCommentSQLPath       = "../sql/comment.sql"
-	testCommentListSQLPath   = "../sql/commentlistview.sql"
-	testArticleDetailSQLPath = "../sql/articledetailview.sql"
-	testArticleListSQLPath   = "../sql/articlelistview.sql"
-	testColumnListSQLPath    = "../sql/columnlistview.sql"
-	testPrivateKeyPath       = "../conf/ecdsa_prv.pem"
-	testPublicKeyPath        = "../conf/ecdsa_pub.pem"
-	testAvatarDir            = "../conf/avatar/"
-	testAvatarFile           = "avatar.png"
+	testUserSQLPath    = "../sql/table/user.sql"
+	testArticleSQLPath = "../sql/table/article.sql"
+	testColumnSQLPath  = "../sql/table/column.sql"
+	testCommentSQLPath = "../sql/table/comment.sql"
+)
+
+const (
+	testCommentListSQLPath   = "../sql/view/commentlistview.sql"
+	testArticleDetailSQLPath = "../sql/view/articledetailview.sql"
+	testArticleListSQLPath   = "../sql/view/articlelistview.sql"
+	testColumnListSQLPath    = "../sql/view/columnlistview.sql"
+)
+
+const (
+	testPrivateKeyPath = "../conf/ecdsa_prv.pem"
+	testPublicKeyPath  = "../conf/ecdsa_pub.pem"
+)
+
+const (
+	testAvatarDir  = "../conf/avatar/"
+	testAvatarFile = "avatar.png"
 )
 
 func init() {
