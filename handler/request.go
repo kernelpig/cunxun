@@ -27,7 +27,7 @@ type UserSignupRequest struct {
 type UserCreateRequest struct {
 	Phone    string `json:"phone" binding:"required"`
 	Password string `json:"password" binding:"required,min=8,max=16"`
-	NickName string `json:"nickname" binding:"required,min=1,max=32"`
+	NickName string `json:"nickname" binding:"omitempty"`
 	Role     int    `json:"role"`
 }
 

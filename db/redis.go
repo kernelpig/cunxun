@@ -10,7 +10,7 @@ import (
 var Redis *redis.Client
 
 // InitRedis 根据配置初始化Redis Client
-func InitRedis(config *common.RedisConfig) {
+func InitRedis(config *common.RedisConfig) error {
 	options := &redis.Options{
 		Addr:         config.Addr,
 		Password:     config.Password,
@@ -21,4 +21,5 @@ func InitRedis(config *common.RedisConfig) {
 		WriteTimeout: config.WriteTimeout.D(),
 	}
 	Redis = redis.NewClient(options)
+	return nil
 }

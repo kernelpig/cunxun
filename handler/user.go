@@ -150,6 +150,9 @@ func UserCreateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IUserCreate, e.MParamsErr, e.ParamsBindErr, err))
 		return
 	}
+	if req.NickName == "" {
+		req.NickName = uuid.NewV4().String()
+	}
 	if _, err := phone.ValidPhone(req.Phone); err != nil {
 		c.JSON(http.StatusBadRequest, e.ID(e.IUserCreate, e.MParamsErr, e.ParamsInvalidPhone, req.Phone))
 		return

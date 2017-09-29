@@ -1,15 +1,16 @@
 package script
 
-func InitScript() {
+func InitScript() error {
 	if err := CreateDatabase(); err != nil {
-		panic(err.Error())
+		return err
 	}
 	user, err := CreateSuperAdmin()
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 	_, err = CreateColumns(user)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
+	return nil
 }

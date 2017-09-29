@@ -13,7 +13,7 @@ import (
 var Mysql *sql.DB
 
 // InitMysql 根据配置信息连接MySQL并设置参数
-func InitMysql(config *common.MysqlConfig) {
+func InitMysql(config *common.MysqlConfig) error {
 	pool, err := sql.Open("mysql", config.Dsn)
 	if err != nil {
 		panic(e.SP(e.MMysqlErr, e.MysqlConnectErr, err))
@@ -27,4 +27,5 @@ func InitMysql(config *common.MysqlConfig) {
 	}
 
 	Mysql = pool
+	return nil
 }

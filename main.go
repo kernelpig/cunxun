@@ -12,28 +12,73 @@ import (
 	"wangqingang/cunxun/db"
 	"wangqingang/cunxun/handler"
 	"wangqingang/cunxun/oss"
+	"wangqingang/cunxun/script"
 	"wangqingang/cunxun/token/token_lib"
 )
 
-func main() {
-	configPath := flag.String("config", "", "config file's path")
-	flag.Parse()
+const (
+	cmdKeyConfig = "config"
+	cmdKeyInit   = "init"
+	cmdKeyStart  = "start"
+)
 
-	common.InitConfig(*configPath)
+const (
+	cmdHelpConfig = "config file's path"
+	cmdHelpInit   = "init database etc, default off"
+	cmdHelpStart  = "start server, default on"
+)
+
+func cmdConfigHandler(config string) {
+	if err := common.InitConfig(config); err != nil {
+		panic(err)
+	}
 	if common.Config.Gomaxprocs >= 1 {
 		runtime.GOMAXPROCS(common.Config.Gomaxprocs)
 	}
-
-	avatar.InitAvatar(common.Config.User.DefaultAvatarDir, common.Config.User.DefaultAvatarFile)
-	db.InitRedis(common.Config.Redis)
-	db.InitMysql(common.Config.Mysql)
-	captcha.InitCaptcha(common.Config.Captcha.TTL.D())
-	token_lib.InitKeyPem(common.Config.Token.PublicKeyPath, common.Config.Token.PrivateKeyPath)
+	if err := avatar.InitAvatar(common.Config.User.DefaultAvatarDir, common.Config.User.DefaultAvatarFile); err != nil {
+		panic(err)
+	}
+	if err := db.InitRedis(common.Config.Redis); err != nil {
+		panic(err)
+	}
+	if err := db.InitMysql(common.Config.Mysql); err != nil {
+		panic(err)
+	}
+	if err := captcha.InitCaptcha(common.Config.Captcha.TTL.D()); err != nil {
+		panic(err)
+	}
+	if err := token_lib.InitKeyPem(common.Config.Token.PublicKeyPath, common.Config.Token.PrivateKeyPath); err != nil {
+		panic(err)
+	}
 	if err := oss.InitOss(); err != nil {
 		panic(err)
 	}
 	rand.Seed(time.Now().UTC().UnixNano())
+}
 
-	router := handler.ServerEngine()
-	router.Run(common.Config.Listen)
+func cmdInitHandler(init bool) {
+	if init {
+		if err := script.InitScript(); err != nil {
+			panic(err)
+		}
+	}
+}
+
+func cmdStartHandler(start bool) {
+	if start {
+		router := handler.ServerEngine()
+		router.Run(common.Config.Listen)
+	}
+}
+
+func main() {
+	config := flag.String(cmdKeyConfig, "", cmdHelpConfig)
+	init := flag.Bool(cmdKeyInit, false, cmdHelpInit)
+	start := flag.Bool(cmdKeyStart, true, cmdHelpStart)
+
+	flag.Parse()
+
+	cmdConfigHandler(*config)
+	cmdInitHandler(*init)
+	cmdStartHandler(*start)
 }

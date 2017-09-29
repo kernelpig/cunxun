@@ -33,50 +33,55 @@ type Payload struct {
 var privateKey *ecdsa.PrivateKey
 var publicKeys []*ecdsa.PublicKey
 
-func initPrivateKey(key []byte) {
+func initPrivateKey(key []byte) error {
 	block, _ := pem.Decode(key)
 	if block == nil {
-		panic("private key invalid")
+		return e.S(e.MTokenErr, e.TokenDecryptErr)
 	}
 	prvk, err := x509.ParseECPrivateKey(block.Bytes)
 	if err != nil {
-		panic(err)
+		return e.S(e.MTokenErr, e.TokenParsePriKey)
 	}
 	privateKey = prvk
+	return nil
 }
 
-func initPublicKeys(keys ...[]byte) {
+func initPublicKeys(keys ...[]byte) error {
 	if len(keys) == 0 {
-		panic("no public key")
+		return e.S(e.MTokenErr, e.TokenIsEmpty)
 	}
 	publicKeys = make([]*ecdsa.PublicKey, 0)
 	for _, key := range keys {
 		block, _ := pem.Decode(key)
 		if block == nil {
-			panic("public key invalid")
+			return e.S(e.MTokenErr, e.TokenInvalidPubKey)
 		}
 		pubInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
 		if err != nil {
-			panic(err)
+			return e.S(e.MTokenErr, e.TokenInvalidPubKey)
 		}
 		pubKey := pubInterface.(*ecdsa.PublicKey)
 		publicKeys = append(publicKeys, pubKey)
 	}
+	return nil
 }
 
-func InitKeyPem(publicKeyFile, privateKeyFile string) {
+func InitKeyPem(publicKeyFile, privateKeyFile string) error {
 	publickKeyPem, err := ioutil.ReadFile(publicKeyFile)
 	if err != nil {
-		panic(err)
+		return e.S(e.MTokenErr, e.TokenReadPubKeyFileErr)
 	}
-
 	privateKeyPem, err := ioutil.ReadFile(privateKeyFile)
 	if err != nil {
-		panic(err)
+		return e.S(e.MTokenErr, e.TokenReadPriKeyFileErr)
 	}
-
-	initPrivateKey(privateKeyPem)
-	initPublicKeys(publickKeyPem)
+	if err := initPrivateKey(privateKeyPem); err != nil {
+		return err
+	}
+	if err := initPublicKeys(publickKeyPem); err != nil {
+		return err
+	}
+	return nil
 }
 
 func Encrypt(version int, tk *Payload) (string, error) {

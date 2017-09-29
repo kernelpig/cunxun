@@ -113,12 +113,13 @@ type CommentConfig struct {
 var Config *Configs
 
 // InitConfig 加载配置
-func InitConfig(path string) {
+func InitConfig(path string) error {
 	config, err := loadConfig(path)
 	if err != nil {
-		panic(e.SP(e.MConfigErr, e.ConfigLoadErr, err))
+		return err
 	}
 	Config = config
+	return nil
 }
 
 func loadConfig(path string) (*Configs, error) {

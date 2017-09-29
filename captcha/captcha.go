@@ -45,13 +45,14 @@ func (c CaptchaStore) GetValue(id string, clear bool) string {
 	return string(bs)
 }
 
-func InitCaptcha(ttl time.Duration) {
+func InitCaptcha(ttl time.Duration) error {
 	if ttl > 0 {
 		Store.ttl = ttl
 	} else {
 		Store.ttl = 0
 	}
 	captcha.SetCustomStore(captcha.Store(Store))
+	return nil
 }
 
 func VerifyCaptcha(id, value string) bool {

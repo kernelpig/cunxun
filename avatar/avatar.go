@@ -9,12 +9,13 @@ import (
 
 var AvatarBytes []byte
 
-func InitAvatar(dir, file string) {
+func InitAvatar(dir, file string) error {
 	bytes, err := ioutil.ReadFile(path.Join(dir, file))
 	if err != nil {
-		panic(e.SP(e.MConfigErr, e.ConfigLoadAvatarErr, err))
+		return e.SP(e.MConfigErr, e.ConfigLoadAvatarErr, err)
 	}
 	AvatarBytes = bytes
+	return nil
 }
 
 // 获取配置的默认头像, 有的话则更新bytes, 用于更换avatar免重启
