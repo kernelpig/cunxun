@@ -67,3 +67,33 @@ func CarpoolingGetHandler(c *gin.Context) {
 		"item": Carpooling,
 	})
 }
+
+// TODO: 热贴需要支持时间范围过滤
+func CarpoolingGetListHandler(c *gin.Context) {
+	createrUid, err := strconv.ParseInt(c.Query("creater_uid"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.ICarpoolingGetList, e.MParamsErr, e.ParamsInvalidUserId, err))
+		return
+	}
+	pageNum, err := strconv.ParseInt(c.Query("page_num"), 10, 64)
+	if err != nil || pageNum == 0 {
+		c.JSON(http.StatusBadRequest, e.IP(e.ICarpoolingGetList, e.MParamsErr, e.ParamsInvalidPageNum, err))
+		return
+	}
+	pageSize, err := strconv.ParseInt(c.Query("page_size"), 10, 64)
+	if err != nil || pageSize == 0 {
+		c.JSON(http.StatusBadRequest, e.IP(e.ICarpoolingGetList, e.MParamsErr, e.ParamsInvalidPageSize, err))
+		return
+	}
+	where := map[string]interface{}{"creater_uid": createrUid}
+	list, isOver, err := model.GetCarpoolingList(db.Mysql, where, c.Query("order_by"), int(pageSize), int(pageNum))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, e.IP(e.ICarpoolingGetList, e.MCarpoolingErr, e.CarpoolingGetListErr, err))
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+		"end":  isOver,
+		"list": list,
+	})
+}

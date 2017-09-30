@@ -301,5 +301,6 @@ func initInterfaceErr() {
 		IImageCreate:            "post /api/image/",
 		ICarpoolingCreate:       "post /api/carpooling/",
 		ICarpoolingGetById:      "get /api/carpooling/:id",
+		ICarpoolingGetList:      "get /api/carpooling/",
 	}
 }
