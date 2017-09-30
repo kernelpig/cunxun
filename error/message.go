@@ -227,6 +227,11 @@ func initSubErrors() {
 			OssBucketGetErr:        "Failed to get oss bucket.",
 			OssPutObjectByBytesErr: "Failed to put object by bytes.",
 		},
+		MCarpoolingErr: {
+			CarpoolingGetErr:       "Failed to get carpooling information.",
+			CarpoolingAlreadyExist: "The carpooling information is already exist.",
+			CarpoolingCreateErr:    "Failed to create carpooling information.",
+		},
 	}
 }
 
@@ -254,6 +259,7 @@ func initSubModuleErrs() {
 		MCommentErr:      "comment",            // 评论错误
 		MImageErr:        "image",              // 图片错误
 		MOssErr:          "oss",                // oss存储错误
+		MCarpoolingErr:   "carpooling",         // 拼车错误
 	}
 }
 

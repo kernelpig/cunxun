@@ -104,20 +104,23 @@ const (
 	MCommentErr
 	MImageErr
 	MOssErr
-	MScriptErr
+	MCarpoolingErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
 	_SubModuleErrMax
 )
 
-// 脚本错误
+// 拼车错误
 const (
-	_ScriptErrMin = iota
+	_CarpoolingErrMin = iota
+	CarpoolingGetErr
+	CarpoolingAlreadyExist
+	CarpoolingCreateErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
-	_ScriptErrMax
+	_CarpoolingErrMax
 )
 
 // OSS存储错误

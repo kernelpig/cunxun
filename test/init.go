@@ -17,17 +17,19 @@ import (
 )
 
 const (
-	testUserSQLPath    = "../sql/table/user.sql"
-	testArticleSQLPath = "../sql/table/article.sql"
-	testColumnSQLPath  = "../sql/table/column.sql"
-	testCommentSQLPath = "../sql/table/comment.sql"
+	testTableUser       = "../sql/table/user.sql"
+	testTableArticle    = "../sql/table/article.sql"
+	testTableColumn     = "../sql/table/column.sql"
+	testTableComment    = "../sql/table/comment.sql"
+	testTableCarpooling = "../sql/table/carpooling.sql"
 )
 
 const (
-	testCommentListSQLPath   = "../sql/view/commentlistview.sql"
-	testArticleDetailSQLPath = "../sql/view/articledetailview.sql"
-	testArticleListSQLPath   = "../sql/view/articlelistview.sql"
-	testColumnListSQLPath    = "../sql/view/columnlistview.sql"
+	testViewCommentList       = "../sql/view/commentlistview.sql"
+	testViewArticleDetail     = "../sql/view/articledetailview.sql"
+	testViewArticleList       = "../sql/view/articlelistview.sql"
+	testViewColumnList        = "../sql/view/columnlistview.sql"
+	testViewCarpoolingDeatail = "../sql/view/carpoolingdetailview.sql"
 )
 
 const (
@@ -92,12 +94,16 @@ func initRedis(t *testing.T) {
 // 初始化测试例环境
 func InitTestCaseEnv(t *testing.T) {
 	initRedis(t)
-	initMySQLTable(t, testUserSQLPath, "user")
-	initMySQLTable(t, testColumnSQLPath, "column")
-	initMySQLTable(t, testArticleSQLPath, "article")
-	initMySQLTable(t, testCommentSQLPath, "comment")
-	initMySQLView(t, testCommentListSQLPath, "commentlistview")
-	initMySQLView(t, testArticleDetailSQLPath, "articledetailview")
-	initMySQLView(t, testArticleListSQLPath, "articlelistview")
-	initMySQLView(t, testColumnListSQLPath, "columnlistview")
+
+	initMySQLTable(t, testTableUser, "user")
+	initMySQLTable(t, testTableColumn, "column")
+	initMySQLTable(t, testTableArticle, "article")
+	initMySQLTable(t, testTableComment, "comment")
+	initMySQLTable(t, testTableCarpooling, "carpooling")
+
+	initMySQLView(t, testViewCommentList, "commentlistview")
+	initMySQLView(t, testViewArticleDetail, "articledetailview")
+	initMySQLView(t, testViewArticleList, "articlelistview")
+	initMySQLView(t, testViewColumnList, "columnlistview")
+	initMySQLView(t, testViewCarpoolingDeatail, "carpoolingdetailview")
 }
