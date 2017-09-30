@@ -6,6 +6,11 @@ import (
 	e "wangqingang/cunxun/error"
 )
 
+const (
+	CarpoolingDisable = 0
+	CarpoolingEnable  = 1
+)
+
 type Carpooling struct {
 	ID          int       `json:"id" column:"id"`
 	CreatedAt   time.Time `json:"created_at" column:"created_at"`

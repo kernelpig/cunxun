@@ -1,5 +1,7 @@
 package handler
 
+import "time"
+
 type CheckcodeSendRequest struct {
 	Phone        string `json:"phone" binding:"required"`
 	Purpose      string `json:"purpose" binding:"required"`
@@ -56,6 +58,14 @@ type ColumnCreateRequest struct {
 
 type ColumnUpdateRequest struct {
 	Name string `json:"name" binding:"omitempty"`
+}
+
+type CarpoolingCreateRequest struct {
+	FromCity    string    `json:"from_city" binding:"required"`
+	ToCity      string    `json:"to_city" binding:"required"`
+	DepartTIme  time.Time `json:"depart_time" binding:"required"`
+	PeopleCount int       `json:"people_count" binding:"required"`
+	Remark      string    `json:"remark" binding:"required"`
 }
 
 type ArticleCreateRequest struct {

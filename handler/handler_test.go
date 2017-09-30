@@ -49,6 +49,8 @@ func testBaseHandler(t *testing.T, e *httpexpect.Expect) {
 	testArticleUpdateByIdHandler(t, e)
 	testArticleDeleteByIdHandler(t, e)
 
+	testCarpoolingCreateHandler(t, e)
+
 	testCommentCreateHandler(t, e)
 	testCommentGetListHandler(t, e)
 	testCommentGetHandler(t, e)

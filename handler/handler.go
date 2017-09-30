@@ -25,6 +25,7 @@ func ServerEngine() *gin.Engine {
 	regArticleRouter(router)
 	regCommentRouter(router)
 	regImageRouter(router)
+	regCarpoolingRouter(router)
 
 	return router
 }
@@ -84,6 +85,18 @@ func regArticleRouter(router *gin.Engine) {
 		group.POST("/", ArticleCreateHandler)
 		group.PUT("/:article_id", ArticleUpdateByIdHandler)
 		group.DELETE("/:article_id", ArticleDeleteByIdHandler)
+	}
+}
+
+func regCarpoolingRouter(router *gin.Engine) {
+	group := router.Group("/api/carpooling")
+	//group.GET("/", ArticleGetListHandler)
+	group.GET("/:article_id", CarpoolingGetHandler)
+	group.Use(middleware.AuthMiddleware())
+	{
+		group.POST("/", CarpoolingCreateHandler)
+		//group.PUT("/:article_id", ArticleUpdateByIdHandler)
+		//group.DELETE("/:article_id", ArticleDeleteByIdHandler)
 	}
 }
 
