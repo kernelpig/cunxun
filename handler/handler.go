@@ -91,7 +91,7 @@ func regArticleRouter(router *gin.Engine) {
 func regCarpoolingRouter(router *gin.Engine) {
 	group := router.Group("/api/carpooling")
 	//group.GET("/", ArticleGetListHandler)
-	group.GET("/:article_id", CarpoolingGetHandler)
+	group.GET("/:carpooling_id", CarpoolingGetHandler)
 	group.Use(middleware.AuthMiddleware())
 	{
 		group.POST("/", CarpoolingCreateHandler)
