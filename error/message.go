@@ -232,6 +232,7 @@ func initSubErrors() {
 			CarpoolingGetErr:       "Failed to get carpooling information.",
 			CarpoolingAlreadyExist: "The carpooling information is already exist.",
 			CarpoolingCreateErr:    "Failed to create carpooling information.",
+			CarpoolingGetListErr:   "Failed to get carpooling list.",
 		},
 	}
 }
