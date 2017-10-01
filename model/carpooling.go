@@ -87,3 +87,20 @@ func GetCarpoolingList(db sqlExec, where map[string]interface{}, orderBy string,
 	}
 	return list, isOver, nil
 }
+
+func UpdateCarpoolingList(db sqlExec, wheres map[string]interface{}, valueWillSet *Carpooling) (int64, error) {
+	count, err := SQLUpdate(db, valueWillSet, wheres)
+	if err != nil {
+		return 0, e.SP(e.MCarpoolingErr, e.CarpoolingGetErr, err)
+	} else {
+		return count, nil
+	}
+}
+
+func UpdateCarpoolingById(db sqlExec, carpoolingId int, valueWillSet *Carpooling) (int64, error) {
+	return UpdateCarpoolingList(db, map[string]interface{}{"id": carpoolingId}, valueWillSet)
+}
+
+func UpdateCarpoolingByIdOfSelf(db sqlExec, carpoolingId, userID int, valueWillSet *Carpooling) (int64, error) {
+	return UpdateCarpoolingList(db, map[string]interface{}{"id": carpoolingId, "creater_uid": userID}, valueWillSet)
+}

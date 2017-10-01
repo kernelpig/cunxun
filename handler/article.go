@@ -137,7 +137,7 @@ func ArticleUpdateByIdHandler(c *gin.Context) {
 	} else {
 		// 创建者操作
 		if _, err := model.UpdateArticleByIdOfSelf(db.Mysql, int(articleID), int(currentCtx.Payload.UserId), article); err != nil {
-			c.JSON(http.StatusInternalServerError, e.IP(e.IArticleUpdateById, e.MArticleErr, e.ArticleUpdateByIdErr, err))
+			c.JSON(http.StatusInternalServerError, e.IP(e.IArticleUpdateById, e.MArticleErr, e.ArticleUpdateByIdSelfErr, err))
 			return
 		}
 	}
