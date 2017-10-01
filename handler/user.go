@@ -8,6 +8,7 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/ahmetb/go-linq"
 	"github.com/gin-gonic/gin"
@@ -95,6 +96,8 @@ func UserSignupHandler(c *gin.Context) {
 		PasswordLevel:  passwordLevel,
 		RegisterSource: req.Source,
 		Avatar:         fileName,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
 	}
 
 	user, err = model.CreateUser(db.Mysql, user)
@@ -134,7 +137,11 @@ func UserUpdateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.IUserUpdateById, e.MUserErr, e.UserNotPermit))
 		return
 	}
-	if _, err := model.UpdateUserById(db.Mysql, int(userID), &model.User{Role: req.Role}); err != nil {
+	update := &model.User{
+		Role:      req.Role,
+		UpdatedAt: time.Now(),
+	}
+	if _, err := model.UpdateUserById(db.Mysql, int(userID), update); err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IUserUpdateById, e.MUserErr, e.UserCreateErr, err))
 		return
 	}
@@ -181,6 +188,8 @@ func UserCreateHandler(c *gin.Context) {
 		NickName:       req.NickName,
 		HashedPassword: hashedPassword,
 		PasswordLevel:  passwordLevel,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
 	}
 	user, err = model.CreateUser(db.Mysql, user)
 	if err != nil {

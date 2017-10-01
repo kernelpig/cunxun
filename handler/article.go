@@ -36,6 +36,8 @@ func ArticleCreateHandler(c *gin.Context) {
 		Content:    req.Content,
 		CreaterUid: int(currentCtx.Payload.UserId),
 		UpdaterUid: int(currentCtx.Payload.UserId),
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
 	}
 	if _, err := model.CreateArticle(db.Mysql, article); err != nil {
 		if msgErr, ok := err.(e.Message); ok && msgErr.Code.IsSubError(e.MArticleErr, e.ArticleAlreadyExist) {

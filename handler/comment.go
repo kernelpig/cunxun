@@ -34,6 +34,8 @@ func CommentCreateHandler(c *gin.Context) {
 	comment := &model.Comment{
 		ArticleId:  req.ArticleId,
 		Content:    req.Content,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
 		CreaterUid: int(currentCtx.Payload.UserId),
 	}
 	if _, err := model.CreateComment(db.Mysql, comment); err != nil {

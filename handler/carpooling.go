@@ -24,7 +24,7 @@ func CarpoolingCreateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.ICarpoolingCreate, e.MParamsErr, e.ParamsInvalidCarpoolingSeat))
 		return
 	}
-	if req.DepartTIme.Before(time.Now()) {
+	if req.DepartTime.Before(time.Now()) {
 		c.JSON(http.StatusBadRequest, e.I(e.ICarpoolingCreate, e.MParamsErr, e.ParamsInvalidCarpoolingDepart))
 		return
 	}
@@ -38,7 +38,7 @@ func CarpoolingCreateHandler(c *gin.Context) {
 		UpdatedAt:   time.Now(),
 		FromCity:    req.FromCity,
 		ToCity:      req.ToCity,
-		DepartTIme:  req.DepartTIme,
+		DepartTime:  req.DepartTime,
 		PeopleCount: req.PeopleCount,
 		Contact:     req.Contact,
 		Status:      model.CarpoolingEnable,
@@ -123,7 +123,7 @@ func CarpoolingUpdateByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.ICarpoolingUpdateById, e.MParamsErr, e.ParamsInvalidCarpoolingSeat))
 		return
 	}
-	if req.DepartTIme.Before(time.Now()) {
+	if req.DepartTime.Before(time.Now()) {
 		c.JSON(http.StatusBadRequest, e.I(e.ICarpoolingUpdateById, e.MParamsErr, e.ParamsInvalidCarpoolingDepart))
 		return
 	}
@@ -133,11 +133,10 @@ func CarpoolingUpdateByIdHandler(c *gin.Context) {
 		return
 	}
 	Carpooling := &model.Carpooling{
-		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		FromCity:    req.FromCity,
 		ToCity:      req.ToCity,
-		DepartTIme:  req.DepartTIme,
+		DepartTime:  req.DepartTime,
 		PeopleCount: req.PeopleCount,
 		Contact:     req.Contact,
 		Status:      model.CarpoolingEnable,

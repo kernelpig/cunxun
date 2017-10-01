@@ -19,7 +19,7 @@ type Carpooling struct {
 	UpdaterUid  int       `json:"updater_uid" column:"updater_uid"`
 	FromCity    string    `json:"from_city" column:"from_city"`
 	ToCity      string    `json:"to_city" column:"to_city"`
-	DepartTIme  time.Time `json:"depart_time" column:"depart_time"`
+	DepartTime  time.Time `json:"depart_time" column:"depart_time"`
 	PeopleCount int       `json:"people_count" column:"people_count"`
 	Contact     string    `json:"contact" column:"contact"`
 	Status      int       `json:"status" column:"status"`
@@ -34,7 +34,7 @@ type CarpoolingDetailView struct {
 	UpdaterUid  int       `json:"updater_uid" column:"updater_uid"`
 	FromCity    string    `json:"from_city" column:"from_city"`
 	ToCity      string    `json:"to_city" column:"to_city"`
-	DepartTIme  time.Time `json:"depart_time" column:"depart_time"`
+	DepartTime  time.Time `json:"depart_time" column:"depart_time"`
 	PeopleCount int       `json:"people_count" column:"people_count"`
 	Contact     string    `json:"contact" column:"contact"`
 	Status      int       `json:"status" column:"status"`

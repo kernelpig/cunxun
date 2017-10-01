@@ -73,7 +73,7 @@ func testCarpoolingCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	createCarpoolingRequest := &CarpoolingCreateRequest{
 		FromCity:    test.GenRandString(),
 		ToCity:      test.GenRandString(),
-		DepartTIme:  time.Now(),
+		DepartTime:  time.Now(),
 		PeopleCount: test.GenRandInt(5),
 		Remark:      test.GenRandString() + test.GenRandString(),
 	}
@@ -150,7 +150,7 @@ func testCarpoolingGetListHandler(t *testing.T, e *httpexpect.Expect) {
 		createCarpoolingRequest := &CarpoolingCreateRequest{
 			FromCity:    test.GenRandString(),
 			ToCity:      test.GenRandString(),
-			DepartTIme:  time.Now(),
+			DepartTime:  time.Now(),
 			PeopleCount: test.GenRandInt(5),
 			Remark:      test.GenRandString() + test.GenRandString(),
 		}
@@ -218,7 +218,7 @@ func testCarpoolingUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	createCarpoolingRequest := &CarpoolingCreateRequest{
 		FromCity:    test.GenRandString(),
 		ToCity:      test.GenRandString(),
-		DepartTIme:  time.Now(),
+		DepartTime:  time.Now(),
 		PeopleCount: test.GenRandInt(5),
 		Remark:      test.GenRandString() + test.GenRandString(),
 	}
@@ -227,7 +227,7 @@ func testCarpoolingUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	updateCarpoolingRequest := &CarpoolingUpdateRequest{
 		FromCity:    test.GenRandString(),
 		ToCity:      test.GenRandString(),
-		DepartTIme:  time.Now(),
+		DepartTime:  time.Now(),
 		PeopleCount: test.GenRandInt(5),
 		Remark:      test.GenRandString() + test.GenRandString(),
 	}
@@ -290,7 +290,7 @@ func testCarpoolingDeleteByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	createCarpoolingRequest := &CarpoolingCreateRequest{
 		FromCity:    test.GenRandString(),
 		ToCity:      test.GenRandString(),
-		DepartTIme:  time.Now(),
+		DepartTime:  time.Now(),
 		PeopleCount: test.GenRandInt(5),
 		Remark:      test.GenRandString() + test.GenRandString(),
 	}

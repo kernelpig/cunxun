@@ -47,6 +47,8 @@ func ColumnCreateHandler(c *gin.Context) {
 	}
 	column := &model.Column{
 		Name:       req.Name,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
 		CreaterUid: int(currentCtx.Payload.UserId),
 	}
 	if _, err := model.CreateColumn(db.Mysql, column); err != nil {
