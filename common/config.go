@@ -24,6 +24,7 @@ type Configs struct {
 	Sms         *SmsConfig
 	User        *UserConfig
 	Comment     *CommentConfig
+	Carpooling  *CarpoolingConfig
 	Oss         *OssConfig
 }
 
@@ -106,6 +107,11 @@ type UserConfig struct {
 // 评论相关配置
 type CommentConfig struct {
 	DefaultMaxLength int
+}
+
+// 拼车相关配置
+type CarpoolingConfig struct {
+	DefaultMaxSeat int
 }
 
 // Config 全局配置信息

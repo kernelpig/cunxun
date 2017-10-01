@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
 	e "wangqingang/cunxun/error"
 	"wangqingang/cunxun/middleware"
@@ -17,6 +18,14 @@ func CarpoolingCreateHandler(c *gin.Context) {
 	var req CarpoolingCreateRequest
 	if err := c.BindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICarpoolingCreate, e.MParamsErr, e.ParamsBindErr, err))
+		return
+	}
+	if req.PeopleCount > common.Config.Carpooling.DefaultMaxSeat {
+		c.JSON(http.StatusBadRequest, e.I(e.ICarpoolingCreate, e.MParamsErr, e.ParamsInvalidCarpoolingSeat))
+		return
+	}
+	if req.DepartTIme.Before(time.Now()) {
+		c.JSON(http.StatusBadRequest, e.I(e.ICarpoolingCreate, e.MParamsErr, e.ParamsInvalidCarpoolingDepart))
 		return
 	}
 	currentCtx := middleware.GetCurrentAuth(c)
@@ -108,6 +117,14 @@ func CarpoolingUpdateByIdHandler(c *gin.Context) {
 	CarpoolingID, err := strconv.ParseInt(c.Param("carpooling_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICarpoolingUpdateById, e.MParamsErr, e.ParamsInvalidCarpoolingID, err))
+		return
+	}
+	if req.PeopleCount > common.Config.Carpooling.DefaultMaxSeat {
+		c.JSON(http.StatusBadRequest, e.I(e.ICarpoolingUpdateById, e.MParamsErr, e.ParamsInvalidCarpoolingSeat))
+		return
+	}
+	if req.DepartTIme.Before(time.Now()) {
+		c.JSON(http.StatusBadRequest, e.I(e.ICarpoolingUpdateById, e.MParamsErr, e.ParamsInvalidCarpoolingDepart))
 		return
 	}
 	currentCtx := middleware.GetCurrentAuth(c)
