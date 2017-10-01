@@ -235,6 +235,7 @@ func initSubErrors() {
 			CarpoolingGetListErr:        "Failed to get carpooling list.",
 			CarpoolingUpdateByIdErr:     "Failed to update carpooling information by admin.",
 			CarpoolingUpdateByIdSelfErr: "Failed to update carpooling information by author.",
+			CarpoolingDeleteErr:         "Failed to delete carpooling information.",
 		},
 	}
 }

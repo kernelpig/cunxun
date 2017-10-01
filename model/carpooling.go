@@ -104,3 +104,20 @@ func UpdateCarpoolingById(db sqlExec, carpoolingId int, valueWillSet *Carpooling
 func UpdateCarpoolingByIdOfSelf(db sqlExec, carpoolingId, userID int, valueWillSet *Carpooling) (int64, error) {
 	return UpdateCarpoolingList(db, map[string]interface{}{"id": carpoolingId, "creater_uid": userID}, valueWillSet)
 }
+
+func DeleteCarpoolingList(db sqlExec, wheres map[string]interface{}) (int64, error) {
+	count, err := SQLDelete(db, &Carpooling{}, wheres)
+	if err != nil {
+		return 0, e.SP(e.MCarpoolingErr, e.CarpoolingDeleteErr, err)
+	} else {
+		return count, nil
+	}
+}
+
+func DeleteCarpoolingById(db sqlExec, articleId int) (int64, error) {
+	return DeleteCarpoolingList(db, map[string]interface{}{"id": articleId})
+}
+
+func DeleteCarpoolingByIdOfSelf(db sqlExec, articleId, userId int) (int64, error) {
+	return DeleteCarpoolingList(db, map[string]interface{}{"id": articleId, "creater_uid": userId})
+}
