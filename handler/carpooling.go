@@ -142,3 +142,31 @@ func CarpoolingUpdateByIdHandler(c *gin.Context) {
 		"code": e.OK,
 	})
 }
+
+func CarpoolingDeleteByIdHandler(c *gin.Context) {
+	carpoolingID, err := strconv.ParseInt(c.Param("carpooling_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.ICarpoolingDeleteById, e.MParamsErr, e.ParamsInvalidCarpoolingID, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.ICarpoolingDeleteById, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
+		if _, err := model.DeleteCarpoolingById(db.Mysql, int(carpoolingID)); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.ICarpoolingDeleteById, e.MCarpoolingErr, e.CarpoolingDeleteByIdErr, err))
+			return
+		}
+	} else {
+		if _, err := model.DeleteCarpoolingByIdOfSelf(db.Mysql, int(carpoolingID), int(currentCtx.Payload.UserId)); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.ICarpoolingDeleteById, e.MCarpoolingErr, e.CarpoolingDeleteByIdSelfErr, err))
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+	})
+}

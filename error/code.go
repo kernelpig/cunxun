@@ -78,6 +78,7 @@ const (
 	ICarpoolingGetById
 	ICarpoolingGetList
 	ICarpoolingUpdateById
+	ICarpoolingDeleteById
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -125,6 +126,8 @@ const (
 	CarpoolingUpdateByIdErr
 	CarpoolingUpdateByIdSelfErr
 	CarpoolingDeleteErr
+	CarpoolingDeleteByIdErr
+	CarpoolingDeleteByIdSelfErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 

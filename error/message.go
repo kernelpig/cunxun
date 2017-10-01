@@ -236,6 +236,8 @@ func initSubErrors() {
 			CarpoolingUpdateByIdErr:     "Failed to update carpooling information by admin.",
 			CarpoolingUpdateByIdSelfErr: "Failed to update carpooling information by author.",
 			CarpoolingDeleteErr:         "Failed to delete carpooling information.",
+			CarpoolingDeleteByIdErr:     "Failed to delete carpooling information by admin.",
+			CarpoolingDeleteByIdSelfErr: "Failed to delete carpooling information by author.",
 		},
 	}
 }
@@ -305,6 +307,7 @@ func initInterfaceErr() {
 		ICarpoolingCreate:       "post /api/carpooling/",
 		ICarpoolingGetById:      "get /api/carpooling/:id",
 		ICarpoolingGetList:      "get /api/carpooling/",
-		ICarpoolingUpdateById:   "put /api/carpooling/carpooling_id",
+		ICarpoolingUpdateById:   "put /api/carpooling/:carpooling_id",
+		ICarpoolingDeleteById:   "delete /api/carpooling/:carpooling_id",
 	}
 }
