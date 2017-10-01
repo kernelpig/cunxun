@@ -17,13 +17,19 @@ import (
 	"wangqingang/cunxun/test"
 )
 
-func testUserSignup(t *testing.T, e *httpexpect.Expect, request *UserSignupRequest) int {
+func testUserSignup(t *testing.T, e *httpexpect.Expect, request *UserSignupRequest) uint64 {
+	assert := assert.New(t)
 	resp := e.POST("/api/u/signup").WithJSON(request).
 		Expect().Status(http.StatusOK)
 
-	respObj := resp.JSON().Object()
-	respObj.Value("code").Number().Equal(error.OK)
-	return int(respObj.Value("user_id").Number().Raw())
+	// 注意: httpexpect库不支持返回类型为uint64的处理, 需要自己解析结果
+	// update/delete没有报错的原因是, 错误降级, 忽略未找到对应ID的情况
+	// TODO: update错误不应该降级
+	object := &UserSignupResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
+	assert.Nil(err)
+	assert.NotZero(object.UserId)
+	return object.UserId
 }
 
 func testUserSignupHandler(t *testing.T, e *httpexpect.Expect) {
@@ -229,11 +235,12 @@ func testUserSignupHandler_UserAlreadyExist(t *testing.T, e *httpexpect.Expect) 
 	resp.JSON().Object().Value("code").Number().Equal(userAlreadyExistCode.C())
 }
 
-func testUserGetInfo(t *testing.T, e *httpexpect.Expect, xToken string, userId int) {
+func testUserGetInfo(t *testing.T, e *httpexpect.Expect, xToken string, userId uint64) {
 	resp := e.GET("/api/u/{user_id}").
 		WithPath("user_id", userId).
 		WithHeader(common.AuthHeaderKey, xToken).
 		Expect().Status(http.StatusOK)
+
 	resp.JSON().Object().
 		Value("code").Number().Equal(error.OK)
 }
@@ -399,7 +406,7 @@ func testUserCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	testUserLogin(t, e, loginRequest)
 }
 
-func testUserUpdate(t *testing.T, e *httpexpect.Expect, xToken string, userId int, request *UserUpdateRequest) {
+func testUserUpdate(t *testing.T, e *httpexpect.Expect, xToken string, userId uint64, request *UserUpdateRequest) {
 	resp := e.PUT("/api/u/{user_id}").
 		WithPath("user_id", userId).
 		WithHeader(common.AuthHeaderKey, xToken).
@@ -447,7 +454,7 @@ func testUserUpdateHandler(t *testing.T, e *httpexpect.Expect) {
 	testUserUpdate(t, e, xSuperToken, userId, updateRequest)
 }
 
-func testUserDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, userId int) {
+func testUserDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, userId uint64) {
 	resp := e.DELETE("/api/u/{user_id}").
 		WithPath("user_id", userId).
 		WithHeader(common.AuthHeaderKey, xToken).

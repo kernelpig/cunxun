@@ -77,23 +77,23 @@ type CarpoolingUpdateRequest struct {
 }
 
 type ArticleCreateRequest struct {
-	ColumnId int    `json:"column_id" binding:"required"`
+	ColumnId uint64 `json:"column_id" binding:"required"`
 	Title    string `json:"title" binding:"required"`
 	Content  string `json:"content" binding:"required"`
 }
 
 type ArticleUpdateRequest struct {
-	ColumnId int    `json:"column_id" binding:"omitempty"`
+	ColumnId uint64 `json:"column_id" binding:"omitempty"`
 	Title    string `json:"title" binding:"omitempty"`
 	Content  string `json:"content" binding:"omitempty"`
 }
 
 type CommentCreateRequest struct {
-	RelateId int    `json:"relate_id" binding:"required"`
+	RelateId uint64 `json:"relate_id" binding:"required"`
 	Content  string `json:"content" binding:"required"`
 }
 
 type CommentUpdateRequest struct {
-	RelateId int    `json:"relate_id" binding:"omitempty"`
+	RelateId uint64 `json:"relate_id" binding:"omitempty"`
 	Content  string `json:"content" binding:"omitempty"`
 }

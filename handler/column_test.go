@@ -14,15 +14,20 @@ import (
 	"wangqingang/cunxun/test"
 )
 
-func testColumnCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *ColumnCreateRequest) int {
+func testColumnCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *ColumnCreateRequest) uint64 {
+	assert := assert.New(t)
 	resp := e.POST("/api/column/").
 		WithHeader(common.AuthHeaderKey, xToken).
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
-	respObj := resp.JSON().Object()
-	respObj.Value("code").Number().Equal(error.OK)
-	return int(respObj.Value("column_id").Number().Raw())
+	object := &ColumnCreateResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
+	assert.Nil(err)
+	assert.Equal(error.OK, object.Code)
+	assert.NotZero(object.ColumnId)
+
+	return object.ColumnId
 }
 
 func testColumnCreateHandler(t *testing.T, e *httpexpect.Expect) {
@@ -72,7 +77,7 @@ func testColumnGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	assert.Equal(2, len(list))
 }
 
-func testColumnUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, columnId int, request *ColumnUpdateRequest) {
+func testColumnUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, columnId uint64, request *ColumnUpdateRequest) {
 	resp := e.PUT("/api/column/{column_id}").
 		WithPath("column_id", columnId).
 		WithHeader(common.AuthHeaderKey, xToken).
@@ -100,7 +105,7 @@ func testColumnUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	testColumnUpdateById(t, e, xSuperToken, columnId, updateRequest)
 }
 
-func testColumnDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, columnId int) {
+func testColumnDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, columnId uint64) {
 	resp := e.DELETE("/api/column/{column_id}").
 		WithPath("column_id", columnId).
 		WithHeader(common.AuthHeaderKey, xToken).

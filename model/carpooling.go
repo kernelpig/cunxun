@@ -58,13 +58,15 @@ func GetCarpoolingByID(db sqlExec, CarpoolingID uint64) (*CarpoolingDetailView, 
 }
 
 func CreateCarpooling(db sqlExec, carpooling *Carpooling) (*Carpooling, error) {
-	id, err := id.Generate()
-	if err != nil {
-		return nil, err
+	// 未设置ID使用自动生成的id, 主要是考虑到人工设置特殊的ID场景
+	if carpooling.ID == 0 {
+		id, err := id.Generate()
+		if err != nil {
+			return nil, err
+		}
+		carpooling.ID = id
 	}
-	carpooling.ID = id
-
-	_, err = SQLInsert(db, carpooling)
+	_, err := SQLInsert(db, carpooling)
 	if err != nil {
 		if isDBDuplicateErr(err) {
 			return nil, e.SP(e.MCarpoolingErr, e.CarpoolingAlreadyExist, err)

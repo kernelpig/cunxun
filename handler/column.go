@@ -49,7 +49,7 @@ func ColumnCreateHandler(c *gin.Context) {
 		Name:       req.Name,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
-		CreaterUid: int(currentCtx.Payload.UserId),
+		CreaterUid: currentCtx.Payload.UserId,
 	}
 	if _, err := model.CreateColumn(db.Mysql, column); err != nil {
 		if msgErr, ok := err.(e.Message); ok && msgErr.Code.IsSubError(e.MColumnErr, e.ColumnAlreadyExist) {
@@ -58,10 +58,7 @@ func ColumnCreateHandler(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnCreate, e.MColumnErr, e.ColumnCreateErr, err))
 		}
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code":      e.OK,
-		"column_id": column.ID,
-	})
+	c.JSON(http.StatusOK, ColumnCreateResponse{Code: e.OK, ColumnId: column.ID})
 }
 
 func ColumnUpdateByIdHandler(c *gin.Context) {
@@ -70,7 +67,7 @@ func ColumnUpdateByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IColumnUpdateById, e.MParamsErr, e.ParamsBindErr, err))
 		return
 	}
-	columnID, err := strconv.ParseInt(c.Param("column_id"), 10, 64)
+	columnID, err := strconv.ParseUint(c.Param("column_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.IColumnUpdateById, e.MParamsErr, e.ParamsInvalidColumnID, err))
 		return
@@ -85,12 +82,12 @@ func ColumnUpdateByIdHandler(c *gin.Context) {
 		UpdatedAt: time.Now(),
 	}
 	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
-		if _, err := model.UpdateColumnById(db.Mysql, int(columnID), column); err != nil {
+		if _, err := model.UpdateColumnById(db.Mysql, columnID, column); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnUpdateById, e.MColumnErr, e.ColumnUpdateById, err))
 			return
 		}
 	} else {
-		if _, err := model.UpdateColumnByIdOfSelf(db.Mysql, int(columnID), int(currentCtx.Payload.UserId), column); err != nil {
+		if _, err := model.UpdateColumnByIdOfSelf(db.Mysql, columnID, currentCtx.Payload.UserId, column); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnUpdateById, e.MColumnErr, e.ColumnUpdateByIdSelf, err))
 			return
 		}
@@ -101,7 +98,7 @@ func ColumnUpdateByIdHandler(c *gin.Context) {
 }
 
 func ColumnDeleteByIdHandler(c *gin.Context) {
-	columnID, err := strconv.ParseInt(c.Param("column_id"), 10, 64)
+	columnID, err := strconv.ParseUint(c.Param("column_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.IColumnDeleteById, e.MParamsErr, e.ParamsInvalidColumnID, err))
 		return
@@ -112,12 +109,12 @@ func ColumnDeleteByIdHandler(c *gin.Context) {
 		return
 	}
 	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
-		if _, err := model.DeleteColumnById(db.Mysql, int(columnID)); err != nil {
+		if _, err := model.DeleteColumnById(db.Mysql, columnID); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnDeleteById, e.MColumnErr, e.ColumnDeleteById, err))
 			return
 		}
 	} else {
-		if _, err := model.DeleteColumnByIdOfSelf(db.Mysql, int(columnID), int(currentCtx.Payload.UserId)); err != nil {
+		if _, err := model.DeleteColumnByIdOfSelf(db.Mysql, columnID, currentCtx.Payload.UserId); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnDeleteById, e.MColumnErr, e.ColumnDeleteByIdSelf, err))
 			return
 		}

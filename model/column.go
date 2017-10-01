@@ -67,13 +67,15 @@ func GetColumnByID(db sqlExec, columnID uint64) (*Column, error) {
 }
 
 func CreateColumn(db sqlExec, column *Column) (*Column, error) {
-	id, err := id.Generate()
-	if err != nil {
-		return nil, err
+	// 未设置ID使用自动生成的id, 主要是考虑到人工设置特殊的ID场景
+	if column.ID == 0 {
+		id, err := id.Generate()
+		if err != nil {
+			return nil, err
+		}
+		column.ID = id
 	}
-	column.ID = id
-
-	_, err = SQLInsert(db, column)
+	_, err := SQLInsert(db, column)
 	if err != nil {
 		if isDBDuplicateErr(err) {
 			return nil, e.SP(e.MColumnErr, e.ColumnAlreadyExist, err)

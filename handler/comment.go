@@ -36,7 +36,7 @@ func CommentCreateHandler(c *gin.Context) {
 		Content:    req.Content,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
-		CreaterUid: int(currentCtx.Payload.UserId),
+		CreaterUid: currentCtx.Payload.UserId,
 	}
 	if _, err := model.CreateComment(db.Mysql, comment); err != nil {
 		if msgErr, ok := err.(e.Message); ok && msgErr.Code.IsSubError(e.MCommentErr, e.CommentAlreadyExist) {
@@ -47,19 +47,16 @@ func CommentCreateHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":       e.OK,
-		"comment_id": comment.ID,
-	})
+	c.JSON(http.StatusOK, CommentCreateResponse{Code: e.OK, CommentId: comment.ID})
 }
 
 func CommentGetHandler(c *gin.Context) {
-	commentID, err := strconv.ParseInt(c.Param("comment_id"), 10, 64)
+	commentID, err := strconv.ParseUint(c.Param("comment_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentGet, e.MParamsErr, e.ParamsInvalidCommentID, err))
 		return
 	}
-	comment, err := model.GetCommentByID(db.Mysql, int(commentID))
+	comment, err := model.GetCommentByID(db.Mysql, commentID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.ICommentGet, e.MCommentErr, e.CommentGetErr, err))
 		return
@@ -111,7 +108,7 @@ func CommentUpdateByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentUpdateById, e.MParamsErr, e.ParamsBindErr, err))
 		return
 	}
-	commentID, err := strconv.ParseInt(c.Param("comment_id"), 10, 64)
+	commentID, err := strconv.ParseUint(c.Param("comment_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentUpdateById, e.MParamsErr, e.ParamsInvalidCommentID, err))
 		return
@@ -131,12 +128,12 @@ func CommentUpdateByIdHandler(c *gin.Context) {
 		UpdatedAt: time.Now(),
 	}
 	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
-		if _, err := model.UpdateCommentById(db.Mysql, int(commentID), comment); err != nil {
+		if _, err := model.UpdateCommentById(db.Mysql, commentID, comment); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.ICommentUpdateById, e.MCommentErr, e.CommentUpdateErr, err))
 			return
 		}
 	} else {
-		if _, err := model.UpdateCommentByIdOfSelf(db.Mysql, int(commentID), int(currentCtx.Payload.UserId), comment); err != nil {
+		if _, err := model.UpdateCommentByIdOfSelf(db.Mysql, commentID, currentCtx.Payload.UserId, comment); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.ICommentUpdateById, e.MCommentErr, e.CommentUpdateByIdSelf, err))
 			return
 		}
@@ -147,7 +144,7 @@ func CommentUpdateByIdHandler(c *gin.Context) {
 }
 
 func CommentDeleteByIdHandler(c *gin.Context) {
-	commentID, err := strconv.ParseInt(c.Param("comment_id"), 10, 64)
+	commentID, err := strconv.ParseUint(c.Param("comment_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentDeleteById, e.MParamsErr, e.ParamsInvalidCommentID, err))
 		return
@@ -158,12 +155,12 @@ func CommentDeleteByIdHandler(c *gin.Context) {
 		return
 	}
 	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
-		if _, err := model.DeleteCommentById(db.Mysql, int(commentID)); err != nil {
+		if _, err := model.DeleteCommentById(db.Mysql, commentID); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.ICommentDeleteById, e.MCommentErr, e.CommentDeleteErr, err))
 			return
 		}
 	} else {
-		if _, err := model.DeleteCommentByIdOfSelf(db.Mysql, int(commentID), int(currentCtx.Payload.UserId)); err != nil {
+		if _, err := model.DeleteCommentByIdOfSelf(db.Mysql, commentID, currentCtx.Payload.UserId); err != nil {
 			c.JSON(http.StatusInternalServerError, e.IP(e.ICommentDeleteById, e.MCommentErr, e.CommentDeleteByIdSelf, err))
 			return
 		}

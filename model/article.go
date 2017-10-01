@@ -59,13 +59,15 @@ func GetArticleByID(db sqlExec, articleID uint64) (*ArticleDetailView, error) {
 }
 
 func CreateArticle(db sqlExec, article *Article) (*Article, error) {
-	id, err := id.Generate()
-	if err != nil {
-		return nil, err
+	// 未设置ID使用自动生成的id, 主要是考虑到人工设置特殊的ID场景
+	if article.ID == 0 {
+		id, err := id.Generate()
+		if err != nil {
+			return nil, err
+		}
+		article.ID = id
 	}
-	article.ID = id
-
-	_, err = SQLInsert(db, article)
+	_, err := SQLInsert(db, article)
 	if err != nil {
 		if isDBDuplicateErr(err) {
 			return nil, e.SP(e.MArticleErr, e.ArticleAlreadyExist, err)

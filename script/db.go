@@ -55,7 +55,7 @@ func CreateColumns(user *model.User) ([]*model.Column, error) {
 	models := make([]*model.Column, 0)
 	for _, id := range columnIds {
 		x := &model.Column{
-			ID:         id,
+			ID:         uint64(id),
 			Name:       model.ColumnsOfOrigin[id],
 			CreaterUid: user.ID,
 			CreatedAt:  time.Now(),

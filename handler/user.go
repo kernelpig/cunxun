@@ -110,10 +110,7 @@ func UserSignupHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":    e.OK,
-		"user_id": user.ID,
-	})
+	c.JSON(http.StatusOK, UserSignupResponse{Code: e.OK, UserId: user.ID})
 	return
 }
 
@@ -123,7 +120,7 @@ func UserUpdateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IUserUpdateById, e.MParamsErr, e.ParamsBindErr, err))
 		return
 	}
-	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	userID, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.IUserUpdateById, e.MParamsErr, e.ParamsInvalidColumnID, err))
 		return
@@ -141,7 +138,7 @@ func UserUpdateHandler(c *gin.Context) {
 		Role:      req.Role,
 		UpdatedAt: time.Now(),
 	}
-	if _, err := model.UpdateUserById(db.Mysql, int(userID), update); err != nil {
+	if _, err := model.UpdateUserById(db.Mysql, userID, update); err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IUserUpdateById, e.MUserErr, e.UserCreateErr, err))
 		return
 	}
@@ -295,7 +292,7 @@ func UserLogoutHandler(c *gin.Context) {
 	payload, err := middleware.CheckAccessToken(userToken)
 
 	if err == nil && payload != nil {
-		token.TokenClean(int(payload.UserId), payload.LoginSource)
+		token.TokenClean(payload.UserId, payload.LoginSource)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -305,14 +302,14 @@ func UserLogoutHandler(c *gin.Context) {
 }
 
 func UserGetAvatarHandler(c *gin.Context) {
-	userId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	userId, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.IUserGetAvatar, e.MParamsErr, e.ParamsInvalidUserId, err))
 		return
 	}
 
 	// 用户头像存在, 使用用户头像
-	user, err := model.GetUserByID(db.Mysql, int(userId))
+	user, err := model.GetUserByID(db.Mysql, userId)
 	if err != nil || user == nil || user.Avatar == "" {
 		bytes := avatar.GetDefaultAvatar(common.Config.User.DefaultAvatarDir, common.Config.User.DefaultAvatarFile)
 		c.Data(http.StatusOK, "image/png", bytes)
@@ -329,7 +326,7 @@ func UserGetAvatarHandler(c *gin.Context) {
 }
 
 func UserGetInfoHandler(c *gin.Context) {
-	userId, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	userId, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.IUserGetInfo, e.MParamsErr, e.ParamsInvalidUserId, err))
 		return
@@ -339,7 +336,7 @@ func UserGetInfoHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.IUserGetInfo, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-	user, err := model.GetUserByID(db.Mysql, int(userId))
+	user, err := model.GetUserByID(db.Mysql, userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IUserGetInfo, e.MUserErr, e.UserGetErr, err))
 		return
@@ -390,7 +387,7 @@ func UserGetListHandler(c *gin.Context) {
 }
 
 func UserDeleteByIdHandler(c *gin.Context) {
-	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+	userID, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.IUserDeleteById, e.MParamsErr, e.ParamsInvalidUserId, err))
 		return
@@ -404,7 +401,7 @@ func UserDeleteByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.IUserDeleteById, e.MUserErr, e.UserNotPermit))
 		return
 	}
-	if _, err := model.DeleteUserById(db.Mysql, int(userID)); err != nil {
+	if _, err := model.DeleteUserById(db.Mysql, userID); err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IUserDeleteById, e.MUserErr, e.UserDeleteErr, err))
 		return
 	}

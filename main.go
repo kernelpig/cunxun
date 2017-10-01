@@ -11,6 +11,7 @@ import (
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
 	"wangqingang/cunxun/handler"
+	"wangqingang/cunxun/id"
 	"wangqingang/cunxun/oss"
 	"wangqingang/cunxun/script"
 	"wangqingang/cunxun/token/token_lib"
@@ -34,6 +35,9 @@ func cmdConfigHandler(config string) {
 	}
 	if common.Config.Gomaxprocs >= 1 {
 		runtime.GOMAXPROCS(common.Config.Gomaxprocs)
+	}
+	if err := id.InitIdGenerator(); err != nil {
+		panic(err)
 	}
 	if err := avatar.InitAvatar(common.Config.User.DefaultAvatarDir, common.Config.User.DefaultAvatarFile); err != nil {
 		panic(err)

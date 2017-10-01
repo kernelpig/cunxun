@@ -15,15 +15,20 @@ import (
 	"wangqingang/cunxun/test"
 )
 
-func testCommentCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *CommentCreateRequest) int {
+func testCommentCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *CommentCreateRequest) uint64 {
+	assert := assert.New(t)
 	resp := e.POST("/api/comment/").
 		WithHeader(common.AuthHeaderKey, xToken).
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
-	respObj := resp.JSON().Object()
-	respObj.Value("code").Number().Equal(error.OK)
-	return int(respObj.Value("comment_id").Number().Raw())
+	object := &CommentCreateResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
+	assert.Nil(err)
+	assert.Equal(error.OK, object.Code)
+	assert.NotZero(object.CommentId)
+
+	return object.CommentId
 }
 
 func testCommentCreateHandler(t *testing.T, e *httpexpect.Expect) {
@@ -89,7 +94,7 @@ func testCommentCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	testCommentCreate(t, e, xToken, createCommentRequest)
 }
 
-func testCommentGetList(t *testing.T, e *httpexpect.Expect, relateID, pageNum, pageSize int) []*model.Comment {
+func testCommentGetList(t *testing.T, e *httpexpect.Expect, relateID uint64, pageNum, pageSize int) []*model.Comment {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/comment/").
@@ -176,11 +181,11 @@ func testCommentGetListHandler(t *testing.T, e *httpexpect.Expect) {
 		testCommentCreate(t, e, xToken, createCommentRequest)
 	}
 
-	list := testCommentGetList(t, e, columnID, 1, 10)
+	list := testCommentGetList(t, e, articleID, 1, 10)
 	assert.Equal(5, len(list))
 }
 
-func testCommentGet(t *testing.T, e *httpexpect.Expect, commentID int) *model.Comment {
+func testCommentGet(t *testing.T, e *httpexpect.Expect, commentID uint64) *model.Comment {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/comment/{comment_id}").
@@ -262,10 +267,11 @@ func testCommentGetHandler(t *testing.T, e *httpexpect.Expect) {
 	}
 	commentID := testCommentCreate(t, e, xToken, createCommentRequest)
 	comment := testCommentGet(t, e, commentID)
+	assert.NotNil(comment)
 	assert.Equal(commentID, comment.ID)
 }
 
-func testCommentUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, commentId int, request *CommentCreateRequest) {
+func testCommentUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, commentId uint64, request *CommentCreateRequest) {
 	resp := e.PUT("/api/comment/{comment_id}").
 		WithPath("comment_id", commentId).
 		WithHeader(common.AuthHeaderKey, xToken).
@@ -345,7 +351,7 @@ func testCommentUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	testCommentUpdateById(t, e, xToken, commentId, updateCommentRequest)
 }
 
-func testCommentDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, commentId int) {
+func testCommentDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, commentId uint64) {
 	resp := e.DELETE("/api/comment/{comment_id}").
 		WithPath("comment_id", commentId).
 		WithHeader(common.AuthHeaderKey, xToken).

@@ -27,13 +27,15 @@ type CommentListView struct {
 }
 
 func CreateComment(db sqlExec, comment *Comment) (*Comment, error) {
-	id, err := id.Generate()
-	if err != nil {
-		return nil, err
+	// 未设置ID使用自动生成的id, 主要是考虑到人工设置特殊的ID场景
+	if comment.ID == 0 {
+		id, err := id.Generate()
+		if err != nil {
+			return nil, err
+		}
+		comment.ID = id
 	}
-	comment.ID = id
-
-	_, err = SQLInsert(db, comment)
+	_, err := SQLInsert(db, comment)
 	if err != nil {
 		if isDBDuplicateErr(err) {
 			return nil, e.SP(e.MCommentErr, e.CommentAlreadyExist, err)

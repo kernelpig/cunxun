@@ -18,6 +18,7 @@ build:
 	go install $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)
 
 test:
+	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/id
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/error
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/checkcode
 	go test $(CURRENT_GIT_GROUP)/$(CURRENT_GIT_REPO)/login

@@ -56,12 +56,15 @@ func GetUserByID(db sqlExec, userId uint64) (*User, error) {
 }
 
 func CreateUser(db sqlExec, user *User) (*User, error) {
-	id, err := id.Generate()
-	if err != nil {
-		return nil, err
+	// 未设置ID使用自动生成的id, 主要是考虑到人工设置特殊的ID场景
+	if user.ID == 0 {
+		id, err := id.Generate()
+		if err != nil {
+			return nil, err
+		}
+		user.ID = id
 	}
-	user.ID = id
-	_, err = SQLInsert(db, user)
+	_, err := SQLInsert(db, user)
 	if err != nil {
 		if isDBDuplicateErr(err) {
 			return nil, e.SP(e.MUserErr, e.UserAlreadyExist, err)
