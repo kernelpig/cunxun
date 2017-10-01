@@ -4,6 +4,7 @@ import (
 	"time"
 
 	e "wangqingang/cunxun/error"
+	"wangqingang/cunxun/id"
 )
 
 const (
@@ -12,11 +13,11 @@ const (
 )
 
 type Carpooling struct {
-	ID          int       `json:"id" column:"id"`
+	ID          uint64    `json:"id" column:"id"`
 	CreatedAt   time.Time `json:"created_at" column:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" column:"updated_at"`
-	CreaterUid  int       `json:"creater_uid" column:"creater_uid"`
-	UpdaterUid  int       `json:"updater_uid" column:"updater_uid"`
+	CreaterUid  uint64    `json:"creater_uid" column:"creater_uid"`
+	UpdaterUid  uint64    `json:"updater_uid" column:"updater_uid"`
 	FromCity    string    `json:"from_city" column:"from_city"`
 	ToCity      string    `json:"to_city" column:"to_city"`
 	DepartTime  time.Time `json:"depart_time" column:"depart_time"`
@@ -27,11 +28,11 @@ type Carpooling struct {
 }
 
 type CarpoolingDetailView struct {
-	ID          int       `json:"id" column:"id"`
+	ID          uint64    `json:"id" column:"id"`
 	CreatedAt   time.Time `json:"created_at" column:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" column:"updated_at"`
-	CreaterUid  int       `json:"creater_uid" column:"creater_uid"`
-	UpdaterUid  int       `json:"updater_uid" column:"updater_uid"`
+	CreaterUid  uint64    `json:"creater_uid" column:"creater_uid"`
+	UpdaterUid  uint64    `json:"updater_uid" column:"updater_uid"`
 	FromCity    string    `json:"from_city" column:"from_city"`
 	ToCity      string    `json:"to_city" column:"to_city"`
 	DepartTime  time.Time `json:"depart_time" column:"depart_time"`
@@ -42,7 +43,7 @@ type CarpoolingDetailView struct {
 	Nickname    string    `json:"nickname" column:"nickname"`
 }
 
-func GetCarpoolingByID(db sqlExec, CarpoolingID int) (*CarpoolingDetailView, error) {
+func GetCarpoolingByID(db sqlExec, CarpoolingID uint64) (*CarpoolingDetailView, error) {
 	u := &CarpoolingDetailView{}
 	isFound, err := SQLQueryRow(db, u, map[string]interface{}{
 		"id": CarpoolingID,
@@ -56,16 +57,21 @@ func GetCarpoolingByID(db sqlExec, CarpoolingID int) (*CarpoolingDetailView, err
 	}
 }
 
-func CreateCarpooling(db sqlExec, Carpooling *Carpooling) (*Carpooling, error) {
-	id, err := SQLInsert(db, Carpooling)
+func CreateCarpooling(db sqlExec, carpooling *Carpooling) (*Carpooling, error) {
+	id, err := id.Generate()
+	if err != nil {
+		return nil, err
+	}
+	carpooling.ID = id
+
+	_, err = SQLInsert(db, carpooling)
 	if err != nil {
 		if isDBDuplicateErr(err) {
 			return nil, e.SP(e.MCarpoolingErr, e.CarpoolingAlreadyExist, err)
 		}
 		return nil, e.SP(e.MCarpoolingErr, e.CarpoolingCreateErr, err)
 	}
-	Carpooling.ID = int(id)
-	return Carpooling, nil
+	return carpooling, nil
 }
 
 func GetCarpoolingList(db sqlExec, where map[string]interface{}, orderBy string, pageSize, pageNum int) ([]*CarpoolingDetailView, bool, error) {
@@ -99,11 +105,11 @@ func UpdateCarpoolingList(db sqlExec, wheres map[string]interface{}, valueWillSe
 	}
 }
 
-func UpdateCarpoolingById(db sqlExec, carpoolingId int, valueWillSet *Carpooling) (int64, error) {
+func UpdateCarpoolingById(db sqlExec, carpoolingId uint64, valueWillSet *Carpooling) (int64, error) {
 	return UpdateCarpoolingList(db, map[string]interface{}{"id": carpoolingId}, valueWillSet)
 }
 
-func UpdateCarpoolingByIdOfSelf(db sqlExec, carpoolingId, userID int, valueWillSet *Carpooling) (int64, error) {
+func UpdateCarpoolingByIdOfSelf(db sqlExec, carpoolingId, userID uint64, valueWillSet *Carpooling) (int64, error) {
 	return UpdateCarpoolingList(db, map[string]interface{}{"id": carpoolingId, "creater_uid": userID}, valueWillSet)
 }
 
@@ -116,10 +122,10 @@ func DeleteCarpoolingList(db sqlExec, wheres map[string]interface{}) (int64, err
 	}
 }
 
-func DeleteCarpoolingById(db sqlExec, articleId int) (int64, error) {
-	return DeleteCarpoolingList(db, map[string]interface{}{"id": articleId})
+func DeleteCarpoolingById(db sqlExec, id uint64) (int64, error) {
+	return DeleteCarpoolingList(db, map[string]interface{}{"id": id})
 }
 
-func DeleteCarpoolingByIdOfSelf(db sqlExec, articleId, userId int) (int64, error) {
-	return DeleteCarpoolingList(db, map[string]interface{}{"id": articleId, "creater_uid": userId})
+func DeleteCarpoolingByIdOfSelf(db sqlExec, id, userId uint64) (int64, error) {
+	return DeleteCarpoolingList(db, map[string]interface{}{"id": id, "creater_uid": userId})
 }

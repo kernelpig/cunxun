@@ -27,7 +27,7 @@ func TestCreateArticle(t *testing.T) {
 	assert.NotNil(u)
 
 	c := &Article{
-		ColumnId:   test.GenRandInt(5),
+		ColumnId:   test.GenRandId(5),
 		Title:      test.GenRandString(),
 		Content:    test.GenRandString(),
 		CreaterUid: u.ID,
@@ -53,8 +53,8 @@ func TestGetArticleList(t *testing.T) {
 			ColumnId:   1,
 			Title:      test.GenRandString(),
 			Content:    test.GenRandString(),
-			CreaterUid: test.GenRandInt(5),
-			UpdaterUid: test.GenRandInt(5),
+			CreaterUid: test.GenRandId(5),
+			UpdaterUid: test.GenRandId(5),
 		}
 		_, err := CreateArticle(db.Mysql, c)
 		assert.Nil(err)
@@ -86,7 +86,7 @@ func TestUpdateArticleById(t *testing.T) {
 	assert.NotNil(u)
 
 	c := &Article{
-		ColumnId:   test.GenRandInt(5),
+		ColumnId:   test.GenRandId(5),
 		Title:      test.GenRandString(),
 		Content:    test.GenRandString(),
 		CreaterUid: u.ID,
@@ -130,7 +130,7 @@ func TestDeleteArticleById(t *testing.T) {
 	assert.NotNil(u)
 
 	c := &Article{
-		ColumnId:   test.GenRandInt(5),
+		ColumnId:   test.GenRandId(5),
 		Title:      test.GenRandString(),
 		Content:    test.GenRandString(),
 		CreaterUid: u.ID,

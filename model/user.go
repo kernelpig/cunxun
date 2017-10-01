@@ -4,6 +4,7 @@ import (
 	"time"
 
 	e "wangqingang/cunxun/error"
+	"wangqingang/cunxun/id"
 )
 
 const (
@@ -14,7 +15,7 @@ const (
 
 // User 对应于数据库user表中的一行
 type User struct {
-	ID             int       `json:"id" column:"id"`
+	ID             uint64    `json:"id" column:"id"`
 	Phone          string    `json:"phone" column:"phone"`
 	NickName       string    `json:"nickname" column:"nickname"`
 	HashedPassword string    `json:"hashed_password" column:"hashed_password"`
@@ -40,7 +41,7 @@ func GetUserByPhone(db sqlExec, phone string) (*User, error) {
 	}
 }
 
-func GetUserByID(db sqlExec, userId int) (*User, error) {
+func GetUserByID(db sqlExec, userId uint64) (*User, error) {
 	u := &User{}
 	isFound, err := SQLQueryRow(db, u, map[string]interface{}{
 		"id": userId,
@@ -55,14 +56,18 @@ func GetUserByID(db sqlExec, userId int) (*User, error) {
 }
 
 func CreateUser(db sqlExec, user *User) (*User, error) {
-	id, err := SQLInsert(db, user)
+	id, err := id.Generate()
+	if err != nil {
+		return nil, err
+	}
+	user.ID = id
+	_, err = SQLInsert(db, user)
 	if err != nil {
 		if isDBDuplicateErr(err) {
 			return nil, e.SP(e.MUserErr, e.UserAlreadyExist, err)
 		}
 		return nil, e.SP(e.MUserErr, e.UserCreateErr, err)
 	}
-	user.ID = int(id)
 	return user, nil
 }
 
@@ -97,7 +102,7 @@ func UpdateUserList(db sqlExec, wheres map[string]interface{}, valueWillSet *Use
 	}
 }
 
-func UpdateUserById(db sqlExec, userId int, valueWillSet *User) (int64, error) {
+func UpdateUserById(db sqlExec, userId uint64, valueWillSet *User) (int64, error) {
 	return UpdateUserList(db, map[string]interface{}{"id": userId}, valueWillSet)
 }
 
@@ -110,6 +115,6 @@ func DeleteUserList(db sqlExec, wheres map[string]interface{}) (int64, error) {
 	}
 }
 
-func DeleteUserById(db sqlExec, userId int) (int64, error) {
+func DeleteUserById(db sqlExec, userId uint64) (int64, error) {
 	return DeleteUserList(db, map[string]interface{}{"id": userId})
 }

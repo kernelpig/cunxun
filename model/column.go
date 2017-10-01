@@ -4,6 +4,7 @@ import (
 	"time"
 
 	e "wangqingang/cunxun/error"
+	"wangqingang/cunxun/id"
 )
 
 // 固定类别ID
@@ -34,24 +35,24 @@ func init() {
 }
 
 type Column struct {
-	ID         int       `json:"id" column:"id"`
+	ID         uint64    `json:"id" column:"id"`
 	Name       string    `json:"name" column:"name"`
-	CreaterUid int       `json:"creater_uid" column:"creater_uid"`
+	CreaterUid uint64    `json:"creater_uid" column:"creater_uid"`
 	CreatedAt  time.Time `json:"created_at" column:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at" column:"updated_at"`
 }
 
 type ColumnListView struct {
-	ID          int       `json:"id" column:"id"`
+	ID          uint64    `json:"id" column:"id"`
 	Name        string    `json:"name" column:"name"`
-	CreaterUid  int       `json:"creater_uid" column:"creater_uid"`
+	CreaterUid  uint64    `json:"creater_uid" column:"creater_uid"`
 	CreatedAt   time.Time `json:"created_at" column:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" column:"updated_at"`
 	Nickname    string    `json:"nickname" column:"nickname"`
 	ColumnCount int       `json:"column_count" column:"column_count"`
 }
 
-func GetColumnByID(db sqlExec, columnID int) (*Column, error) {
+func GetColumnByID(db sqlExec, columnID uint64) (*Column, error) {
 	u := &Column{}
 	isFound, err := SQLQueryRow(db, u, map[string]interface{}{
 		"id": columnID,
@@ -66,14 +67,19 @@ func GetColumnByID(db sqlExec, columnID int) (*Column, error) {
 }
 
 func CreateColumn(db sqlExec, column *Column) (*Column, error) {
-	id, err := SQLInsert(db, column)
+	id, err := id.Generate()
+	if err != nil {
+		return nil, err
+	}
+	column.ID = id
+
+	_, err = SQLInsert(db, column)
 	if err != nil {
 		if isDBDuplicateErr(err) {
 			return nil, e.SP(e.MColumnErr, e.ColumnAlreadyExist, err)
 		}
 		return nil, e.SP(e.MColumnErr, e.ColumnCreateErr, err)
 	}
-	column.ID = int(id)
 	return column, nil
 }
 
@@ -95,19 +101,19 @@ func DeleteColumnList(db sqlExec, wheres map[string]interface{}) (int64, error) 
 	}
 }
 
-func UpdateColumnById(db sqlExec, columnId int, valueWillSet *Column) (int64, error) {
+func UpdateColumnById(db sqlExec, columnId uint64, valueWillSet *Column) (int64, error) {
 	return UpdateColumnList(db, map[string]interface{}{"id": columnId}, valueWillSet)
 }
 
-func UpdateColumnByIdOfSelf(db sqlExec, columnId, userId int, valueWillSet *Column) (int64, error) {
+func UpdateColumnByIdOfSelf(db sqlExec, columnId, userId uint64, valueWillSet *Column) (int64, error) {
 	return UpdateColumnList(db, map[string]interface{}{"id": columnId, "creater_uid": userId}, valueWillSet)
 }
 
-func DeleteColumnById(db sqlExec, columnId int) (int64, error) {
+func DeleteColumnById(db sqlExec, columnId uint64) (int64, error) {
 	return DeleteColumnList(db, map[string]interface{}{"id": columnId})
 }
 
-func DeleteColumnByIdOfSelf(db sqlExec, columnId, userId int) (int64, error) {
+func DeleteColumnByIdOfSelf(db sqlExec, columnId, userId uint64) (int64, error) {
 	return DeleteColumnList(db, map[string]interface{}{"id": columnId, "creater_uid": userId})
 }
 

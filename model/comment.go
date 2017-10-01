@@ -4,40 +4,46 @@ import (
 	"time"
 
 	e "wangqingang/cunxun/error"
+	"wangqingang/cunxun/id"
 )
 
 type Comment struct {
-	ID         int       `json:"id" column:"id"`
-	RelateId   int       `json:"relate_id" column:"relate_id"`
+	ID         uint64    `json:"id" column:"id"`
+	RelateId   uint64    `json:"relate_id" column:"relate_id"`
 	Content    string    `json:"content" column:"content"`
-	CreaterUid int       `json:"creater_uid" column:"creater_uid"`
+	CreaterUid uint64    `json:"creater_uid" column:"creater_uid"`
 	CreatedAt  time.Time `json:"created_at" column:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at" column:"updated_at"`
 }
 
 type CommentListView struct {
-	ID         int       `json:"id" column:"id"`
-	RelateId   int       `json:"relate_id" column:"relate_id"`
+	ID         uint64    `json:"id" column:"id"`
+	RelateId   uint64    `json:"relate_id" column:"relate_id"`
 	Content    string    `json:"content" column:"content"`
-	CreaterUid int       `json:"creater_uid" column:"creater_uid"`
+	CreaterUid uint64    `json:"creater_uid" column:"creater_uid"`
 	CreatedAt  time.Time `json:"created_at" column:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at" column:"updated_at"`
 	Nickname   string    `json:"nickname" column:"nickname"`
 }
 
 func CreateComment(db sqlExec, comment *Comment) (*Comment, error) {
-	id, err := SQLInsert(db, comment)
+	id, err := id.Generate()
+	if err != nil {
+		return nil, err
+	}
+	comment.ID = id
+
+	_, err = SQLInsert(db, comment)
 	if err != nil {
 		if isDBDuplicateErr(err) {
 			return nil, e.SP(e.MCommentErr, e.CommentAlreadyExist, err)
 		}
 		return nil, e.SP(e.MCommentErr, e.CommentCreateErr, err)
 	}
-	comment.ID = int(id)
 	return comment, nil
 }
 
-func GetCommentByID(db sqlExec, commentID int) (*Comment, error) {
+func GetCommentByID(db sqlExec, commentID uint64) (*Comment, error) {
 	u := &Comment{}
 	isFound, err := SQLQueryRow(db, u, map[string]interface{}{
 		"id": commentID,
@@ -91,18 +97,18 @@ func DeleteCommentList(db sqlExec, wheres map[string]interface{}) (int64, error)
 	}
 }
 
-func UpdateCommentById(db sqlExec, commentId int, valueWillSet *Comment) (int64, error) {
+func UpdateCommentById(db sqlExec, commentId uint64, valueWillSet *Comment) (int64, error) {
 	return UpdateCommentList(db, map[string]interface{}{"id": commentId}, valueWillSet)
 }
 
-func UpdateCommentByIdOfSelf(db sqlExec, commentId, userId int, valueWillSet *Comment) (int64, error) {
+func UpdateCommentByIdOfSelf(db sqlExec, commentId, userId uint64, valueWillSet *Comment) (int64, error) {
 	return UpdateCommentList(db, map[string]interface{}{"id": commentId, "creater_uid": userId}, valueWillSet)
 }
 
-func DeleteCommentById(db sqlExec, commentId int) (int64, error) {
+func DeleteCommentById(db sqlExec, commentId uint64) (int64, error) {
 	return DeleteCommentList(db, map[string]interface{}{"id": commentId})
 }
 
-func DeleteCommentByIdOfSelf(db sqlExec, commentId, userId int) (int64, error) {
+func DeleteCommentByIdOfSelf(db sqlExec, commentId, userId uint64) (int64, error) {
 	return DeleteCommentList(db, map[string]interface{}{"id": commentId, "creater_uid": userId})
 }

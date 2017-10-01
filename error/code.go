@@ -110,10 +110,21 @@ const (
 	MImageErr
 	MOssErr
 	MCarpoolingErr
+	MIdGeneratorErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
 	_SubModuleErrMax
+)
+
+// id生成错误
+const (
+	_IdGeneratorErrMin = iota
+	IdGeneratorInitErr
+
+	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
+
+	_IdGeneratorErrMax
 )
 
 // 拼车错误

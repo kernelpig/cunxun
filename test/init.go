@@ -13,6 +13,7 @@ import (
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
+	"wangqingang/cunxun/id"
 	"wangqingang/cunxun/token/token_lib"
 )
 
@@ -43,16 +44,26 @@ const (
 )
 
 func init() {
-	common.InitConfig("../conf/config.toml")
+	common.InitConfig("../conf/config.dev.toml")
 
-	db.InitRedis(common.Config.Redis)
-	db.InitMysql(common.Config.Mysql)
-
-	avatar.InitAvatar(testAvatarDir, testAvatarFile)
-	captcha.InitCaptcha(common.Config.Captcha.TTL.D())
-
-	token_lib.InitKeyPem(testPublicKeyPath, testPrivateKeyPath)
-
+	if err := id.InitIdGenerator(); err != nil {
+		panic(err)
+	}
+	if err := db.InitRedis(common.Config.Redis); err != nil {
+		panic(err)
+	}
+	if err := db.InitMysql(common.Config.Mysql); err != nil {
+		panic(err)
+	}
+	if err := avatar.InitAvatar(testAvatarDir, testAvatarFile); err != nil {
+		panic(err)
+	}
+	if err := captcha.InitCaptcha(common.Config.Captcha.TTL.D()); err != nil {
+		panic(err)
+	}
+	if err := token_lib.InitKeyPem(testPublicKeyPath, testPrivateKeyPath); err != nil {
+		panic(err)
+	}
 	rand.Seed(time.Now().UTC().UnixNano())
 }
 

@@ -27,6 +27,14 @@ func IsTypeDefaultValue(v interface{}) bool {
 		if value, ok := v.(int64); ok && value == 0 {
 			return true
 		}
+	} else if vType.Name() == "uint32" {
+		if value, ok := v.(uint32); ok && value == 0 {
+			return true
+		}
+	} else if vType.Name() == "uint64" {
+		if value, ok := v.(uint64); ok && value == 0 {
+			return true
+		}
 	} else if vType.Name() == "Time" {
 		if vTime, ok := v.(time.Time); ok {
 			if vTime.Equal(time.Time{}) {

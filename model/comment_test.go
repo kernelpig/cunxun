@@ -14,9 +14,9 @@ func TestCreateComment(t *testing.T) {
 	assert := assert.New(t)
 
 	c := &Comment{
-		RelateId:   test.GenRandInt(5),
+		RelateId:   test.GenRandId(5),
 		Content:    test.GenRandString(),
-		CreaterUid: test.GenRandInt(5),
+		CreaterUid: test.GenRandId(5),
 	}
 
 	c, err := CreateComment(db.Mysql, c)
@@ -45,7 +45,6 @@ func TestGetCommentList(t *testing.T) {
 	assert.Nil(err)
 	assert.NotNil(u)
 
-	var cs []*Comment
 	for i := 0; i < 10; i++ {
 		c := &Comment{
 			RelateId:   1,
@@ -54,7 +53,6 @@ func TestGetCommentList(t *testing.T) {
 		}
 		_, err := CreateComment(db.Mysql, c)
 		assert.Nil(err)
-		cs = append(cs, c)
 	}
 
 	items, isOver, err := GetCommentList(db.Mysql, map[string]interface{}{}, 20, 1)
@@ -69,9 +67,9 @@ func TestUpdateCommentById(t *testing.T) {
 	assert := assert.New(t)
 
 	c := &Comment{
-		RelateId:   test.GenRandInt(5),
+		RelateId:   test.GenRandId(5),
 		Content:    test.GenRandString(),
-		CreaterUid: test.GenRandInt(5),
+		CreaterUid: test.GenRandId(5),
 	}
 
 	c, err := CreateComment(db.Mysql, c)
@@ -98,9 +96,9 @@ func TestDeleteCommentById(t *testing.T) {
 	assert := assert.New(t)
 
 	c := &Comment{
-		RelateId:   test.GenRandInt(5),
+		RelateId:   test.GenRandId(5),
 		Content:    test.GenRandString(),
-		CreaterUid: test.GenRandInt(5),
+		CreaterUid: test.GenRandId(5),
 	}
 
 	c, err := CreateComment(db.Mysql, c)

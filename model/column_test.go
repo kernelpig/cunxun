@@ -15,7 +15,7 @@ func TestCreateColumn(t *testing.T) {
 
 	c := &Column{
 		Name:       test.GenRandString(),
-		CreaterUid: test.GenRandInt(5),
+		CreaterUid: test.GenRandId(5),
 	}
 
 	c, err := CreateColumn(db.Mysql, c)
@@ -35,7 +35,7 @@ func TestGetColumnList(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		c := &Column{
 			Name:       test.GenRandString(),
-			CreaterUid: test.GenRandInt(5),
+			CreaterUid: test.GenRandId(5),
 		}
 		_, err := CreateColumn(db.Mysql, c)
 		assert.Nil(err)
@@ -54,7 +54,7 @@ func TestUpdateColumnById(t *testing.T) {
 
 	c := &Column{
 		Name:       test.GenRandString(),
-		CreaterUid: test.GenRandInt(5),
+		CreaterUid: test.GenRandId(5),
 	}
 
 	c, err := CreateColumn(db.Mysql, c)
@@ -82,7 +82,7 @@ func TestDeleteColumnById(t *testing.T) {
 
 	c := &Column{
 		Name:       test.GenRandString(),
-		CreaterUid: test.GenRandInt(5),
+		CreaterUid: test.GenRandId(5),
 	}
 
 	c, err := CreateColumn(db.Mysql, c)

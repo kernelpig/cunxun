@@ -43,6 +43,13 @@ func GenRandInt(max int) int {
 	return rand.Intn(max-1) + 1
 }
 
+func GenRandId(max int) uint64 {
+	if max <= 1 {
+		return 1
+	}
+	return uint64(rand.Intn(max-1) + 1)
+}
+
 func GenFakePassword() string {
 	return GenRandString()[16:]
 }

@@ -241,6 +241,9 @@ func initSubErrors() {
 			CarpoolingDeleteByIdErr:     "Failed to delete carpooling information by admin.",
 			CarpoolingDeleteByIdSelfErr: "Failed to delete carpooling information by author.",
 		},
+		MIdGeneratorErr: {
+			IdGeneratorInitErr: "Failed to init id generator.",
+		},
 	}
 }
 
@@ -269,6 +272,7 @@ func initSubModuleErrs() {
 		MImageErr:        "image",              // 图片错误
 		MOssErr:          "oss",                // oss存储错误
 		MCarpoolingErr:   "carpooling",         // 拼车错误
+		MIdGeneratorErr:  "idgenerator",        // id生成错误
 	}
 }
 
