@@ -16,7 +16,7 @@ import (
 	"wangqingang/cunxun/test"
 )
 
-func testCarpoolingCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *CarpoolingCreateRequest) uint64 {
+func testCarpoolingCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *CarpoolingCreateRequest) string {
 	assert := assert.New(t)
 	resp := e.POST("/api/carpooling/").
 		WithHeader(common.AuthHeaderKey, xToken).
@@ -27,7 +27,6 @@ func testCarpoolingCreate(t *testing.T, e *httpexpect.Expect, xToken string, req
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
 	assert.Equal(error.OK, object.Code)
-	assert.NotZero(object.CarpoolingId)
 
 	return object.CarpoolingId
 }
@@ -168,7 +167,7 @@ func testCarpoolingGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	assert.Equal(5, len(list))
 }
 
-func testCarpoolingUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, carpoolingId uint64, request *CarpoolingUpdateRequest) {
+func testCarpoolingUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, carpoolingId string, request *CarpoolingUpdateRequest) {
 	resp := e.PUT("/api/carpooling/{carpooling_id}").
 		WithPath("carpooling_id", carpoolingId).
 		WithHeader(common.AuthHeaderKey, xToken).
@@ -243,7 +242,7 @@ func testCarpoolingUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	testCarpoolingUpdateById(t, e, xToken, carpoolingId, updateCarpoolingRequest)
 }
 
-func testCarpoolingDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, carpoolingId uint64) {
+func testCarpoolingDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, carpoolingId string) {
 	resp := e.DELETE("/api/carpooling/{carpooling_id}").
 		WithPath("carpooling_id", carpoolingId).
 		WithHeader(common.AuthHeaderKey, xToken).

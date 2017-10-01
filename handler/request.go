@@ -76,24 +76,25 @@ type CarpoolingUpdateRequest struct {
 	Remark      string `json:"remark" binding:"required"`
 }
 
+// id与前端通信统一使用string类型, 因为javascript不能正常处理uint64类型, 精度限制
 type ArticleCreateRequest struct {
-	ColumnId uint64 `json:"column_id" binding:"required"`
+	ColumnId string `json:"column_id" binding:"required"`
 	Title    string `json:"title" binding:"required"`
 	Content  string `json:"content" binding:"required"`
 }
 
 type ArticleUpdateRequest struct {
-	ColumnId uint64 `json:"column_id" binding:"omitempty"`
+	ColumnId string `json:"column_id" binding:"omitempty"`
 	Title    string `json:"title" binding:"omitempty"`
 	Content  string `json:"content" binding:"omitempty"`
 }
 
 type CommentCreateRequest struct {
-	RelateId uint64 `json:"relate_id" binding:"required"`
+	RelateId string `json:"relate_id" binding:"required"`
 	Content  string `json:"content" binding:"required"`
 }
 
 type CommentUpdateRequest struct {
-	RelateId uint64 `json:"relate_id" binding:"omitempty"`
+	RelateId string `json:"relate_id" binding:"omitempty"`
 	Content  string `json:"content" binding:"omitempty"`
 }

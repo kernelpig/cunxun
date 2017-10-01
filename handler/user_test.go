@@ -17,18 +17,16 @@ import (
 	"wangqingang/cunxun/test"
 )
 
-func testUserSignup(t *testing.T, e *httpexpect.Expect, request *UserSignupRequest) uint64 {
+func testUserSignup(t *testing.T, e *httpexpect.Expect, request *UserSignupRequest) string {
 	assert := assert.New(t)
 	resp := e.POST("/api/u/signup").WithJSON(request).
 		Expect().Status(http.StatusOK)
 
-	// 注意: httpexpect库不支持返回类型为uint64的处理, 需要自己解析结果
-	// update/delete没有报错的原因是, 错误降级, 忽略未找到对应ID的情况
 	// TODO: update错误不应该降级
 	object := &UserSignupResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
-	assert.NotZero(object.UserId)
+
 	return object.UserId
 }
 
@@ -235,7 +233,7 @@ func testUserSignupHandler_UserAlreadyExist(t *testing.T, e *httpexpect.Expect) 
 	resp.JSON().Object().Value("code").Number().Equal(userAlreadyExistCode.C())
 }
 
-func testUserGetInfo(t *testing.T, e *httpexpect.Expect, xToken string, userId uint64) {
+func testUserGetInfo(t *testing.T, e *httpexpect.Expect, xToken string, userId string) {
 	resp := e.GET("/api/u/{user_id}").
 		WithPath("user_id", userId).
 		WithHeader(common.AuthHeaderKey, xToken).
@@ -370,14 +368,18 @@ func testUserGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	assert.Equal(2, len(list))
 }
 
-func testUserCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *UserCreateRequest) int {
+func testUserCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *UserCreateRequest) string {
+	assert := assert.New(t)
 	resp := e.POST("/api/u/").
 		WithHeader(common.AuthHeaderKey, xToken).
 		WithJSON(request).Expect()
 
-	respObj := resp.Status(http.StatusOK).JSON().Object()
-	respObj.Value("code").Number().Equal(error.OK)
-	return int(respObj.Value("user_id").Number().Raw())
+	object := &UserSignupResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
+	assert.Nil(err)
+	assert.Equal(error.OK, object.Code)
+
+	return object.UserId
 }
 
 func testUserCreateHandler(t *testing.T, e *httpexpect.Expect) {
@@ -406,7 +408,7 @@ func testUserCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	testUserLogin(t, e, loginRequest)
 }
 
-func testUserUpdate(t *testing.T, e *httpexpect.Expect, xToken string, userId uint64, request *UserUpdateRequest) {
+func testUserUpdate(t *testing.T, e *httpexpect.Expect, xToken string, userId string, request *UserUpdateRequest) {
 	resp := e.PUT("/api/u/{user_id}").
 		WithPath("user_id", userId).
 		WithHeader(common.AuthHeaderKey, xToken).
@@ -454,7 +456,7 @@ func testUserUpdateHandler(t *testing.T, e *httpexpect.Expect) {
 	testUserUpdate(t, e, xSuperToken, userId, updateRequest)
 }
 
-func testUserDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, userId uint64) {
+func testUserDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, userId string) {
 	resp := e.DELETE("/api/u/{user_id}").
 		WithPath("user_id", userId).
 		WithHeader(common.AuthHeaderKey, xToken).

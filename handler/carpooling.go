@@ -56,7 +56,7 @@ func CarpoolingCreateHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, CarpoolingCreateResponse{Code: e.OK, CarpoolingId: carpooling.ID})
+	c.JSON(http.StatusOK, CarpoolingCreateResponse{Code: e.OK, CarpoolingId: strconv.FormatUint(carpooling.ID, 10)})
 }
 
 func CarpoolingGetHandler(c *gin.Context) {
@@ -78,7 +78,7 @@ func CarpoolingGetHandler(c *gin.Context) {
 
 // TODO: 热贴需要支持时间范围过滤
 func CarpoolingGetListHandler(c *gin.Context) {
-	createrUid, err := strconv.ParseInt(c.Query("creater_uid"), 10, 64)
+	createrUid, err := strconv.ParseUint(c.Query("creater_uid"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICarpoolingGetList, e.MParamsErr, e.ParamsInvalidUserId, err))
 		return

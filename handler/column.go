@@ -14,7 +14,7 @@ import (
 )
 
 func ColumnGetListHandler(c *gin.Context) {
-	createrUid, err := strconv.ParseInt(c.Query("creater_uid"), 10, 64)
+	createrUid, err := strconv.ParseUint(c.Query("creater_uid"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidUserId, err))
 		return
@@ -58,7 +58,7 @@ func ColumnCreateHandler(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnCreate, e.MColumnErr, e.ColumnCreateErr, err))
 		}
 	}
-	c.JSON(http.StatusOK, ColumnCreateResponse{Code: e.OK, ColumnId: column.ID})
+	c.JSON(http.StatusOK, ColumnCreateResponse{Code: e.OK, ColumnId: strconv.FormatUint(column.ID, 10)})
 }
 
 func ColumnUpdateByIdHandler(c *gin.Context) {

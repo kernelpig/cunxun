@@ -30,9 +30,13 @@ func CommentCreateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.ICommentCreate, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-
+	relateId, err := strconv.ParseUint(req.RelateId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.I(e.ICommentCreate, e.MParamsErr, e.ParamsInvalidRelateID))
+		return
+	}
 	comment := &model.Comment{
-		RelateId:   req.RelateId,
+		RelateId:   relateId,
 		Content:    req.Content,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
@@ -47,7 +51,7 @@ func CommentCreateHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, CommentCreateResponse{Code: e.OK, CommentId: comment.ID})
+	c.JSON(http.StatusOK, CommentCreateResponse{Code: e.OK, CommentId: strconv.FormatUint(comment.ID, 10)})
 }
 
 func CommentGetHandler(c *gin.Context) {
@@ -69,12 +73,12 @@ func CommentGetHandler(c *gin.Context) {
 
 // columnID, pageNum, pageSize
 func CommentGetListHandler(c *gin.Context) {
-	createrUid, err := strconv.ParseInt(c.Query("creater_uid"), 10, 64)
+	createrUid, err := strconv.ParseUint(c.Query("creater_uid"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidUserId, err))
 		return
 	}
-	relateID, err := strconv.ParseInt(c.Query("relate_id"), 10, 64)
+	relateID, err := strconv.ParseUint(c.Query("relate_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentGetList, e.MParamsErr, e.ParamsInvalidCommentID, err))
 		return
@@ -122,8 +126,13 @@ func CommentUpdateByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.ICommentUpdateById, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
+	relateId, err := strconv.ParseUint(req.RelateId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.I(e.ICommentUpdateById, e.MParamsErr, e.ParamsInvalidRelateID))
+		return
+	}
 	comment := &model.Comment{
-		RelateId:  req.RelateId,
+		RelateId:  relateId,
 		Content:   req.Content,
 		UpdatedAt: time.Now(),
 	}

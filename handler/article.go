@@ -24,14 +24,19 @@ func ArticleCreateHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.IArticleCreate, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-	if req.ColumnId == model.ColumnIdNews {
+	columnId, err := strconv.ParseUint(req.ColumnId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleCreate, e.MParamsErr, e.ParamsInvalidColumnID, err))
+		return
+	}
+	if columnId == model.ColumnIdNews {
 		if currentCtx.Payload.Role != model.UserRoleAdmin && currentCtx.Payload.Role != model.UserRoleSuperAdmin {
 			c.JSON(http.StatusBadRequest, e.I(e.IArticleCreate, e.MUserErr, e.UserNotPermit))
 			return
 		}
 	}
 	article := &model.Article{
-		ColumnId:   req.ColumnId,
+		ColumnId:   columnId,
 		Title:      req.Title,
 		Content:    req.Content,
 		CreaterUid: currentCtx.Payload.UserId,
@@ -48,7 +53,7 @@ func ArticleCreateHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, ArticleCreateResponse{Code: e.OK, ArticleId: article.ID})
+	c.JSON(http.StatusOK, ArticleCreateResponse{Code: e.OK, ArticleId: strconv.FormatUint(article.ID, 10)})
 }
 
 func ArticleGetHandler(c *gin.Context) {
@@ -71,12 +76,12 @@ func ArticleGetHandler(c *gin.Context) {
 // columnID, orderBy, pageNum, pageSize, 为默认值则忽略此查询条件
 // TODO: 热贴需要支持时间范围过滤
 func ArticleGetListHandler(c *gin.Context) {
-	createrUid, err := strconv.ParseInt(c.Query("creater_uid"), 10, 64)
+	createrUid, err := strconv.ParseUint(c.Query("creater_uid"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidUserId, err))
 		return
 	}
-	columnID, err := strconv.ParseInt(c.Query("column_id"), 10, 64)
+	columnID, err := strconv.ParseUint(c.Query("column_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidColumnID, err))
 		return
@@ -115,13 +120,18 @@ func ArticleUpdateByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleUpdateById, e.MParamsErr, e.ParamsInvalidArticleID, err))
 		return
 	}
+	columnID, err := strconv.ParseUint(req.ColumnId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IArticleUpdateById, e.MParamsErr, e.ParamsInvalidArticleID, err))
+		return
+	}
 	currentCtx := middleware.GetCurrentAuth(c)
 	if currentCtx == nil {
 		c.JSON(http.StatusBadRequest, e.I(e.IArticleUpdateById, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
 	article := &model.Article{
-		ColumnId:   req.ColumnId,
+		ColumnId:   columnID,
 		Title:      req.Title,
 		Content:    req.Content,
 		UpdatedAt:  time.Now(),

@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 	"testing"
+	"strconv"
 
 	"github.com/gavv/httpexpect"
 	"github.com/stretchr/testify/assert"
-
+	
 	"wangqingang/cunxun/checkcode"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/error"
@@ -15,7 +16,7 @@ import (
 	"wangqingang/cunxun/test"
 )
 
-func testArticleCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *ArticleCreateRequest) uint64 {
+func testArticleCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *ArticleCreateRequest) string {
 	assert := assert.New(t)
 	resp := e.POST("/api/article/").
 		WithHeader(common.AuthHeaderKey, xToken).
@@ -26,7 +27,6 @@ func testArticleCreate(t *testing.T, e *httpexpect.Expect, xToken string, reques
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
 	assert.Equal(error.OK, object.Code)
-	assert.NotZero(object.ArticleId)
 
 	return object.ArticleId
 }
@@ -88,7 +88,7 @@ func testArticleCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	testArticleCreate(t, e, xToken, createArticleRequest)
 }
 
-func testArticleGetList(t *testing.T, e *httpexpect.Expect, columnID uint64, pageNum, pageSize int) []*model.Article {
+func testArticleGetList(t *testing.T, e *httpexpect.Expect, columnID string, pageNum, pageSize int) []*model.Article {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/article/").
@@ -174,7 +174,7 @@ func testArticleGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	assert.Equal(5, len(list))
 }
 
-func testArticleGet(t *testing.T, e *httpexpect.Expect, articleID uint64) *model.Article {
+func testArticleGet(t *testing.T, e *httpexpect.Expect, articleID string) *model.Article {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/article/{article_id}").
@@ -251,10 +251,10 @@ func testArticleGetHandler(t *testing.T, e *httpexpect.Expect) {
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 	article := testArticleGet(t, e, articleID)
 	assert.NotNil(article)
-	assert.Equal(articleID, article.ID)
+	assert.Equal(articleID, strconv.FormatUint(article.ID, 10))
 }
 
-func testArticleUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, articleId uint64, request *ArticleUpdateRequest) {
+func testArticleUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, articleId string, request *ArticleUpdateRequest) {
 	resp := e.PUT("/api/article/{article_id}").
 		WithPath("article_id", articleId).
 		WithHeader(common.AuthHeaderKey, xToken).
@@ -329,7 +329,7 @@ func testArticleUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	testArticleUpdateById(t, e, xToken, articleId, updateArticleRequest)
 }
 
-func testArticleDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, articleId uint64) {
+func testArticleDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, articleId string) {
 	resp := e.DELETE("/api/article/{article_id}").
 		WithPath("article_id", articleId).
 		WithHeader(common.AuthHeaderKey, xToken).

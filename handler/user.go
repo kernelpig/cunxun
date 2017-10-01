@@ -110,7 +110,7 @@ func UserSignupHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, UserSignupResponse{Code: e.OK, UserId: user.ID})
+	c.JSON(http.StatusOK, UserSignupResponse{Code: e.OK, UserId: strconv.FormatUint(user.ID, 10)})
 	return
 }
 
@@ -197,10 +197,7 @@ func UserCreateHandler(c *gin.Context) {
 		}
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code":    e.OK,
-		"user_id": user.ID,
-	})
+	c.JSON(http.StatusOK, UserSignupResponse{Code: e.OK, UserId: strconv.FormatUint(user.ID, 10)})
 	return
 }
 

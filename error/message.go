@@ -158,6 +158,7 @@ func initSubErrors() {
 			ParamsInvalidCarpoolingID:     "Invalid carpooling id.",
 			ParamsInvalidCarpoolingSeat:   "Invalid carpooling people count.",
 			ParamsInvalidCarpoolingDepart: "Invalid carpooling depart time.",
+			ParamsInvalidRelateID:         "Invalid relate id.",
 		},
 		MAuthErr: {
 			_AuthErrMin:       "Basic auth error information.",
