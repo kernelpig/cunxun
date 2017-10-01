@@ -68,6 +68,14 @@ type CarpoolingCreateRequest struct {
 	Remark      string    `json:"remark" binding:"required"`
 }
 
+type CarpoolingUpdateRequest struct {
+	FromCity    string    `json:"from_city" binding:"required"`
+	ToCity      string    `json:"to_city" binding:"required"`
+	DepartTIme  time.Time `json:"depart_time" binding:"required"`
+	PeopleCount int       `json:"people_count" binding:"required"`
+	Remark      string    `json:"remark" binding:"required"`
+}
+
 type ArticleCreateRequest struct {
 	ColumnId int    `json:"column_id" binding:"required"`
 	Title    string `json:"title" binding:"required"`

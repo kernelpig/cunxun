@@ -229,10 +229,12 @@ func initSubErrors() {
 			OssPutObjectByBytesErr: "Failed to put object by bytes.",
 		},
 		MCarpoolingErr: {
-			CarpoolingGetErr:       "Failed to get carpooling information.",
-			CarpoolingAlreadyExist: "The carpooling information is already exist.",
-			CarpoolingCreateErr:    "Failed to create carpooling information.",
-			CarpoolingGetListErr:   "Failed to get carpooling list.",
+			CarpoolingGetErr:            "Failed to get carpooling information.",
+			CarpoolingAlreadyExist:      "The carpooling information is already exist.",
+			CarpoolingCreateErr:         "Failed to create carpooling information.",
+			CarpoolingGetListErr:        "Failed to get carpooling list.",
+			CarpoolingUpdateByIdErr:     "Failed to update carpooling information by admin.",
+			CarpoolingUpdateByIdSelfErr: "Failed to update carpooling information by author.",
 		},
 	}
 }
@@ -302,5 +304,6 @@ func initInterfaceErr() {
 		ICarpoolingCreate:       "post /api/carpooling/",
 		ICarpoolingGetById:      "get /api/carpooling/:id",
 		ICarpoolingGetList:      "get /api/carpooling/",
+		ICarpoolingUpdateById:   "put /api/carpooling/carpooling_id",
 	}
 }

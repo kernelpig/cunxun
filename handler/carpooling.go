@@ -97,3 +97,48 @@ func CarpoolingGetListHandler(c *gin.Context) {
 		"list": list,
 	})
 }
+
+func CarpoolingUpdateByIdHandler(c *gin.Context) {
+	var req CarpoolingUpdateRequest
+	if err := c.BindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.ICarpoolingUpdateById, e.MParamsErr, e.ParamsBindErr, err))
+		return
+	}
+	CarpoolingID, err := strconv.ParseInt(c.Param("carpooling_id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.ICarpoolingUpdateById, e.MParamsErr, e.ParamsInvalidCarpoolingID, err))
+		return
+	}
+	currentCtx := middleware.GetCurrentAuth(c)
+	if currentCtx == nil {
+		c.JSON(http.StatusBadRequest, e.I(e.ICarpoolingUpdateById, e.MAuthErr, e.AuthGetCurrentErr))
+		return
+	}
+	Carpooling := &model.Carpooling{
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+		FromCity:    req.FromCity,
+		ToCity:      req.ToCity,
+		DepartTIme:  req.DepartTIme,
+		PeopleCount: req.PeopleCount,
+		Status:      model.CarpoolingEnable,
+		Remark:      req.Remark,
+		UpdaterUid:  int(currentCtx.Payload.UserId),
+	}
+	if currentCtx.Payload.Role == model.UserRoleAdmin || currentCtx.Payload.Role == model.UserRoleSuperAdmin {
+		// 管理员操作
+		if _, err := model.UpdateCarpoolingById(db.Mysql, int(CarpoolingID), Carpooling); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.ICarpoolingUpdateById, e.MCarpoolingErr, e.CarpoolingUpdateByIdErr, err))
+			return
+		}
+	} else {
+		// 创建者操作
+		if _, err := model.UpdateCarpoolingByIdOfSelf(db.Mysql, int(CarpoolingID), int(currentCtx.Payload.UserId), Carpooling); err != nil {
+			c.JSON(http.StatusInternalServerError, e.IP(e.ICarpoolingUpdateById, e.MCarpoolingErr, e.CarpoolingUpdateByIdSelfErr, err))
+			return
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": e.OK,
+	})
+}

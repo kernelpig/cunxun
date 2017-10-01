@@ -95,7 +95,7 @@ func regCarpoolingRouter(router *gin.Engine) {
 	group.Use(middleware.AuthMiddleware())
 	{
 		group.POST("/", CarpoolingCreateHandler)
-		//group.PUT("/:article_id", ArticleUpdateByIdHandler)
+		group.PUT("/:carpooling_id", CarpoolingUpdateByIdHandler)
 		//group.DELETE("/:article_id", ArticleDeleteByIdHandler)
 	}
 }

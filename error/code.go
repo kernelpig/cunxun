@@ -77,6 +77,7 @@ const (
 	ICarpoolingCreate
 	ICarpoolingGetById
 	ICarpoolingGetList
+	ICarpoolingUpdateById
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
@@ -121,6 +122,8 @@ const (
 	CarpoolingAlreadyExist
 	CarpoolingCreateErr
 	CarpoolingGetListErr
+	CarpoolingUpdateByIdErr
+	CarpoolingUpdateByIdSelfErr
 
 	// 注意: 请在此处增加错误码, 已废弃的请保留不要删除!
 
