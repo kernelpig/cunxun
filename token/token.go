@@ -14,7 +14,7 @@ import (
 )
 
 type TokenKey struct {
-	UserId int    `json:"user_id"`
+	UserId uint64 `json:"user_id"`
 	Source string `json:"source"`
 }
 
@@ -89,7 +89,7 @@ func (k *TokenKey) GetToken() (*Token, error) {
 	return t, nil
 }
 
-func TokenCreateAndStore(userID, userRole int, source string, ttl time.Duration) (string, error) {
+func TokenCreateAndStore(userID uint64, userRole int, source string, ttl time.Duration) (string, error) {
 	issueTime := time.Now()
 
 	// payload中ttl单位为分钟
@@ -97,7 +97,7 @@ func TokenCreateAndStore(userID, userRole int, source string, ttl time.Duration)
 		IssueTime:   uint32(uint64(issueTime.Unix())),
 		TTL:         uint16(ttl.Minutes()),
 		Role:        uint16(userRole),
-		UserId:      uint32(userID),
+		UserId:      userID,
 		LoginSource: source,
 	})
 	if err != nil {
@@ -116,7 +116,7 @@ func TokenCreateAndStore(userID, userRole int, source string, ttl time.Duration)
 	return accessToken, nil
 }
 
-func TokenClean(userID int, source string) (*Token, error) {
+func TokenClean(userID uint64, source string) (*Token, error) {
 	key := &TokenKey{
 		UserId: userID,
 		Source: source,
