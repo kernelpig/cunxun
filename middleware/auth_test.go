@@ -19,7 +19,7 @@ func TestCheckAccessToken(t *testing.T) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
-	userId := test.GenRandInt(100)
+	userId := test.GenRandId(100)
 	userToken, err := token.TokenCreateAndStore(userId, testUserRole, test.TestWebSource, time.Duration(1)*time.Minute)
 	assert.Nil(err)
 	assert.NotEmpty(userToken)

@@ -35,7 +35,7 @@ func CheckAccessToken(authToken string) (*token_lib.Payload, error) {
 		return payload, e.SD(e.MTokenErr, e.TokenExpired, "auth middlewareor logout")
 	}
 
-	tokenKey := token.TokenKey{UserId: int(payload.UserId), Source: payload.LoginSource}
+	tokenKey := token.TokenKey{UserId: payload.UserId, Source: payload.LoginSource}
 	token, err := tokenKey.GetToken()
 	if err != nil || token == nil {
 		return payload, e.SP(e.MTokenErr, e.TokenGetErr, err)
