@@ -89,11 +89,11 @@ type ArticleUpdateRequest struct {
 }
 
 type CommentCreateRequest struct {
-	ArticleId int    `json:"article_id" binding:"required"`
-	Content   string `json:"content" binding:"required"`
+	RelateId int    `json:"relate_id" binding:"required"`
+	Content  string `json:"content" binding:"required"`
 }
 
 type CommentUpdateRequest struct {
-	ArticleId int    `json:"article_id" binding:"omitempty"`
-	Content   string `json:"content" binding:"omitempty"`
+	RelateId int    `json:"relate_id" binding:"omitempty"`
+	Content  string `json:"content" binding:"omitempty"`
 }

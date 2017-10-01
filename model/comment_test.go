@@ -14,7 +14,7 @@ func TestCreateComment(t *testing.T) {
 	assert := assert.New(t)
 
 	c := &Comment{
-		ArticleId:  test.GenRandInt(5),
+		RelateId:   test.GenRandInt(5),
 		Content:    test.GenRandString(),
 		CreaterUid: test.GenRandInt(5),
 	}
@@ -48,7 +48,7 @@ func TestGetCommentList(t *testing.T) {
 	var cs []*Comment
 	for i := 0; i < 10; i++ {
 		c := &Comment{
-			ArticleId:  1,
+			RelateId:   1,
 			Content:    test.GenRandString(),
 			CreaterUid: u.ID,
 		}
@@ -69,7 +69,7 @@ func TestUpdateCommentById(t *testing.T) {
 	assert := assert.New(t)
 
 	c := &Comment{
-		ArticleId:  test.GenRandInt(5),
+		RelateId:   test.GenRandInt(5),
 		Content:    test.GenRandString(),
 		CreaterUid: test.GenRandInt(5),
 	}
@@ -98,7 +98,7 @@ func TestDeleteCommentById(t *testing.T) {
 	assert := assert.New(t)
 
 	c := &Comment{
-		ArticleId:  test.GenRandInt(5),
+		RelateId:   test.GenRandInt(5),
 		Content:    test.GenRandString(),
 		CreaterUid: test.GenRandInt(5),
 	}

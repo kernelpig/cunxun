@@ -83,18 +83,18 @@ func testCommentCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 
 	createCommentRequest := &CommentCreateRequest{
-		ArticleId: articleID,
-		Content:   test.GenRandString() + test.GenRandString(),
+		RelateId: articleID,
+		Content:  test.GenRandString() + test.GenRandString(),
 	}
 	testCommentCreate(t, e, xToken, createCommentRequest)
 }
 
-func testCommentGetList(t *testing.T, e *httpexpect.Expect, articleID, pageNum, pageSize int) []*model.Comment {
+func testCommentGetList(t *testing.T, e *httpexpect.Expect, relateID, pageNum, pageSize int) []*model.Comment {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/comment/").
 		WithQuery("creater_uid", 0).
-		WithQuery("article_id", articleID).
+		WithQuery("relate_id", relateID).
 		WithQuery("page_num", pageNum).
 		WithQuery("page_size", pageSize).
 		Expect().Status(http.StatusOK)
@@ -170,8 +170,8 @@ func testCommentGetListHandler(t *testing.T, e *httpexpect.Expect) {
 
 	for i := 0; i < 5; i++ {
 		createCommentRequest := &CommentCreateRequest{
-			ArticleId: articleID,
-			Content:   test.GenRandString() + test.GenRandString(),
+			RelateId: articleID,
+			Content:  test.GenRandString() + test.GenRandString(),
 		}
 		testCommentCreate(t, e, xToken, createCommentRequest)
 	}
@@ -257,8 +257,8 @@ func testCommentGetHandler(t *testing.T, e *httpexpect.Expect) {
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 
 	createCommentRequest := &CommentCreateRequest{
-		ArticleId: articleID,
-		Content:   test.GenRandString() + test.GenRandString(),
+		RelateId: articleID,
+		Content:  test.GenRandString() + test.GenRandString(),
 	}
 	commentID := testCommentCreate(t, e, xToken, createCommentRequest)
 	comment := testCommentGet(t, e, commentID)
@@ -333,14 +333,14 @@ func testCommentUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 
 	createCommentRequest := &CommentCreateRequest{
-		ArticleId: articleID,
-		Content:   test.GenRandString() + test.GenRandString(),
+		RelateId: articleID,
+		Content:  test.GenRandString() + test.GenRandString(),
 	}
 	commentId := testCommentCreate(t, e, xToken, createCommentRequest)
 
 	updateCommentRequest := &CommentCreateRequest{
-		ArticleId: articleID,
-		Content:   test.GenRandString() + test.GenRandString(),
+		RelateId: articleID,
+		Content:  test.GenRandString() + test.GenRandString(),
 	}
 	testCommentUpdateById(t, e, xToken, commentId, updateCommentRequest)
 }
@@ -412,8 +412,8 @@ func testCommentDeleteByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 
 	createCommentRequest := &CommentCreateRequest{
-		ArticleId: articleID,
-		Content:   test.GenRandString() + test.GenRandString(),
+		RelateId: articleID,
+		Content:  test.GenRandString() + test.GenRandString(),
 	}
 	commentId := testCommentCreate(t, e, xToken, createCommentRequest)
 

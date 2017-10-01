@@ -32,7 +32,7 @@ func CommentCreateHandler(c *gin.Context) {
 	}
 
 	comment := &model.Comment{
-		ArticleId:  req.ArticleId,
+		RelateId:   req.RelateId,
 		Content:    req.Content,
 		CreatedAt:  time.Now(),
 		UpdatedAt:  time.Now(),
@@ -77,7 +77,7 @@ func CommentGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IArticleGetList, e.MParamsErr, e.ParamsInvalidUserId, err))
 		return
 	}
-	articleID, err := strconv.ParseInt(c.Query("article_id"), 10, 64)
+	relateID, err := strconv.ParseInt(c.Query("relate_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentGetList, e.MParamsErr, e.ParamsInvalidCommentID, err))
 		return
@@ -92,7 +92,7 @@ func CommentGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICommentGetList, e.MParamsErr, e.ParamsInvalidPageSize, err))
 		return
 	}
-	where := map[string]interface{}{"article_id": articleID, "creater_uid": createrUid}
+	where := map[string]interface{}{"relate_id": relateID, "creater_uid": createrUid}
 	list, isOver, err := model.GetCommentList(db.Mysql, where, int(pageSize), int(pageNum))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.ICommentGetList, e.MCommentErr, e.CommentGetListErr, err))
@@ -126,7 +126,7 @@ func CommentUpdateByIdHandler(c *gin.Context) {
 		return
 	}
 	comment := &model.Comment{
-		ArticleId: req.ArticleId,
+		RelateId:  req.RelateId,
 		Content:   req.Content,
 		UpdatedAt: time.Now(),
 	}

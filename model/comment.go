@@ -8,7 +8,7 @@ import (
 
 type Comment struct {
 	ID         int       `json:"id" column:"id"`
-	ArticleId  int       `json:"article_id" column:"article_id"`
+	RelateId   int       `json:"relate_id" column:"relate_id"`
 	Content    string    `json:"content" column:"content"`
 	CreaterUid int       `json:"creater_uid" column:"creater_uid"`
 	CreatedAt  time.Time `json:"created_at" column:"created_at"`
@@ -17,7 +17,7 @@ type Comment struct {
 
 type CommentListView struct {
 	ID         int       `json:"id" column:"id"`
-	ArticleId  int       `json:"article_id" column:"article_id"`
+	RelateId   int       `json:"relate_id" column:"relate_id"`
 	Content    string    `json:"content" column:"content"`
 	CreaterUid int       `json:"creater_uid" column:"creater_uid"`
 	CreatedAt  time.Time `json:"created_at" column:"created_at"`
