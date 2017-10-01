@@ -36,6 +36,7 @@ func TestCreateCarpooling(t *testing.T) {
 		ToCity:      test.GenRandString(),
 		DepartTIme:  time.Now(),
 		PeopleCount: test.GenRandInt(5),
+		Contact:     test.GenRandString(),
 		Status:      test.GenRandInt(1),
 		Remark:      test.GenRandString() + test.GenRandString(),
 	}
@@ -77,6 +78,7 @@ func TestGetCarpoolingList(t *testing.T) {
 			ToCity:      test.GenRandString(),
 			DepartTIme:  time.Now(),
 			PeopleCount: test.GenRandInt(5),
+			Contact:     test.GenRandString(),
 			Status:      test.GenRandInt(1),
 			Remark:      test.GenRandString() + test.GenRandString(),
 		}
@@ -118,6 +120,7 @@ func TestUpdateCarpoolingById(t *testing.T) {
 		ToCity:      test.GenRandString(),
 		DepartTIme:  time.Now(),
 		PeopleCount: test.GenRandInt(5),
+		Contact:     test.GenRandString(),
 		Status:      test.GenRandInt(1),
 		Remark:      test.GenRandString() + test.GenRandString(),
 	}
@@ -167,6 +170,7 @@ func TestDeleteCarpoolingById(t *testing.T) {
 		ToCity:      test.GenRandString(),
 		DepartTIme:  time.Now(),
 		PeopleCount: test.GenRandInt(5),
+		Contact:     test.GenRandString(),
 		Status:      test.GenRandInt(1),
 		Remark:      test.GenRandString() + test.GenRandString(),
 	}

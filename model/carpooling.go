@@ -21,6 +21,7 @@ type Carpooling struct {
 	ToCity      string    `json:"to_city" column:"to_city"`
 	DepartTIme  time.Time `json:"depart_time" column:"depart_time"`
 	PeopleCount int       `json:"people_count" column:"people_count"`
+	Contact     string    `json:"contact" column:"contact"`
 	Status      int       `json:"status" column:"status"`
 	Remark      string    `json:"remark" column:"remark"`
 }
@@ -35,6 +36,7 @@ type CarpoolingDetailView struct {
 	ToCity      string    `json:"to_city" column:"to_city"`
 	DepartTIme  time.Time `json:"depart_time" column:"depart_time"`
 	PeopleCount int       `json:"people_count" column:"people_count"`
+	Contact     string    `json:"contact" column:"contact"`
 	Status      int       `json:"status" column:"status"`
 	Remark      string    `json:"remark" column:"remark"`
 	Nickname    string    `json:"nickname" column:"nickname"`

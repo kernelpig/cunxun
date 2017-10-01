@@ -6,6 +6,7 @@ CREATE TABLE `carpooling` (
   `to_city` VARCHAR(64) NOT NULL COMMENT "到达城市",
   `depart_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP NOT NULL COMMENT "发车时间",
   `people_count` INT NOT NULL COMMENT "座位数量",
+  `contact` VARCHAR(64) NOT NULL COMMENT "联系方式",
   `status` INT NOT NULL COMMENT "状态",
   `remark` TEXT NOT NULL COMMENT "备注信息",
   `creater_uid` INT NOT NULL COMMENT "创建人id",
