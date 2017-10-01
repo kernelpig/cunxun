@@ -65,6 +65,7 @@ type CarpoolingCreateRequest struct {
 	ToCity      string    `json:"to_city" binding:"required"`
 	DepartTIme  time.Time `json:"depart_time" binding:"required"`
 	PeopleCount int       `json:"people_count" binding:"required"`
+	Contact     string    `json:"contact" binding:"required"`
 	Remark      string    `json:"remark" binding:"required"`
 }
 
@@ -73,6 +74,7 @@ type CarpoolingUpdateRequest struct {
 	ToCity      string    `json:"to_city" binding:"required"`
 	DepartTIme  time.Time `json:"depart_time" binding:"required"`
 	PeopleCount int       `json:"people_count" binding:"required"`
+	Contact     string    `json:"contact" binding:"required"`
 	Remark      string    `json:"remark" binding:"required"`
 }
 
