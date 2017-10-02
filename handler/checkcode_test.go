@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -16,6 +17,7 @@ func testCheckcodeSend(t *testing.T, e *httpexpect.Expect, request *CheckcodeSen
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	respObj := resp.JSON().Object()
 	respObj.Value("code").Number().Equal(error.OK)
 }
@@ -40,10 +42,10 @@ func testCheckcodeSendHandler(t *testing.T, e *httpexpect.Expect) {
 func testCheckcodeVerify(t *testing.T, e *httpexpect.Expect, request *CheckVerifyCodeRequest) {
 	resp := e.POST("/api/checkcode/check").
 		WithJSON(request).
-		Expect().Status(http.StatusOK).
-		JSON().Object()
+		Expect().Status(http.StatusOK)
 
-	resp.Value("code").Number().Equal(error.OK)
+	fmt.Println(resp.Body().Raw())
+	resp.JSON().Object().Value("code").Number().Equal(error.OK)
 }
 
 func testCheckcodeVerifyHandler(t *testing.T, e *httpexpect.Expect) {

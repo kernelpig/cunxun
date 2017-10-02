@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -20,6 +21,7 @@ func testColumnCreate(t *testing.T, e *httpexpect.Expect, xToken string, request
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	object := &CreateResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
@@ -46,6 +48,7 @@ func testColumnGetList(t *testing.T, e *httpexpect.Expect) []*Column {
 		WithQuery("creater_uid", "0").
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	object := &ColumnGetListResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
@@ -78,6 +81,7 @@ func testColumnUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, col
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	respObj := resp.JSON().Object()
 	respObj.Value("code").Number().Equal(error.OK)
 }
@@ -105,6 +109,7 @@ func testColumnDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, col
 		WithHeader(common.AuthHeaderKey, xToken).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	respObj := resp.JSON().Object()
 	respObj.Value("code").Number().Equal(error.OK)
 }

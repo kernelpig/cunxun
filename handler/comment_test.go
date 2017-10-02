@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -20,6 +21,7 @@ func testCommentCreate(t *testing.T, e *httpexpect.Expect, xToken string, reques
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	object := &CreateResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
@@ -63,6 +65,7 @@ func testCommentGetList(t *testing.T, e *httpexpect.Expect, relateID string, pag
 		WithQuery("page_size", pageSize).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	object := &CommentGetListResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), &object)
 	assert.Nil(err)
@@ -109,6 +112,7 @@ func testCommentGet(t *testing.T, e *httpexpect.Expect, commentID string) *Comme
 		WithPath("comment_id", commentID).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	object := &CommentGetListResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), &object)
 	assert.Nil(err)
@@ -155,6 +159,7 @@ func testCommentUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, co
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	respObj := resp.JSON().Object()
 	respObj.Value("code").Number().Equal(error.OK)
 }
@@ -196,6 +201,7 @@ func testCommentDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, co
 		WithHeader(common.AuthHeaderKey, xToken).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	respObj := resp.JSON().Object()
 	respObj.Value("code").Number().Equal(error.OK)
 }

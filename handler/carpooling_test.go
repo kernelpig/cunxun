@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"testing"
 	"time"
@@ -22,6 +23,7 @@ func testCarpoolingCreate(t *testing.T, e *httpexpect.Expect, xToken string, req
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	object := &CreateResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
@@ -56,6 +58,7 @@ func testCarpoolingGetList(t *testing.T, e *httpexpect.Expect, pageNum, pageSize
 		WithQuery("page_size", pageSize).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	object := &CarpoolingGetListResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), &object)
 	assert.Nil(err)
@@ -93,6 +96,7 @@ func testCarpoolingUpdateById(t *testing.T, e *httpexpect.Expect, xToken string,
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	respObj := resp.JSON().Object()
 	respObj.Value("code").Number().Equal(error.OK)
 }
@@ -129,6 +133,7 @@ func testCarpoolingDeleteById(t *testing.T, e *httpexpect.Expect, xToken string,
 		WithHeader(common.AuthHeaderKey, xToken).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	respObj := resp.JSON().Object()
 	respObj.Value("code").Number().Equal(error.OK)
 }
@@ -158,6 +163,7 @@ func testCarpoolingGet(t *testing.T, e *httpexpect.Expect, carpoolingID string) 
 		WithPath("carpooling_id", carpoolingID).
 		Expect().Status(http.StatusOK)
 
+	fmt.Println(resp.Body().Raw())
 	object := &CarpoolingGetListResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), &object)
 	assert.Nil(err)
