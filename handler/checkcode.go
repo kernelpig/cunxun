@@ -100,8 +100,8 @@ func CheckcodeSendHandler(c *gin.Context) {
 	verify.SendTimes++
 	verify.Save()
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 	return
 }
@@ -151,8 +151,8 @@ func CheckcodeVerifyHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.ICheckcodeCheck, e.MCheckcodeErr, e.CheckcodeMismatch))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 	return
 }
