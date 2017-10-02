@@ -85,7 +85,7 @@ func testCarpoolingCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	testCarpoolingCreate(t, e, xToken, createCarpoolingRequest)
 }
 
-func testCarpoolingGetList(t *testing.T, e *httpexpect.Expect, pageNum, pageSize int) []*model.CarpoolingDetailView {
+func testCarpoolingGetList(t *testing.T, e *httpexpect.Expect, pageNum, pageSize int) []*Carpooling {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/carpooling/").
@@ -95,16 +95,12 @@ func testCarpoolingGetList(t *testing.T, e *httpexpect.Expect, pageNum, pageSize
 		WithQuery("page_size", pageSize).
 		Expect().Status(http.StatusOK)
 
-	respObj := resp.JSON().Object()
-	respObj.Value("code").Number().Equal(error.OK)
-
-	var result struct {
-		Code int                           `json:"code"`
-		List []*model.CarpoolingDetailView `json:"list"`
-	}
-	err := json.Unmarshal([]byte(resp.Body().Raw()), &result)
+	object := &CarpoolingGetListResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), &object)
 	assert.Nil(err)
-	return result.List
+	assert.Equal(error.OK, object.Code)
+
+	return object.List
 }
 
 func testCarpoolingGetListHandler(t *testing.T, e *httpexpect.Expect) {
@@ -306,4 +302,79 @@ func testCarpoolingDeleteByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	carpoolingId := testCarpoolingCreate(t, e, xToken, createCarpoolingRequest)
 
 	testCarpoolingDeleteById(t, e, xToken, carpoolingId)
+}
+
+func testCarpoolingGet(t *testing.T, e *httpexpect.Expect, carpoolingID string) *Carpooling {
+	assert := assert.New(t)
+
+	resp := e.GET("/api/carpooling/{carpooling_id}").
+		WithPath("carpooling_id", carpoolingID).
+		Expect().Status(http.StatusOK)
+
+	object := &CarpoolingGetListResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), &object)
+	assert.Nil(err)
+	assert.Equal(error.OK, object.Code)
+	assert.Equal(1, len(object.List))
+
+	return object.List[0]
+}
+
+func testCarpoolingGetHandler(t *testing.T, e *httpexpect.Expect) {
+	test.InitTestCaseEnv(t)
+	assert := assert.New(t)
+
+	captchaId := testCaptchaCreate(t, e)
+	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
+
+	sendRequest := &CheckcodeSendRequest{
+		Phone:        test.GenFakePhone(),
+		Purpose:      test.TestSignupPurpose,
+		Source:       test.TestWebSource,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	testCheckcodeSend(t, e, sendRequest)
+
+	checkcodeKey := &checkcode.CheckCodeKey{
+		Phone:   sendRequest.Phone,
+		Purpose: sendRequest.Purpose,
+		Source:  sendRequest.Source,
+	}
+	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
+
+	signupRequest := &UserSignupRequest{
+		Phone:      sendRequest.Phone,
+		NickName:   test.GenRandString(),
+		Source:     sendRequest.Source,
+		Password:   test.GenFakePassword(),
+		VerifyCode: code,
+	}
+	testUserSignup(t, e, signupRequest)
+
+	captchaId = testCaptchaCreate(t, e)
+	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
+
+	loginRequest := &UserLoginRequest{
+		Phone:        sendRequest.Phone,
+		Source:       sendRequest.Source,
+		Password:     signupRequest.Password,
+		CaptchaId:    captchaId,
+		CaptchaValue: captchaValue,
+	}
+	xToken := testUserLogin(t, e, loginRequest)
+
+	createCarpoolingRequest := &CarpoolingCreateRequest{
+		FromCity:    test.GenRandString(),
+		ToCity:      test.GenRandString(),
+		DepartTime:  time.Now().Add(time.Duration(5) * time.Second).Unix(),
+		PeopleCount: test.GenRandInt(5),
+		Contact:     test.GenRandString(),
+		Remark:      test.GenRandString() + test.GenRandString(),
+	}
+	carpoolingID := testCarpoolingCreate(t, e, xToken, createCarpoolingRequest)
+	carpooling := testCarpoolingGet(t, e, carpoolingID)
+
+	assert.NotNil(carpooling)
+	assert.Equal(carpoolingID, carpooling.ID)
 }

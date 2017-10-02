@@ -110,6 +110,22 @@ type CarpoolingGetListResponse struct {
 	List []*Carpooling `json:"list"`
 }
 
+type Comment struct {
+	ID         string    `json:"id"`
+	RelateId   string    `json:"relate_id"`
+	Content    string    `json:"content"`
+	CreaterUid string    `json:"creater_uid"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	Nickname   string    `json:"nickname"`
+}
+
+type CommentGetListResponse struct {
+	Code int        `json:"code"`
+	End  bool       `json:"end"`
+	List []*Comment `json:"list"`
+}
+
 func FormatId(id uint64) string {
 	return strconv.FormatUint(id, 10)
 }
@@ -194,6 +210,64 @@ func m2rArticleList(ms []*model.ArticleDetailView) []*Article {
 	rs := make([]*Article, 0)
 	for _, m := range ms {
 		rs = append(rs, m2rArticle(m))
+	}
+	return rs
+}
+
+func m2rCarpooling(m *model.CarpoolingDetailView) *Carpooling {
+	if m == nil {
+		return nil
+	}
+	r := &Carpooling{}
+	r.ID = FormatId(m.ID)
+	r.CreatedAt = m.CreatedAt
+	r.UpdatedAt = m.UpdatedAt
+	r.CreaterUid = FormatId(m.CreaterUid)
+	r.UpdaterUid = FormatId(m.UpdaterUid)
+	r.FromCity = m.FromCity
+	r.ToCity = m.ToCity
+	r.DepartTime = m.DepartTime
+	r.PeopleCount = m.PeopleCount
+	r.Contact = m.Contact
+	r.Status = m.Status
+	r.Remark = m.Remark
+	r.Nickname = m.Nickname
+	return r
+}
+
+func m2rCarpoolingList(ms []*model.CarpoolingDetailView) []*Carpooling {
+	if ms == nil {
+		return nil
+	}
+	rs := make([]*Carpooling, 0)
+	for _, m := range ms {
+		rs = append(rs, m2rCarpooling(m))
+	}
+	return rs
+}
+
+func m2rComment(m *model.CommentDetailView) *Comment {
+	if m == nil {
+		return nil
+	}
+	r := &Comment{}
+	r.ID = FormatId(m.ID)
+	r.RelateId = FormatId(m.RelateId)
+	r.Content = m.Content
+	r.CreaterUid = FormatId(m.CreaterUid)
+	r.CreatedAt = m.CreatedAt
+	r.UpdatedAt = m.UpdatedAt
+	r.Nickname = m.Nickname
+	return r
+}
+
+func m2rCommentList(ms []*model.CommentDetailView) []*Comment {
+	if ms == nil {
+		return nil
+	}
+	rs := make([]*Comment, 0)
+	for _, m := range ms {
+		rs = append(rs, m2rComment(m))
 	}
 	return rs
 }

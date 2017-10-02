@@ -65,14 +65,15 @@ func CarpoolingGetHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.ICarpoolingGetById, e.MParamsErr, e.ParamsInvalidMultiForm, err))
 		return
 	}
-	Carpooling, err := model.GetCarpoolingByID(db.Mysql, carpoolingID)
+	carpooling, err := model.GetCarpoolingByID(db.Mysql, carpoolingID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.ICarpoolingGetById, e.MCarpoolingErr, e.CarpoolingGetErr, err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
-		"item": Carpooling,
+	c.JSON(http.StatusOK, CarpoolingGetListResponse{
+		Code: e.OK,
+		End:  true,
+		List: m2rCarpoolingList([]*model.CarpoolingDetailView{carpooling}),
 	})
 }
 
@@ -99,10 +100,10 @@ func CarpoolingGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, e.IP(e.ICarpoolingGetList, e.MCarpoolingErr, e.CarpoolingGetListErr, err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
-		"end":  isOver,
-		"list": list,
+	c.JSON(http.StatusOK, CarpoolingGetListResponse{
+		Code: e.OK,
+		End:  isOver,
+		List: m2rCarpoolingList(list),
 	})
 }
 
@@ -155,8 +156,8 @@ func CarpoolingUpdateByIdHandler(c *gin.Context) {
 			return
 		}
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 }
 
@@ -183,7 +184,7 @@ func CarpoolingDeleteByIdHandler(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 }

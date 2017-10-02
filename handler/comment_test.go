@@ -11,7 +11,6 @@ import (
 	"wangqingang/cunxun/checkcode"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/error"
-	"wangqingang/cunxun/model"
 	"wangqingang/cunxun/test"
 )
 
@@ -93,7 +92,7 @@ func testCommentCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	testCommentCreate(t, e, xToken, createCommentRequest)
 }
 
-func testCommentGetList(t *testing.T, e *httpexpect.Expect, relateID string, pageNum, pageSize int) []*model.Comment {
+func testCommentGetList(t *testing.T, e *httpexpect.Expect, relateID string, pageNum, pageSize int) []*Comment {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/comment/").
@@ -103,16 +102,12 @@ func testCommentGetList(t *testing.T, e *httpexpect.Expect, relateID string, pag
 		WithQuery("page_size", pageSize).
 		Expect().Status(http.StatusOK)
 
-	respObj := resp.JSON().Object()
-	respObj.Value("code").Number().Equal(error.OK)
-
-	var result struct {
-		Code int              `json:"code"`
-		List []*model.Comment `json:"list"`
-	}
-	err := json.Unmarshal([]byte(resp.Body().Raw()), &result)
+	object := &CommentGetListResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), &object)
 	assert.Nil(err)
-	return result.List
+	assert.Equal(error.OK, object.Code)
+
+	return object.List
 }
 
 func testCommentGetListHandler(t *testing.T, e *httpexpect.Expect) {
@@ -184,23 +179,20 @@ func testCommentGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	assert.Equal(5, len(list))
 }
 
-func testCommentGet(t *testing.T, e *httpexpect.Expect, commentID string) *model.Comment {
+func testCommentGet(t *testing.T, e *httpexpect.Expect, commentID string) *Comment {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/comment/{comment_id}").
 		WithPath("comment_id", commentID).
 		Expect().Status(http.StatusOK)
 
-	respObject := resp.JSON().Object()
-	respObject.Value("code").Number().Equal(0)
-	var result struct {
-		Code int            `json:"code"`
-		Item *model.Comment `json:"item"`
-	}
-
-	err := json.Unmarshal([]byte(resp.Body().Raw()), &result)
+	object := &CommentGetListResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), &object)
 	assert.Nil(err)
-	return result.Item
+	assert.Equal(error.OK, object.Code)
+	assert.Equal(1, len(object.List))
+
+	return object.List[0]
 }
 
 func testCommentGetHandler(t *testing.T, e *httpexpect.Expect) {
@@ -266,8 +258,9 @@ func testCommentGetHandler(t *testing.T, e *httpexpect.Expect) {
 	}
 	commentID := testCommentCreate(t, e, xToken, createCommentRequest)
 	comment := testCommentGet(t, e, commentID)
+
 	assert.NotNil(comment)
-	assert.Equal(commentID, FormatId(comment.ID))
+	assert.Equal(commentID, comment.ID)
 }
 
 func testCommentUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, commentId string, request *CommentCreateRequest) {

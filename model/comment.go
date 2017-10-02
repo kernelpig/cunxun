@@ -45,8 +45,8 @@ func CreateComment(db sqlExec, comment *Comment) (*Comment, error) {
 	return comment, nil
 }
 
-func GetCommentByID(db sqlExec, commentID uint64) (*Comment, error) {
-	u := &Comment{}
+func GetCommentByID(db sqlExec, commentID uint64) (*CommentDetailView, error) {
+	u := &CommentDetailView{}
 	isFound, err := SQLQueryRow(db, u, map[string]interface{}{
 		"id": commentID,
 	})

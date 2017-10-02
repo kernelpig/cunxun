@@ -65,9 +65,10 @@ func CommentGetHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, e.IP(e.ICommentGet, e.MCommentErr, e.CommentGetErr, err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
-		"item": comment,
+	c.JSON(http.StatusOK, CommentGetListResponse{
+		Code: e.OK,
+		End:  true,
+		List: m2rCommentList([]*model.CommentDetailView{comment}),
 	})
 }
 
@@ -99,10 +100,10 @@ func CommentGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, e.IP(e.ICommentGetList, e.MCommentErr, e.CommentGetListErr, err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
-		"end":  isOver,
-		"list": list,
+	c.JSON(http.StatusOK, CommentGetListResponse{
+		Code: e.OK,
+		End:  isOver,
+		List: m2rCommentList(list),
 	})
 }
 
@@ -147,8 +148,8 @@ func CommentUpdateByIdHandler(c *gin.Context) {
 			return
 		}
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 }
 
@@ -174,7 +175,7 @@ func CommentDeleteByIdHandler(c *gin.Context) {
 			return
 		}
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 }

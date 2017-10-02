@@ -23,9 +23,9 @@ func TestCreateComment(t *testing.T) {
 	assert.Nil(err)
 	assert.NotNil(c)
 
-	c, err = GetCommentByID(db.Mysql, c.ID)
+	c1, err := GetCommentByID(db.Mysql, c.ID)
 	assert.Nil(err)
-	assert.NotNil(c)
+	assert.NotNil(c1)
 }
 
 func TestGetCommentList(t *testing.T) {
@@ -76,19 +76,19 @@ func TestUpdateCommentById(t *testing.T) {
 	assert.Nil(err)
 	assert.NotNil(c)
 
-	c, err = GetCommentByID(db.Mysql, c.ID)
+	c1, err := GetCommentByID(db.Mysql, c.ID)
 	assert.Nil(err)
-	assert.NotNil(c)
+	assert.NotNil(c1)
 
 	newContent := test.GenRandString()
 	count, err := UpdateCommentById(db.Mysql, c.ID, &Comment{Content: newContent})
 	assert.Nil(err)
 	assert.NotZero(count)
 
-	c, err = GetCommentByID(db.Mysql, c.ID)
+	c1, err = GetCommentByID(db.Mysql, c.ID)
 	assert.Nil(err)
-	assert.NotNil(c)
-	assert.Equal(newContent, c.Content)
+	assert.NotNil(c1)
+	assert.Equal(newContent, c1.Content)
 }
 
 func TestDeleteCommentById(t *testing.T) {
@@ -105,15 +105,15 @@ func TestDeleteCommentById(t *testing.T) {
 	assert.Nil(err)
 	assert.NotNil(c)
 
-	c, err = GetCommentByID(db.Mysql, c.ID)
+	c1, err := GetCommentByID(db.Mysql, c.ID)
 	assert.Nil(err)
-	assert.NotNil(c)
+	assert.NotNil(c1)
 
 	count, err := DeleteCommentById(db.Mysql, c.ID)
 	assert.Nil(err)
 	assert.NotZero(count)
 
-	c, err = GetCommentByID(db.Mysql, c.ID)
+	c1, err = GetCommentByID(db.Mysql, c.ID)
 	assert.Nil(err)
-	assert.Nil(c)
+	assert.Nil(c1)
 }
