@@ -53,7 +53,7 @@ func ArticleCreateHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, CreateResponse{Code: e.OK, Id: strconv.FormatUint(article.ID, 10)})
+	c.JSON(http.StatusOK, CreateResponse{Code: e.OK, Id: FormatId(article.ID)})
 }
 
 func ArticleGetHandler(c *gin.Context) {
@@ -67,9 +67,10 @@ func ArticleGetHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleGet, e.MArticleErr, e.ArticleGetErr, err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
-		"item": article,
+	c.JSON(http.StatusOK, ArticleGetListResponse{
+		Code: e.OK,
+		End:  true,
+		List: m2rArticleList([]*model.ArticleDetailView{article}),
 	})
 }
 
@@ -102,10 +103,10 @@ func ArticleGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleGetList, e.MArticleErr, e.ArticleGetListErr, err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
-		"end":  isOver,
-		"list": list,
+	c.JSON(http.StatusOK, ArticleGetListResponse{
+		Code: e.OK,
+		End:  isOver,
+		List: m2rArticleList(list),
 	})
 }
 
@@ -150,8 +151,8 @@ func ArticleUpdateByIdHandler(c *gin.Context) {
 			return
 		}
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 }
 
@@ -178,7 +179,7 @@ func ArticleDeleteByIdHandler(c *gin.Context) {
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 }

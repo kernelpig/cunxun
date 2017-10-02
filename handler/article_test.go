@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"testing"
 
 	"github.com/gavv/httpexpect"
@@ -88,7 +87,7 @@ func testArticleCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	testArticleCreate(t, e, xToken, createArticleRequest)
 }
 
-func testArticleGetList(t *testing.T, e *httpexpect.Expect, columnID string, pageNum, pageSize int) []*model.Article {
+func testArticleGetList(t *testing.T, e *httpexpect.Expect, columnID string, pageNum, pageSize int) []*Article {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/article/").
@@ -99,16 +98,12 @@ func testArticleGetList(t *testing.T, e *httpexpect.Expect, columnID string, pag
 		WithQuery("page_size", pageSize).
 		Expect().Status(http.StatusOK)
 
-	respObj := resp.JSON().Object()
-	respObj.Value("code").Number().Equal(error.OK)
-
-	var result struct {
-		Code int              `json:"code"`
-		List []*model.Article `json:"list"`
-	}
-	err := json.Unmarshal([]byte(resp.Body().Raw()), &result)
+	object := &ArticleGetListResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), &object)
 	assert.Nil(err)
-	return result.List
+	assert.Equal(error.OK, object.Code)
+
+	return object.List
 }
 
 func testArticleGetListHandler(t *testing.T, e *httpexpect.Expect) {
@@ -174,23 +169,20 @@ func testArticleGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	assert.Equal(5, len(list))
 }
 
-func testArticleGet(t *testing.T, e *httpexpect.Expect, articleID string) *model.Article {
+func testArticleGet(t *testing.T, e *httpexpect.Expect, articleID string) *Article {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/article/{article_id}").
 		WithPath("article_id", articleID).
 		Expect().Status(http.StatusOK)
 
-	respObject := resp.JSON().Object()
-	respObject.Value("code").Number().Equal(0)
-	var result struct {
-		Code int            `json:"code"`
-		Item *model.Article `json:"item"`
-	}
-
-	err := json.Unmarshal([]byte(resp.Body().Raw()), &result)
+	object := &ArticleGetListResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
-	return result.Item
+	assert.Equal(error.OK, object.Code)
+	assert.Equal(1, len(object.List))
+
+	return object.List[0]
 }
 
 func testArticleGetHandler(t *testing.T, e *httpexpect.Expect) {
@@ -250,8 +242,9 @@ func testArticleGetHandler(t *testing.T, e *httpexpect.Expect) {
 	}
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 	article := testArticleGet(t, e, articleID)
+
 	assert.NotNil(article)
-	assert.Equal(articleID, strconv.FormatUint(article.ID, 10))
+	assert.Equal(articleID, article.ID)
 }
 
 func testArticleUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, articleId string, request *ArticleUpdateRequest) {

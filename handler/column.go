@@ -59,7 +59,7 @@ func ColumnCreateHandler(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnCreate, e.MColumnErr, e.ColumnCreateErr, err))
 		}
 	}
-	c.JSON(http.StatusOK, CreateResponse{Code: e.OK, Id: strconv.FormatUint(column.ID, 10)})
+	c.JSON(http.StatusOK, CreateResponse{Code: e.OK, Id: FormatId(column.ID)})
 }
 
 func ColumnUpdateByIdHandler(c *gin.Context) {

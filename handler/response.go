@@ -69,17 +69,49 @@ type Column struct {
 	ColumnCount int       `json:"column_count"`
 }
 
-type ArticleListItem struct {
-	ID           uint64    `json:"id"`
-	ColumnId     uint64    `json:"column_id"`
+type Article struct {
+	ID           string    `json:"id"`
+	ColumnId     string    `json:"column_id"`
 	Title        string    `json:"title"`
 	Content      string    `json:"content"`
-	CreaterUid   uint64    `json:"creater_uid"`
-	UpdaterUid   uint64    `json:"updater_uid"`
+	CreaterUid   string    `json:"creater_uid"`
+	UpdaterUid   string    `json:"updater_uid"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 	Nickname     string    `json:"nickname"`
 	CommentCount int       `json:"comment_count"`
+}
+
+type ArticleGetListResponse struct {
+	Code int        `json:"code"`
+	End  bool       `json:"end"`
+	List []*Article `json:"list"`
+}
+
+type Carpooling struct {
+	ID          string    `json:"id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	CreaterUid  string    `json:"creater_uid"`
+	UpdaterUid  string    `json:"updater_uid"`
+	FromCity    string    `json:"from_city"`
+	ToCity      string    `json:"to_city"`
+	DepartTime  time.Time `json:"depart_time"`
+	PeopleCount int       `json:"people_count"`
+	Contact     string    `json:"contact"`
+	Status      int       `json:"status"`
+	Remark      string    `json:"remark"`
+	Nickname    string    `json:"nickname"`
+}
+
+type CarpoolingGetListResponse struct {
+	Code int           `json:"code"`
+	End  bool          `json:"end"`
+	List []*Carpooling `json:"list"`
+}
+
+func FormatId(id uint64) string {
+	return strconv.FormatUint(id, 10)
 }
 
 func m2rUser(m *model.User) *User {
@@ -87,7 +119,7 @@ func m2rUser(m *model.User) *User {
 		return nil
 	}
 	r := &User{}
-	r.ID = strconv.FormatUint(m.ID, 10)
+	r.ID = FormatId(m.ID)
 	r.Phone = m.Phone
 	r.NickName = m.NickName
 	r.HashedPassword = m.HashedPassword
@@ -116,9 +148,9 @@ func m2rColumn(m *model.ColumnDetailView) *Column {
 		return nil
 	}
 	r := &Column{}
-	r.ID = strconv.FormatUint(m.ID, 10)
+	r.ID = FormatId(m.ID)
 	r.Name = m.Name
-	r.CreaterUid = strconv.FormatUint(m.CreaterUid, 10)
+	r.CreaterUid = FormatId(m.CreaterUid)
 	r.CreatedAt = m.CreatedAt
 	r.UpdatedAt = m.UpdatedAt
 	r.Nickname = m.Nickname
@@ -133,6 +165,35 @@ func m2rColumnList(ms []*model.ColumnDetailView) []*Column {
 	rs := make([]*Column, 0)
 	for _, m := range ms {
 		rs = append(rs, m2rColumn(m))
+	}
+	return rs
+}
+
+func m2rArticle(m *model.ArticleDetailView) *Article {
+	if m == nil {
+		return nil
+	}
+	r := &Article{}
+	r.ID = FormatId(m.ID)
+	r.ColumnId = FormatId(m.ColumnId)
+	r.Title = m.Title
+	r.Content = m.Content
+	r.CreaterUid = FormatId(m.CreaterUid)
+	r.UpdaterUid = FormatId(m.UpdaterUid)
+	r.CreatedAt = m.CreatedAt
+	r.UpdatedAt = m.UpdatedAt
+	r.Nickname = m.Nickname
+	r.CommentCount = m.CommentCount
+	return r
+}
+
+func m2rArticleList(ms []*model.ArticleDetailView) []*Article {
+	if ms == nil {
+		return nil
+	}
+	rs := make([]*Article, 0)
+	for _, m := range ms {
+		rs = append(rs, m2rArticle(m))
 	}
 	return rs
 }

@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"testing"
 
 	"github.com/gavv/httpexpect"
@@ -268,7 +267,7 @@ func testCommentGetHandler(t *testing.T, e *httpexpect.Expect) {
 	commentID := testCommentCreate(t, e, xToken, createCommentRequest)
 	comment := testCommentGet(t, e, commentID)
 	assert.NotNil(comment)
-	assert.Equal(commentID, strconv.FormatUint(comment.ID, 10))
+	assert.Equal(commentID, FormatId(comment.ID))
 }
 
 func testCommentUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, commentId string, request *CommentCreateRequest) {
