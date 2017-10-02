@@ -8,7 +8,6 @@ import (
 	"github.com/gavv/httpexpect"
 	"github.com/stretchr/testify/assert"
 
-	"wangqingang/cunxun/checkcode"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/error"
 	"wangqingang/cunxun/test"
@@ -32,45 +31,7 @@ func testCommentCreate(t *testing.T, e *httpexpect.Expect, xToken string, reques
 func testCommentCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 
-	captchaId := testCaptchaCreate(t, e)
-	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
-
-	sendRequest := &CheckcodeSendRequest{
-		Phone:        test.GenFakePhone(),
-		Purpose:      test.TestSignupPurpose,
-		Source:       test.TestWebSource,
-		CaptchaId:    captchaId,
-		CaptchaValue: captchaValue,
-	}
-	testCheckcodeSend(t, e, sendRequest)
-
-	checkcodeKey := &checkcode.CheckCodeKey{
-		Phone:   sendRequest.Phone,
-		Purpose: sendRequest.Purpose,
-		Source:  sendRequest.Source,
-	}
-	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
-
-	signupRequest := &UserSignupRequest{
-		Phone:      sendRequest.Phone,
-		NickName:   test.GenRandString(),
-		Source:     sendRequest.Source,
-		Password:   test.GenFakePassword(),
-		VerifyCode: code,
-	}
-	testUserSignup(t, e, signupRequest)
-
-	captchaId = testCaptchaCreate(t, e)
-	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
-
-	loginRequest := &UserLoginRequest{
-		Phone:        sendRequest.Phone,
-		Source:       sendRequest.Source,
-		Password:     signupRequest.Password,
-		CaptchaId:    captchaId,
-		CaptchaValue: captchaValue,
-	}
-	xToken := testUserLogin(t, e, loginRequest)
+	xToken := testNormalUserLogin(t, e)
 	xSuperToken := testSuperAdminLogin(t, e)
 
 	createColumnRequest := &ColumnCreateRequest{
@@ -114,45 +75,7 @@ func testCommentGetListHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
-	captchaId := testCaptchaCreate(t, e)
-	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
-
-	sendRequest := &CheckcodeSendRequest{
-		Phone:        test.GenFakePhone(),
-		Purpose:      test.TestSignupPurpose,
-		Source:       test.TestWebSource,
-		CaptchaId:    captchaId,
-		CaptchaValue: captchaValue,
-	}
-	testCheckcodeSend(t, e, sendRequest)
-
-	checkcodeKey := &checkcode.CheckCodeKey{
-		Phone:   sendRequest.Phone,
-		Purpose: sendRequest.Purpose,
-		Source:  sendRequest.Source,
-	}
-	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
-
-	signupRequest := &UserSignupRequest{
-		Phone:      sendRequest.Phone,
-		NickName:   test.GenRandString(),
-		Source:     sendRequest.Source,
-		Password:   test.GenFakePassword(),
-		VerifyCode: code,
-	}
-	testUserSignup(t, e, signupRequest)
-
-	captchaId = testCaptchaCreate(t, e)
-	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
-
-	loginRequest := &UserLoginRequest{
-		Phone:        sendRequest.Phone,
-		Source:       sendRequest.Source,
-		Password:     signupRequest.Password,
-		CaptchaId:    captchaId,
-		CaptchaValue: captchaValue,
-	}
-	xToken := testUserLogin(t, e, loginRequest)
+	xToken := testNormalUserLogin(t, e)
 	xSuperToken := testSuperAdminLogin(t, e)
 
 	createColumnRequest := &ColumnCreateRequest{
@@ -199,45 +122,7 @@ func testCommentGetHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 	assert := assert.New(t)
 
-	captchaId := testCaptchaCreate(t, e)
-	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
-
-	sendRequest := &CheckcodeSendRequest{
-		Phone:        test.GenFakePhone(),
-		Purpose:      test.TestSignupPurpose,
-		Source:       test.TestWebSource,
-		CaptchaId:    captchaId,
-		CaptchaValue: captchaValue,
-	}
-	testCheckcodeSend(t, e, sendRequest)
-
-	checkcodeKey := &checkcode.CheckCodeKey{
-		Phone:   sendRequest.Phone,
-		Purpose: sendRequest.Purpose,
-		Source:  sendRequest.Source,
-	}
-	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
-
-	signupRequest := &UserSignupRequest{
-		Phone:      sendRequest.Phone,
-		NickName:   test.GenRandString(),
-		Source:     sendRequest.Source,
-		Password:   test.GenFakePassword(),
-		VerifyCode: code,
-	}
-	testUserSignup(t, e, signupRequest)
-
-	captchaId = testCaptchaCreate(t, e)
-	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
-
-	loginRequest := &UserLoginRequest{
-		Phone:        sendRequest.Phone,
-		Source:       sendRequest.Source,
-		Password:     signupRequest.Password,
-		CaptchaId:    captchaId,
-		CaptchaValue: captchaValue,
-	}
-	xToken := testUserLogin(t, e, loginRequest)
+	xToken := testNormalUserLogin(t, e)
 	xSuperToken := testSuperAdminLogin(t, e)
 
 	createColumnRequest := &ColumnCreateRequest{
@@ -277,45 +162,7 @@ func testCommentUpdateById(t *testing.T, e *httpexpect.Expect, xToken string, co
 func testCommentUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 
-	captchaId := testCaptchaCreate(t, e)
-	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
-
-	sendRequest := &CheckcodeSendRequest{
-		Phone:        test.GenFakePhone(),
-		Purpose:      test.TestSignupPurpose,
-		Source:       test.TestWebSource,
-		CaptchaId:    captchaId,
-		CaptchaValue: captchaValue,
-	}
-	testCheckcodeSend(t, e, sendRequest)
-
-	checkcodeKey := &checkcode.CheckCodeKey{
-		Phone:   sendRequest.Phone,
-		Purpose: sendRequest.Purpose,
-		Source:  sendRequest.Source,
-	}
-	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
-
-	signupRequest := &UserSignupRequest{
-		Phone:      sendRequest.Phone,
-		NickName:   test.GenRandString(),
-		Source:     sendRequest.Source,
-		Password:   test.GenFakePassword(),
-		VerifyCode: code,
-	}
-	testUserSignup(t, e, signupRequest)
-
-	captchaId = testCaptchaCreate(t, e)
-	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
-
-	loginRequest := &UserLoginRequest{
-		Phone:        sendRequest.Phone,
-		Source:       sendRequest.Source,
-		Password:     signupRequest.Password,
-		CaptchaId:    captchaId,
-		CaptchaValue: captchaValue,
-	}
-	xToken := testUserLogin(t, e, loginRequest)
+	xToken := testNormalUserLogin(t, e)
 	xSuperToken := testSuperAdminLogin(t, e)
 
 	createColumnRequest := &ColumnCreateRequest{
@@ -356,45 +203,7 @@ func testCommentDeleteById(t *testing.T, e *httpexpect.Expect, xToken string, co
 func testCommentDeleteByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	test.InitTestCaseEnv(t)
 
-	captchaId := testCaptchaCreate(t, e)
-	captchaValue := testDebugGetCaptchaValue(t, e, captchaId)
-
-	sendRequest := &CheckcodeSendRequest{
-		Phone:        test.GenFakePhone(),
-		Purpose:      test.TestSignupPurpose,
-		Source:       test.TestWebSource,
-		CaptchaId:    captchaId,
-		CaptchaValue: captchaValue,
-	}
-	testCheckcodeSend(t, e, sendRequest)
-
-	checkcodeKey := &checkcode.CheckCodeKey{
-		Phone:   sendRequest.Phone,
-		Purpose: sendRequest.Purpose,
-		Source:  sendRequest.Source,
-	}
-	code := testDebugCheckcodeGetValue(t, e, checkcodeKey)
-
-	signupRequest := &UserSignupRequest{
-		Phone:      sendRequest.Phone,
-		NickName:   test.GenRandString(),
-		Source:     sendRequest.Source,
-		Password:   test.GenFakePassword(),
-		VerifyCode: code,
-	}
-	testUserSignup(t, e, signupRequest)
-
-	captchaId = testCaptchaCreate(t, e)
-	captchaValue = testDebugGetCaptchaValue(t, e, captchaId)
-
-	loginRequest := &UserLoginRequest{
-		Phone:        sendRequest.Phone,
-		Source:       sendRequest.Source,
-		Password:     signupRequest.Password,
-		CaptchaId:    captchaId,
-		CaptchaValue: captchaValue,
-	}
-	xToken := testUserLogin(t, e, loginRequest)
+	xToken := testNormalUserLogin(t, e)
 	xSuperToken := testSuperAdminLogin(t, e)
 
 	createColumnRequest := &ColumnCreateRequest{
