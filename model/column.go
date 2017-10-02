@@ -42,7 +42,7 @@ type Column struct {
 	UpdatedAt  time.Time `json:"updated_at" column:"updated_at"`
 }
 
-type ColumnListView struct {
+type ColumnDetailView struct {
 	ID          uint64    `json:"id" column:"id"`
 	Name        string    `json:"name" column:"name"`
 	CreaterUid  uint64    `json:"creater_uid" column:"creater_uid"`
@@ -119,13 +119,13 @@ func DeleteColumnByIdOfSelf(db sqlExec, columnId, userId uint64) (int64, error) 
 	return DeleteColumnList(db, map[string]interface{}{"id": columnId, "creater_uid": userId})
 }
 
-func GetColumnList(db sqlExec, where map[string]interface{}) ([]*ColumnListView, error) {
-	var list []*ColumnListView
+func GetColumnList(db sqlExec, where map[string]interface{}) ([]*ColumnDetailView, error) {
+	var list []*ColumnDetailView
 
 	// 初始化缓冲区
 	var modelBuf = make([]interface{}, 0)
 	for i := 0; i < pageSize; i++ {
-		modelBuf = append(modelBuf, &ColumnListView{})
+		modelBuf = append(modelBuf, &ColumnDetailView{})
 	}
 
 	// 每次只取pageSize个
@@ -135,7 +135,7 @@ func GetColumnList(db sqlExec, where map[string]interface{}) ([]*ColumnListView,
 			return nil, e.SP(e.MColumnErr, e.ColumnGetAllErr, err)
 		}
 		for _, item := range modelBuf {
-			if model, ok := item.(*ColumnListView); ok {
+			if model, ok := item.(*ColumnDetailView); ok {
 				list = append(list, model)
 			}
 		}

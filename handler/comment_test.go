@@ -3,8 +3,8 @@ package handler
 import (
 	"encoding/json"
 	"net/http"
-	"testing"
 	"strconv"
+	"testing"
 
 	"github.com/gavv/httpexpect"
 	"github.com/stretchr/testify/assert"

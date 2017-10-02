@@ -26,10 +26,9 @@ const (
 )
 
 const (
-	testViewCommentList       = "../sql/view/commentlistview.sql"
+	testViewCommentDetail     = "../sql/view/commentdetailview.sql"
 	testViewArticleDetail     = "../sql/view/articledetailview.sql"
-	testViewArticleList       = "../sql/view/articlelistview.sql"
-	testViewColumnList        = "../sql/view/columnlistview.sql"
+	testViewColumnDetail      = "../sql/view/columndetailview.sql"
 	testViewCarpoolingDeatail = "../sql/view/carpoolingdetailview.sql"
 )
 
@@ -112,9 +111,8 @@ func InitTestCaseEnv(t *testing.T) {
 	initMySQLTable(t, testTableComment, "comment")
 	initMySQLTable(t, testTableCarpooling, "carpooling")
 
-	initMySQLView(t, testViewCommentList, "commentlistview")
+	initMySQLView(t, testViewCommentDetail, "commentdetailview")
 	initMySQLView(t, testViewArticleDetail, "articledetailview")
-	initMySQLView(t, testViewArticleList, "articlelistview")
-	initMySQLView(t, testViewColumnList, "columnlistview")
+	initMySQLView(t, testViewColumnDetail, "columndetailview")
 	initMySQLView(t, testViewCarpoolingDeatail, "carpoolingdetailview")
 }

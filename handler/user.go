@@ -142,9 +142,7 @@ func UserUpdateHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IUserUpdateById, e.MUserErr, e.UserCreateErr, err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
-	})
+	c.JSON(http.StatusOK, OKResponse{Code: e.OK})
 	return
 }
 
@@ -197,7 +195,7 @@ func UserCreateHandler(c *gin.Context) {
 		}
 		return
 	}
-	c.JSON(http.StatusOK, UserSignupResponse{Code: e.OK, UserId: strconv.FormatUint(user.ID, 10)})
+	c.JSON(http.StatusOK, UserCreateResponse{Code: e.OK, UserId: strconv.FormatUint(user.ID, 10)})
 	return
 }
 
@@ -275,11 +273,11 @@ func UserLoginHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":       e.OK,
-		"user_role":  user.Role,
-		"user_id":    user.ID,
-		"user_token": accessToken,
+	c.JSON(http.StatusOK, UserLoginResponse{
+		Code:      e.OK,
+		UserRole:  user.Role,
+		UserId:    strconv.FormatUint(user.ID, 10),
+		UserToken: accessToken,
 	})
 	return
 }
@@ -292,8 +290,8 @@ func UserLogoutHandler(c *gin.Context) {
 		token.TokenClean(payload.UserId, payload.LoginSource)
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 	return
 }
@@ -343,11 +341,11 @@ func UserGetInfoHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":     e.OK,
-		"id":       user.ID,
-		"nickname": user.NickName,
-		"phone":    user.Phone,
+	c.JSON(http.StatusOK, UserGetInfoResponse{
+		Code:     e.OK,
+		UserId:   strconv.FormatUint(user.ID, 10),
+		Nickname: user.NickName,
+		Phone:    user.Phone,
 	})
 }
 
@@ -376,10 +374,10 @@ func UserGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IUserGetList, e.MColumnErr, e.ColumnGetAllErr, err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
-		"end":  isOver,
-		"list": list,
+	c.JSON(http.StatusOK, UserGetListResponse{
+		Code: e.OK,
+		End:  isOver,
+		List: m2rUserDetailList(list),
 	})
 }
 
@@ -402,7 +400,7 @@ func UserDeleteByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IUserDeleteById, e.MUserErr, e.UserDeleteErr, err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 }

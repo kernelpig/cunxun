@@ -289,7 +289,7 @@ func testUserGetInfoHandler(t *testing.T, e *httpexpect.Expect) {
 	testUserGetInfo(t, e, token, userId)
 }
 
-func testUserGetList(t *testing.T, e *httpexpect.Expect, xToken string, pageNum, pageSize int) []*model.User {
+func testUserGetList(t *testing.T, e *httpexpect.Expect, xToken string, pageNum, pageSize int) []*User {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/u").
@@ -303,8 +303,8 @@ func testUserGetList(t *testing.T, e *httpexpect.Expect, xToken string, pageNum,
 	respObj.Value("code").Number().Equal(error.OK)
 
 	var result struct {
-		Code int           `json:"code"`
-		List []*model.User `json:"list"`
+		Code int     `json:"code"`
+		List []*User `json:"list"`
 	}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), &result)
 	assert.Nil(err)
