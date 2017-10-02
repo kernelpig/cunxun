@@ -189,7 +189,6 @@ func testCommentUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 	commentId := testCommentCreate(t, e, xToken, createCommentRequest)
 
 	updateCommentRequest := &CommentCreateRequest{
-		RelateId: articleID,
 		Content:  test.GenRandString() + test.GenRandString(),
 	}
 	testCommentUpdateById(t, e, xToken, commentId, updateCommentRequest)

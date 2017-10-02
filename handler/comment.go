@@ -127,13 +127,7 @@ func CommentUpdateByIdHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.I(e.ICommentUpdateById, e.MAuthErr, e.AuthGetCurrentErr))
 		return
 	}
-	relateId, err := strconv.ParseUint(req.RelateId, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, e.I(e.ICommentUpdateById, e.MParamsErr, e.ParamsInvalidRelateID))
-		return
-	}
 	comment := &model.Comment{
-		RelateId:  relateId,
 		Content:   req.Content,
 		UpdatedAt: time.Now(),
 	}
