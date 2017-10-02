@@ -10,12 +10,10 @@ type OKResponse struct {
 	Code int `json:"code"`
 }
 
-type UserSignupResponse struct {
-	Code   int    `json:"code"`
-	UserId string `json:"user_id"`
+type CreateResponse struct {
+	Code int    `json:"code"`
+	Id   string `json:"id"`
 }
-
-type UserCreateResponse UserSignupResponse
 
 type UserLoginResponse struct {
 	Code      int    `json:"code"`
@@ -68,6 +66,11 @@ type CommentCreateResponse struct {
 type CarpoolingCreateResponse struct {
 	Code         int    `json:"code"`
 	CarpoolingId string `json:"carpooling_id"`
+}
+
+type ImageCreateResponse struct {
+	Code int    `json:"code"`
+	Link string `json:"link"`
 }
 
 type ArticleListItem struct {

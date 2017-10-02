@@ -58,8 +58,8 @@ func ImageCreateHandler(c *gin.Context) {
 	}
 
 	// 必须为此格式, 为forala_edit处理特定格式
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
-		"link": link,
+	c.JSON(http.StatusOK, ImageCreateResponse{
+		Code: e.OK,
+		Link: link,
 	})
 }

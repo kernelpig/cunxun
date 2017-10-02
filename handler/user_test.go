@@ -23,11 +23,11 @@ func testUserSignup(t *testing.T, e *httpexpect.Expect, request *UserSignupReque
 		Expect().Status(http.StatusOK)
 
 	// TODO: update错误不应该降级
-	object := &UserSignupResponse{}
+	object := &CreateResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
 
-	return object.UserId
+	return object.Id
 }
 
 func testUserSignupHandler(t *testing.T, e *httpexpect.Expect) {
@@ -374,12 +374,12 @@ func testUserCreate(t *testing.T, e *httpexpect.Expect, xToken string, request *
 		WithHeader(common.AuthHeaderKey, xToken).
 		WithJSON(request).Expect()
 
-	object := &UserSignupResponse{}
+	object := &CreateResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
 	assert.Equal(error.OK, object.Code)
 
-	return object.UserId
+	return object.Id
 }
 
 func testUserCreateHandler(t *testing.T, e *httpexpect.Expect) {
