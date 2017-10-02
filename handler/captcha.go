@@ -13,9 +13,9 @@ import (
 
 func CaptchaCreateHandler(c *gin.Context) {
 	id := captcha.GenCaptcha(common.Config.Captcha.DefaultLength)
-	c.JSON(http.StatusOK, gin.H{
-		"code":       e.OK,
-		"captcha_id": id,
+	c.JSON(http.StatusOK, CreateResponse{
+		Code: e.OK,
+		Id:   id,
 	})
 	return
 }

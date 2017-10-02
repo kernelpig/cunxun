@@ -3,20 +3,26 @@ package handler
 import (
 	"net/http"
 	"testing"
+	"encoding/json"
 
 	"github.com/gavv/httpexpect"
 
+	"github.com/stretchr/testify/assert"
 	"wangqingang/cunxun/error"
 	"wangqingang/cunxun/test"
 )
 
 func testCaptchaCreate(t *testing.T, e *httpexpect.Expect) string {
+	assert := assert.New(t)
 	resp := e.POST("/api/captcha").
-		Expect().Status(http.StatusOK).
-		JSON().Object()
+		Expect().Status(http.StatusOK)
 
-	resp.Value("code").Number().Equal(error.OK)
-	return resp.Value("captcha_id").String().Raw()
+	object := &CreateResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
+	assert.Nil(err)
+	assert.Equal(error.OK, object.Code)
+
+	return object.Id
 }
 
 func testCaptchaGetImage(t *testing.T, e *httpexpect.Expect, id string) {
