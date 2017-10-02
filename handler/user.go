@@ -377,7 +377,7 @@ func UserGetListHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, UserGetListResponse{
 		Code: e.OK,
 		End:  isOver,
-		List: m2rUserDetailList(list),
+		List: m2rUserList(list),
 	})
 }
 

@@ -23,12 +23,12 @@ func testCarpoolingCreate(t *testing.T, e *httpexpect.Expect, xToken string, req
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
-	object := &CarpoolingCreateResponse{}
+	object := &CreateResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
 	assert.Equal(error.OK, object.Code)
 
-	return object.CarpoolingId
+	return object.Id
 }
 
 func testCarpoolingCreateHandler(t *testing.T, e *httpexpect.Expect) {

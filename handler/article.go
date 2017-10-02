@@ -53,7 +53,7 @@ func ArticleCreateHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, ArticleCreateResponse{Code: e.OK, ArticleId: strconv.FormatUint(article.ID, 10)})
+	c.JSON(http.StatusOK, CreateResponse{Code: e.OK, Id: strconv.FormatUint(article.ID, 10)})
 }
 
 func ArticleGetHandler(c *gin.Context) {

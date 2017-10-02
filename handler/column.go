@@ -24,9 +24,10 @@ func ColumnGetListHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IColumnGetAll, e.MColumnErr, e.ColumnGetAllErr, err))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
-		"list": list,
+	c.JSON(http.StatusOK, ColumnGetListResponse{
+		Code: e.OK,
+		End:  true,
+		List: m2rColumnList(list),
 	})
 }
 
@@ -58,7 +59,7 @@ func ColumnCreateHandler(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, e.IP(e.IColumnCreate, e.MColumnErr, e.ColumnCreateErr, err))
 		}
 	}
-	c.JSON(http.StatusOK, ColumnCreateResponse{Code: e.OK, ColumnId: strconv.FormatUint(column.ID, 10)})
+	c.JSON(http.StatusOK, CreateResponse{Code: e.OK, Id: strconv.FormatUint(column.ID, 10)})
 }
 
 func ColumnUpdateByIdHandler(c *gin.Context) {
@@ -92,8 +93,8 @@ func ColumnUpdateByIdHandler(c *gin.Context) {
 			return
 		}
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 }
 
@@ -119,7 +120,7 @@ func ColumnDeleteByIdHandler(c *gin.Context) {
 			return
 		}
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": e.OK,
+	c.JSON(http.StatusOK, OKResponse{
+		Code: e.OK,
 	})
 }

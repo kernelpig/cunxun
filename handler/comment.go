@@ -51,7 +51,7 @@ func CommentCreateHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, CommentCreateResponse{Code: e.OK, CommentId: strconv.FormatUint(comment.ID, 10)})
+	c.JSON(http.StatusOK, CreateResponse{Code: e.OK, Id: strconv.FormatUint(comment.ID, 10)})
 }
 
 func CommentGetHandler(c *gin.Context) {

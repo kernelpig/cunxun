@@ -48,29 +48,25 @@ type UserGetListResponse struct {
 	List []*User `json:"list"`
 }
 
-type ColumnCreateResponse struct {
-	Code     int    `json:"code"`
-	ColumnId string `json:"column_id"`
-}
-
-type ArticleCreateResponse struct {
-	Code      int    `json:"code"`
-	ArticleId string `json:"article_id"`
-}
-
-type CommentCreateResponse struct {
-	Code      int    `json:"code"`
-	CommentId string `json:"article_id"`
-}
-
-type CarpoolingCreateResponse struct {
-	Code         int    `json:"code"`
-	CarpoolingId string `json:"carpooling_id"`
+type ColumnGetListResponse struct {
+	Code int       `json:"code"`
+	End  bool      `json:"end"`
+	List []*Column `json:"list"`
 }
 
 type ImageCreateResponse struct {
 	Code int    `json:"code"`
 	Link string `json:"link"`
+}
+
+type Column struct {
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	CreaterUid  string    `json:"creater_uid"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Nickname    string    `json:"nickname"`
+	ColumnCount int       `json:"column_count"`
 }
 
 type ArticleListItem struct {
@@ -86,7 +82,7 @@ type ArticleListItem struct {
 	CommentCount int       `json:"comment_count"`
 }
 
-func m2rUserDetail(m *model.User) *User {
+func m2rUser(m *model.User) *User {
 	if m == nil {
 		return nil
 	}
@@ -104,13 +100,39 @@ func m2rUserDetail(m *model.User) *User {
 	return r
 }
 
-func m2rUserDetailList(ms []*model.User) []*User {
+func m2rUserList(ms []*model.User) []*User {
 	if ms == nil {
 		return nil
 	}
 	rs := make([]*User, 0)
 	for _, m := range ms {
-		rs = append(rs, m2rUserDetail(m))
+		rs = append(rs, m2rUser(m))
+	}
+	return rs
+}
+
+func m2rColumn(m *model.ColumnDetailView) *Column {
+	if m == nil {
+		return nil
+	}
+	r := &Column{}
+	r.ID = strconv.FormatUint(m.ID, 10)
+	r.Name = m.Name
+	r.CreaterUid = strconv.FormatUint(m.CreaterUid, 10)
+	r.CreatedAt = m.CreatedAt
+	r.UpdatedAt = m.UpdatedAt
+	r.Nickname = m.Nickname
+	r.ColumnCount = m.ColumnCount
+	return r
+}
+
+func m2rColumnList(ms []*model.ColumnDetailView) []*Column {
+	if ms == nil {
+		return nil
+	}
+	rs := make([]*Column, 0)
+	for _, m := range ms {
+		rs = append(rs, m2rColumn(m))
 	}
 	return rs
 }

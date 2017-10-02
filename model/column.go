@@ -43,13 +43,14 @@ type Column struct {
 }
 
 type ColumnDetailView struct {
-	ID          uint64    `json:"id" column:"id"`
-	Name        string    `json:"name" column:"name"`
-	CreaterUid  uint64    `json:"creater_uid" column:"creater_uid"`
-	CreatedAt   time.Time `json:"created_at" column:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at" column:"updated_at"`
-	Nickname    string    `json:"nickname" column:"nickname"`
-	ColumnCount int       `json:"column_count" column:"column_count"`
+	ID         uint64    `json:"id" column:"id"`
+	Name       string    `json:"name" column:"name"`
+	CreaterUid uint64    `json:"creater_uid" column:"creater_uid"`
+	CreatedAt  time.Time `json:"created_at" column:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at" column:"updated_at"`
+	Nickname   string    `json:"nickname" column:"nickname"`
+	// TODO: 下面这个字段干啥的? 暂时没有发现用处, 确认一下前端是否用到
+	ColumnCount int `json:"column_count" column:"column_count"`
 }
 
 func GetColumnByID(db sqlExec, columnID uint64) (*Column, error) {

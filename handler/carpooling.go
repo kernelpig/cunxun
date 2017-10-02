@@ -56,7 +56,7 @@ func CarpoolingCreateHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, CarpoolingCreateResponse{Code: e.OK, CarpoolingId: strconv.FormatUint(carpooling.ID, 10)})
+	c.JSON(http.StatusOK, CreateResponse{Code: e.OK, Id: strconv.FormatUint(carpooling.ID, 10)})
 }
 
 func CarpoolingGetHandler(c *gin.Context) {

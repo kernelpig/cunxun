@@ -10,7 +10,6 @@ import (
 
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/error"
-	"wangqingang/cunxun/model"
 	"wangqingang/cunxun/test"
 )
 
@@ -21,12 +20,12 @@ func testColumnCreate(t *testing.T, e *httpexpect.Expect, xToken string, request
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
-	object := &ColumnCreateResponse{}
+	object := &CreateResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
 	assert.Equal(error.OK, object.Code)
 
-	return object.ColumnId
+	return object.Id
 }
 
 func testColumnCreateHandler(t *testing.T, e *httpexpect.Expect) {
@@ -40,24 +39,20 @@ func testColumnCreateHandler(t *testing.T, e *httpexpect.Expect) {
 	testColumnCreate(t, e, xSuperToken, createRequest)
 }
 
-func testColumnGetList(t *testing.T, e *httpexpect.Expect) []*model.Column {
+func testColumnGetList(t *testing.T, e *httpexpect.Expect) []*Column {
 	assert := assert.New(t)
 
 	resp := e.GET("/api/column").
 		WithQuery("creater_uid", "0").
 		Expect().Status(http.StatusOK)
 
-	respObj := resp.JSON().Object()
-	respObj.Value("code").Number().Equal(error.OK)
-
-	var result struct {
-		Code int             `json:"code"`
-		List []*model.Column `json:"list"`
-	}
-	err := json.Unmarshal([]byte(resp.Body().Raw()), &result)
+	object := &ColumnGetListResponse{}
+	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
+	assert.True(object.End)
+	assert.Equal(error.OK, object.Code)
 
-	return result.List
+	return object.List
 }
 
 func testColumnGetListHandler(t *testing.T, e *httpexpect.Expect) {
@@ -96,7 +91,7 @@ func testColumnUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 		Name: test.GenRandString(),
 	}
 	columnId := testColumnCreate(t, e, xSuperToken, createRequest)
-	assert.NotZero(columnId)
+	assert.NotEmpty(columnId)
 
 	updateRequest := &ColumnUpdateRequest{
 		Name: test.GenRandString(),

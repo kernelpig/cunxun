@@ -23,12 +23,12 @@ func testArticleCreate(t *testing.T, e *httpexpect.Expect, xToken string, reques
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
-	object := &ArticleCreateResponse{}
+	object := &CreateResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
 	assert.Equal(error.OK, object.Code)
 
-	return object.ArticleId
+	return object.Id
 }
 
 func testArticleCreateHandler(t *testing.T, e *httpexpect.Expect) {

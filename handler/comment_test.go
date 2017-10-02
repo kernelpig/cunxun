@@ -23,12 +23,12 @@ func testCommentCreate(t *testing.T, e *httpexpect.Expect, xToken string, reques
 		WithJSON(request).
 		Expect().Status(http.StatusOK)
 
-	object := &CommentCreateResponse{}
+	object := &CreateResponse{}
 	err := json.Unmarshal([]byte(resp.Body().Raw()), object)
 	assert.Nil(err)
 	assert.Equal(error.OK, object.Code)
 
-	return object.CommentId
+	return object.Id
 }
 
 func testCommentCreateHandler(t *testing.T, e *httpexpect.Expect) {
