@@ -36,10 +36,10 @@ func regUserRouter(router *gin.Engine) {
 	group.POST("/login", UserLoginHandler)
 	group.POST("/logout", UserLogoutHandler)
 	group.GET("/:user_id/avatar", UserGetAvatarHandler)
+	group.GET("/:user_id", UserGetInfoHandler)
 	group.Use(middleware.AuthMiddleware())
 	{
 		group.GET("/", UserGetListHandler)
-		group.GET("/:user_id", UserGetInfoHandler)
 		group.POST("/", UserCreateHandler)
 		group.PUT("/:user_id", UserUpdateHandler)
 		group.DELETE("/:user_id", UserDeleteByIdHandler)

@@ -326,11 +326,6 @@ func UserGetInfoHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IUserGetInfo, e.MParamsErr, e.ParamsInvalidUserId, err))
 		return
 	}
-	currentCtx := middleware.GetCurrentAuth(c)
-	if currentCtx == nil {
-		c.JSON(http.StatusBadRequest, e.I(e.IUserGetInfo, e.MAuthErr, e.AuthGetCurrentErr))
-		return
-	}
 	user, err := model.GetUserByID(db.Mysql, userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IUserGetInfo, e.MUserErr, e.UserGetErr, err))

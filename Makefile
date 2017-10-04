@@ -1,6 +1,6 @@
 all: build
 
-export GOPATH := $(CURDIR)/_project
+export GOPATH := $(GOPATH)
 export GOBIN := $(CURDIR)/bin
 
 CURRENT_GIT_GROUP := wangqingang
