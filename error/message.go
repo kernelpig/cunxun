@@ -245,6 +245,7 @@ func initSubErrors() {
 		},
 		MIdGeneratorErr: {
 			IdGeneratorInitErr: "Failed to init id generator.",
+			IdGeneratorErr:     "Failed to generate id.",
 		},
 	}
 }

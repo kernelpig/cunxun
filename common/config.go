@@ -26,6 +26,7 @@ type Configs struct {
 	Comment     *CommentConfig
 	Carpooling  *CarpoolingConfig
 	Oss         *OssConfig
+	Avatar      *AvatarConfig
 }
 
 type TokenConfig struct {
@@ -96,9 +97,14 @@ type OssConfig struct {
 	ReadWriteTimeout Duration
 }
 
+// 头像相关配置
+type AvatarConfig struct {
+	DefaultAvatarFile string // 默认头像文件
+	DirPrefix         string // oss头像文件夹前缀
+}
+
 // 用户相关配置
 type UserConfig struct {
-	DefaultAvatarUrl   string
 	SuperAdminPhone    string
 	SuperAdminPassword string
 }

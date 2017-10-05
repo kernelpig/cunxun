@@ -24,6 +24,7 @@ type CommentDetailView struct {
 	CreatedAt  time.Time `json:"created_at" column:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at" column:"updated_at"`
 	Nickname   string    `json:"nickname" column:"nickname"`
+	Avatar     string    `json:"avatar" column:"avatar"`
 }
 
 func CreateComment(db sqlExec, comment *Comment) (*Comment, error) {

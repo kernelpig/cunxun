@@ -58,7 +58,6 @@ dialTimeout = "3s"
 readWriteTimeout = "3s"
 
 [user]
-defaultAvatarUrl = "http://oss.lunxue.cc/avatar.png"
 superAdminPhone = "18653193004"
 superAdminPassword = "Gz9197891"
 
@@ -67,3 +66,7 @@ defaultMaxLength = 200
 
 [carpooling]
 defaultMaxSeat = 6
+
+[avatar]
+defaultAvatarFile = "avatar.jpg"
+dirPrefix = "avatar/"

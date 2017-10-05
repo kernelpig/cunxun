@@ -1,6 +1,7 @@
 package script
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"time"
@@ -37,6 +38,9 @@ func CreateTables(sqlPathDir string) error {
 		bytes, err := ioutil.ReadFile(p)
 		if err != nil {
 			return e.SP(e.MMysqlErr, e.MysqlWalkSqlReadFileErr, err)
+		}
+		if !common.Config.ReleaseMode {
+			fmt.Println("_SQL: ", string(bytes))
 		}
 		if _, err := db.Mysql.Exec(string(bytes)); err != nil {
 			return e.SP(e.MMysqlErr, e.MysqlWalkSqlExecute, err)
@@ -79,6 +83,7 @@ func CreateSuperAdmin() (*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
+	avatarURL := "http://" + path.Join(common.Config.Oss.Domain, common.Config.Avatar.DirPrefix, common.Config.Avatar.DefaultAvatarFile)
 	user := &model.User{
 		Phone:          "86 " + conf.SuperAdminPhone,
 		NickName:       "admin",
@@ -86,6 +91,7 @@ func CreateSuperAdmin() (*model.User, error) {
 		PasswordLevel:  passwordLevel,
 		RegisterSource: "web",
 		Role:           model.UserRoleSuperAdmin,
+		Avatar:         avatarURL,
 	}
 	user, err = model.CreateUser(db.Mysql, user)
 	if err != nil {

@@ -68,11 +68,11 @@ type CarpoolingCreateRequest struct {
 }
 
 type CarpoolingUpdateRequest struct {
-	FromCity    string `json:"from_city" binding:"required"`
-	ToCity      string `json:"to_city" binding:"required"`
-	DepartTime  int64  `json:"depart_time" binding:"required"`
-	PeopleCount int    `json:"people_count" binding:"required"`
-	Contact     string `json:"contact" binding:"required"`
+	FromCity    string `json:"from_city" binding:"omitempty"`
+	ToCity      string `json:"to_city" binding:"omitempty"`
+	DepartTime  int64  `json:"depart_time" binding:"omitempty"`
+	PeopleCount int    `json:"people_count" binding:"omitempty"`
+	Contact     string `json:"contact" binding:"omitempty"`
 	Remark      string `json:"remark" binding:"required"`
 }
 

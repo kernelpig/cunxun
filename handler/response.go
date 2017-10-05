@@ -119,6 +119,7 @@ type Comment struct {
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 	Nickname   string    `json:"nickname"`
+	Avatar     string    `json:"avatar"`
 }
 
 type CommentGetListResponse struct {
@@ -259,6 +260,7 @@ func m2rComment(m *model.CommentDetailView) *Comment {
 	r.CreatedAt = m.CreatedAt
 	r.UpdatedAt = m.UpdatedAt
 	r.Nickname = m.Nickname
+	r.Avatar = m.Avatar
 	return r
 }
 

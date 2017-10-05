@@ -8,15 +8,17 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"path"
 
 	"github.com/ahmetb/go-linq"
 	"github.com/gin-gonic/gin"
 	"github.com/satori/go.uuid"
-
+	
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
 	e "wangqingang/cunxun/error"
+	"wangqingang/cunxun/id"
 	"wangqingang/cunxun/login"
 	"wangqingang/cunxun/middleware"
 	"wangqingang/cunxun/model"
@@ -50,12 +52,21 @@ func parseAvatar(data string) (string, string, error) {
 	return s3[1], s2[1], nil
 }
 
-// 写入头像文件, 并生成头像文件名, DB不存储路径, 读取时根据配置读取
-func writeAvatarFile(reqAvatar string) (string, error) {
-	if reqAvatar == "" {
-		return "", nil
+// 获取头像文件路径
+func getAvatarFilePath(reqAvatar string, id uint64) string {
+	var fileName string = common.Config.Avatar.DefaultAvatarFile
+	if reqAvatar != "" {
+		fileName = FormatId(id)
 	}
-	imgType, contentBase64, err := parseAvatar(reqAvatar)
+	return path.Join(common.Config.Avatar.DirPrefix, fileName)
+}
+
+// 写入头像文件, 并生成头像文件名, DB不存储路径, 读取时根据配置读取
+func writeAvatarFile(filePath, reqAvatar string) (string, error) {
+	if reqAvatar == "" {
+		return "", e.SD(e.MUserErr, e.UserAvatarDecodeErr, "avatar param invalid")
+	}
+	_, contentBase64, err := parseAvatar(reqAvatar)
 	if err != nil {
 		return "", err
 	}
@@ -63,9 +74,7 @@ func writeAvatarFile(reqAvatar string) (string, error) {
 	if err != nil {
 		return "", e.SP(e.MUserErr, e.UserAvatarDecodeErr, err)
 	}
-	fileName := uuid.NewV4().String() + "." + imgType
-	link := oss.PutImageByFileAsync(fileName, bytes.NewBuffer(contentBytes))
-
+	link := oss.PutImageByFileAsync(filePath, bytes.NewBuffer(contentBytes))
 	return link, nil
 }
 
@@ -107,17 +116,17 @@ func UserSignupHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, e.IP(e.IUserSignup, e.MPasswordErr, e.PasswordLevelErr, err))
 		return
 	}
+	id, err := id.Generate()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, e.IP(e.IUserSignup, e.MIdGeneratorErr, e.IdGeneratorErr, err))
+		return
+	}
 
-	// 默认为空, 则使用默认头像
-	var avatarLink string = common.Config.User.DefaultAvatarUrl
-	if req.Avatar != "" {
-		// 头像上传降级, 不处理错误, 防止因为头像失败导致用户重新注册
-		avatarLink, err = writeAvatarFile(req.Avatar)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, e.IP(e.IUserSignup, e.MPasswordErr, e.PasswordLevelErr, err))
-			return
-			//avatarLink = common.Config.User.DefaultAvatarUrl
-		}
+	filePath := getAvatarFilePath(req.Avatar, id)
+	avatarLink, err := writeAvatarFile(filePath, req.Avatar)
+	if err != nil {
+		filePath = getAvatarFilePath("", id)
+		avatarLink = path.Join(common.Config.Oss.Domain, filePath)
 	}
 
 	user := &model.User{
