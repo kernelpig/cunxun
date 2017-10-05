@@ -1,11 +1,10 @@
 package handler
 
 import (
+	"bytes"
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"net/http"
-	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -14,7 +13,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/satori/go.uuid"
 
-	"wangqingang/cunxun/avatar"
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
@@ -22,30 +20,53 @@ import (
 	"wangqingang/cunxun/login"
 	"wangqingang/cunxun/middleware"
 	"wangqingang/cunxun/model"
+	"wangqingang/cunxun/oss"
 	"wangqingang/cunxun/password"
 	"wangqingang/cunxun/phone"
 	"wangqingang/cunxun/token"
 )
+
+// 携带的数据格式为: data:image/png;base64,BASE64编码内容
+func parseAvatar(data string) (string, string, error) {
+	if len(data) <= 2 {
+		return "", "", e.SD(e.MUserErr, e.UserAvatarDecodeErr, "invalid length")
+	}
+	s := strings.Split(data, ";")
+	if len(s) != 2 || len(s[0]) == 0 || len(s[1]) == 0 {
+		return "", "", e.SD(e.MUserErr, e.UserAvatarDecodeErr, "split by ; error")
+	}
+	s1 := strings.Split(s[0], ":")
+	if len(s1) != 2 || len(s1[0]) == 0 || len(s1[1]) == 0 {
+		return "", "", e.SD(e.MUserErr, e.UserAvatarDecodeErr, "split by : error")
+	}
+	s2 := strings.Split(s[1], ",")
+	if len(s2) != 2 || len(s2[0]) == 0 || len(s2[1]) == 0 {
+		return "", "", e.SD(e.MUserErr, e.UserAvatarDecodeErr, "split by , error")
+	}
+	s3 := strings.Split(s1[1], "/")
+	if len(s3) != 2 || s3[0] != "image" || len(s3[1]) == 0 {
+		return "", "", e.SD(e.MUserErr, e.UserAvatarDecodeErr, "split by / error")
+	}
+	return s3[1], s2[1], nil
+}
 
 // 写入头像文件, 并生成头像文件名, DB不存储路径, 读取时根据配置读取
 func writeAvatarFile(reqAvatar string) (string, error) {
 	if reqAvatar == "" {
 		return "", nil
 	}
-	var index int
-	if index = strings.Index(reqAvatar, ","); index == -1 {
-		return "", e.SD(e.MUserErr, e.UserAvatarDecodeErr, "Not found decode flag.")
+	imgType, contentBase64, err := parseAvatar(reqAvatar)
+	if err != nil {
+		return "", err
 	}
-	bytes, err := base64.StdEncoding.DecodeString(reqAvatar[index+1:])
+	contentBytes, err := base64.StdEncoding.DecodeString(contentBase64)
 	if err != nil {
 		return "", e.SP(e.MUserErr, e.UserAvatarDecodeErr, err)
 	}
-	fileName := uuid.NewV4().String()
-	pathName := path.Join(common.Config.User.DefaultAvatarDir, fileName)
-	if err := ioutil.WriteFile(pathName, bytes, 444); err != nil {
-		return "", e.SP(e.MUserErr, e.UserAvatarDecodeErr, err)
-	}
-	return fileName, nil
+	fileName := uuid.NewV4().String() + "." + imgType
+	link := oss.PutImageByFileAsync(fileName, bytes.NewBuffer(contentBytes))
+
+	return link, nil
 }
 
 func UserSignupHandler(c *gin.Context) {
@@ -87,7 +108,17 @@ func UserSignupHandler(c *gin.Context) {
 		return
 	}
 
-	fileName, err := writeAvatarFile(req.Avatar)
+	// 默认为空, 则使用默认头像
+	var avatarLink string = common.Config.User.DefaultAvatarUrl
+	if req.Avatar != "" {
+		// 头像上传降级, 不处理错误, 防止因为头像失败导致用户重新注册
+		avatarLink, err = writeAvatarFile(req.Avatar)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, e.IP(e.IUserSignup, e.MPasswordErr, e.PasswordLevelErr, err))
+			return
+			//avatarLink = common.Config.User.DefaultAvatarUrl
+		}
+	}
 
 	user := &model.User{
 		Phone:          req.Phone,
@@ -95,7 +126,7 @@ func UserSignupHandler(c *gin.Context) {
 		HashedPassword: hashedPassword,
 		PasswordLevel:  passwordLevel,
 		RegisterSource: req.Source,
-		Avatar:         fileName,
+		Avatar:         avatarLink,
 		CreatedAt:      time.Now(),
 		UpdatedAt:      time.Now(),
 	}
@@ -296,30 +327,6 @@ func UserLogoutHandler(c *gin.Context) {
 	return
 }
 
-func UserGetAvatarHandler(c *gin.Context) {
-	userId, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, e.IP(e.IUserGetAvatar, e.MParamsErr, e.ParamsInvalidUserId, err))
-		return
-	}
-
-	// 用户头像存在, 使用用户头像
-	user, err := model.GetUserByID(db.Mysql, userId)
-	if err != nil || user == nil || user.Avatar == "" {
-		bytes := avatar.GetDefaultAvatar(common.Config.User.DefaultAvatarDir, common.Config.User.DefaultAvatarFile)
-		c.Data(http.StatusOK, "image/png", bytes)
-		return
-	}
-	// 用户头像文件读取失败, 使用默认头像
-	bytes, err := ioutil.ReadFile(path.Join(common.Config.User.DefaultAvatarDir, user.Avatar))
-	if err != nil {
-		bytes := avatar.GetDefaultAvatar(common.Config.User.DefaultAvatarDir, common.Config.User.DefaultAvatarFile)
-		c.Data(http.StatusOK, "image/png", bytes)
-		return
-	}
-	c.Data(http.StatusOK, "image/png", bytes)
-}
-
 func UserGetInfoHandler(c *gin.Context) {
 	userId, err := strconv.ParseUint(c.Param("user_id"), 10, 64)
 	if err != nil {
@@ -341,6 +348,7 @@ func UserGetInfoHandler(c *gin.Context) {
 		UserId:   strconv.FormatUint(user.ID, 10),
 		Nickname: user.NickName,
 		Phone:    user.Phone,
+		Avatar:   user.Avatar,
 	})
 }
 

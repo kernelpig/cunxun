@@ -51,7 +51,7 @@ type ResetPasswordRequest struct {
 }
 
 type ColumnCreateRequest struct {
-	Name string `json:"name"`
+	Name string `json:"name" binding:"required,min=1,max=64"`
 }
 
 type ColumnUpdateRequest struct {

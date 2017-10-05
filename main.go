@@ -6,7 +6,6 @@ import (
 	"runtime"
 	"time"
 
-	"wangqingang/cunxun/avatar"
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
@@ -37,9 +36,6 @@ func cmdConfigHandler(config string) {
 		runtime.GOMAXPROCS(common.Config.Gomaxprocs)
 	}
 	if err := id.InitIdGenerator(); err != nil {
-		panic(err)
-	}
-	if err := avatar.InitAvatar(common.Config.User.DefaultAvatarDir, common.Config.User.DefaultAvatarFile); err != nil {
 		panic(err)
 	}
 	if err := db.InitRedis(common.Config.Redis); err != nil {

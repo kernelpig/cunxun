@@ -27,6 +27,7 @@ type UserGetInfoResponse struct {
 	UserId   string `json:"user_id"`
 	Nickname string `json:"nickname"`
 	Phone    string `json:"phone"`
+	Avatar   string `json:"avatar"`
 }
 
 type User struct {

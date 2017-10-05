@@ -9,7 +9,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"wangqingang/cunxun/avatar"
 	"wangqingang/cunxun/captcha"
 	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/db"
@@ -37,11 +36,6 @@ const (
 	testPublicKeyPath  = "../conf/ecdsa_pub.pem"
 )
 
-const (
-	testAvatarDir  = "../conf/avatar/"
-	testAvatarFile = "avatar.png"
-)
-
 func init() {
 	common.InitConfig("../conf/config.dev.toml")
 
@@ -52,9 +46,6 @@ func init() {
 		panic(err)
 	}
 	if err := db.InitMysql(common.Config.Mysql); err != nil {
-		panic(err)
-	}
-	if err := avatar.InitAvatar(testAvatarDir, testAvatarFile); err != nil {
 		panic(err)
 	}
 	if err := captcha.InitCaptcha(common.Config.Captcha.TTL.D()); err != nil {

@@ -58,8 +58,7 @@ dialTimeout = "3s"
 readWriteTimeout = "3s"
 
 [user]
-defaultAvatarFile = "avatar.png"
-defaultAvatarDir = "./conf/avatar/"
+defaultAvatarUrl = "http://oss.lunxue.cc/avatar.png"
 superAdminPhone = "18653193004"
 superAdminPassword = "Gz9197891"
 

@@ -98,8 +98,7 @@ type OssConfig struct {
 
 // 用户相关配置
 type UserConfig struct {
-	DefaultAvatarFile  string
-	DefaultAvatarDir   string
+	DefaultAvatarUrl   string
 	SuperAdminPhone    string
 	SuperAdminPassword string
 }
