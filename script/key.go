@@ -10,6 +10,7 @@ import (
 	"encoding/pem"
 	"io/ioutil"
 
+	"wangqingang/cunxun/common"
 	e "wangqingang/cunxun/error"
 )
 
@@ -50,7 +51,9 @@ func CreateTokenKey(pubKeyPath, priKeyPath string) error {
 	if err := ioutil.WriteFile(pubKeyPath, []byte(encPub), 444); err != nil {
 		return e.SP(e.MTokenErr, e.TokenWritePubKeyFileErr, err)
 	}
-	fmt.Println(encPriv)
-	fmt.Println(encPub)
+	if !common.Config.ReleaseMode {
+		fmt.Println(encPriv)
+		fmt.Println(encPub)
+	}
 	return nil
 }

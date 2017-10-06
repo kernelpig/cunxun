@@ -72,6 +72,10 @@ func cmdStartHandler(start bool) {
 }
 
 func main() {
+	if common.Config.ReleaseMode {
+		runtime.GOMAXPROCS(common.Config.Gomaxprocs)
+	}
+
 	config := flag.String(cmdKeyConfig, "", cmdHelpConfig)
 	init := flag.Bool(cmdKeyInit, false, cmdHelpInit)
 	start := flag.Bool(cmdKeyStart, true, cmdHelpStart)

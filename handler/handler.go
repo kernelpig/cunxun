@@ -3,10 +3,14 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 
+	"wangqingang/cunxun/common"
 	"wangqingang/cunxun/middleware"
 )
 
 func ServerEngine() *gin.Engine {
+	if common.Config.ReleaseMode {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	router := gin.New()
 
 	if router == nil {
