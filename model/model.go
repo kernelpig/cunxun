@@ -20,6 +20,7 @@ const (
 // 排序方式枚举定义,禁止用户输入DB字段映射,防止SQL注入
 const (
 	OrderByCreateDate   = "create_date"
+	OrderByUpdateDate   = "update_date"
 	OrderByCommentCount = "comment_count"
 	OrderByIgnore       = ""
 	OrderById           = "id"
@@ -30,10 +31,11 @@ var OrderByMap map[string]string
 
 func init() {
 	OrderByMap = make(map[string]string)
-	OrderByMap[OrderByIgnore] = "order by created_at desc"
-	OrderByMap[OrderByCreateDate] = "order by created_at desc"
-	OrderByMap[OrderByCommentCount] = "order by comment_count desc"
-	OrderByMap[OrderById] = "order by id asc"
+	OrderByMap[OrderByIgnore] = "created_at desc"
+	OrderByMap[OrderByCreateDate] = "created_at desc"
+	OrderByMap[OrderByUpdateDate] = "updated_at desc"
+	OrderByMap[OrderByCommentCount] = "comment_count desc"
+	OrderByMap[OrderById] = "id asc"
 }
 
 type sqlExec interface {
@@ -71,6 +73,11 @@ func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interfac
 	// 如果有排序则必须符合orderMap
 	if orderByStr, ok := OrderByMap[orderByKey]; ok {
 		orderBy = orderByStr
+		// 增加创建时间倒序次要排序
+		if orderByKey != OrderByCreateDate {
+			orderBy = fmt.Sprintf("%s, %s", orderBy, OrderByMap[OrderByCreateDate])
+		}
+		orderBy = fmt.Sprintf("order by %s", orderBy)
 	} else {
 		return true, e.SD(e.MMysqlErr, e.MysqlInvalidOrderType, orderByKey)
 	}
