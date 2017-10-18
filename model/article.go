@@ -16,6 +16,7 @@ type Article struct {
 	UpdaterUid uint64    `json:"updater_uid" column:"updater_uid"`
 	CreatedAt  time.Time `json:"created_at" column:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at" column:"updated_at"`
+	Priority   int       `json:"priority" column:"priority"`
 }
 
 type ArticleDetailView struct {
@@ -27,6 +28,7 @@ type ArticleDetailView struct {
 	UpdaterUid   uint64    `json:"updater_uid" column:"updater_uid"`
 	CreatedAt    time.Time `json:"created_at" column:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at" column:"updated_at"`
+	Priority     int       `json:"priority" column:"priority"`
 	Nickname     string    `json:"nickname" column:"nickname"`
 	CommentCount int       `json:"comment_count" column:"comment_count"`
 }
@@ -74,7 +76,7 @@ func GetArticleList(db sqlExec, where map[string]interface{}, orderBy string, pa
 	}
 
 	// 每次只取pageSize个
-	isOver, err := SQLQueryRows(db, &modelBuf, where, []string{orderBy}, pageSize, pageNum)
+	isOver, err := SQLQueryRows(db, &modelBuf, where, []string{OrderByPriority, orderBy}, pageSize, pageNum)
 	if err != nil {
 		return nil, true, e.SP(e.MArticleErr, e.ArticleGetListErr, err)
 	}

@@ -22,6 +22,7 @@ const (
 	OrderByCreateDate   = "create_date"
 	OrderByUpdateDate   = "update_date"
 	OrderByCommentCount = "comment_count"
+	OrderByPriority     = "priority"
 	OrderByIgnore       = ""
 	OrderById           = "id"
 )
@@ -35,6 +36,7 @@ func init() {
 	OrderByMap[OrderByCreateDate] = "created_at desc"
 	OrderByMap[OrderByUpdateDate] = "updated_at desc"
 	OrderByMap[OrderByCommentCount] = "comment_count desc"
+	OrderByMap[OrderByPriority] = "priority desc"
 	OrderByMap[OrderById] = "id asc"
 }
 

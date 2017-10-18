@@ -5,6 +5,7 @@ CREATE TABLE `article` (
   `column_id` BIGINT UNSIGNED NOT NULL COMMENT "所属栏目",
   `title` VARCHAR(64) NOT NULL COMMENT "文章标题",
   `content` TEXT NOT NULL COMMENT "文章内容",
+  `priority` INT NOT NULL DEFAULT 0 COMMENT "文章显示优先级，置顶",
   `creater_uid` BIGINT UNSIGNED NOT NULL COMMENT "创建人id",
   `updater_uid` BIGINT UNSIGNED NOT NULL COMMENT "最近修改人id",
   PRIMARY KEY (`id`)
