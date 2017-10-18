@@ -135,6 +135,7 @@ func ArticleUpdateByIdHandler(c *gin.Context) {
 		ColumnId:   columnID,
 		Title:      req.Title,
 		Content:    req.Content,
+		Priority:   req.Priority,
 		UpdatedAt:  time.Now(),
 		UpdaterUid: currentCtx.Payload.UserId,
 	}

@@ -87,6 +87,7 @@ type ArticleUpdateRequest struct {
 	ColumnId string `json:"column_id" binding:"omitempty"`
 	Title    string `json:"title" binding:"omitempty"`
 	Content  string `json:"content" binding:"omitempty"`
+	Priority int    `json:"priority" binding:"omitempty"`
 }
 
 type CommentCreateRequest struct {
