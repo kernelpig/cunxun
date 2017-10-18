@@ -79,6 +79,7 @@ type Article struct {
 	UpdaterUid   string    `json:"updater_uid"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
+	Priority     int       `json:"priority"`
 	Nickname     string    `json:"nickname"`
 	CommentCount int       `json:"comment_count"`
 }
@@ -198,6 +199,7 @@ func m2rArticle(m *model.ArticleDetailView) *Article {
 	r.Content = m.Content
 	r.CreaterUid = FormatId(m.CreaterUid)
 	r.UpdaterUid = FormatId(m.UpdaterUid)
+	r.Priority = m.Priority
 	r.CreatedAt = m.CreatedAt
 	r.UpdatedAt = m.UpdatedAt
 	r.Nickname = m.Nickname
