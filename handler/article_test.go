@@ -46,6 +46,7 @@ func testArticleCreateHandler(t *testing.T, e *httpexpect.Expect) {
 		ColumnId: columnID,
 		Title:    test.GenRandString(),
 		Content:  test.GenRandString() + test.GenRandString(),
+		Priority: test.GenRandInt(1),
 	}
 	testArticleCreate(t, e, xToken, createArticleRequest)
 }
@@ -87,6 +88,7 @@ func testArticleGetListHandler(t *testing.T, e *httpexpect.Expect) {
 			ColumnId: columnID,
 			Title:    test.GenRandString(),
 			Content:  test.GenRandString() + test.GenRandString(),
+			Priority: test.GenRandInt(1),
 		}
 		testArticleCreate(t, e, xToken, createArticleRequest)
 	}
@@ -128,6 +130,7 @@ func testArticleGetHandler(t *testing.T, e *httpexpect.Expect) {
 		ColumnId: columnID,
 		Title:    test.GenRandString(),
 		Content:  test.GenRandString() + test.GenRandString(),
+		Priority: test.GenRandInt(1),
 	}
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 	article := testArticleGet(t, e, articleID)
@@ -163,6 +166,7 @@ func testArticleUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 		ColumnId: columnID,
 		Title:    test.GenRandString(),
 		Content:  test.GenRandString() + test.GenRandString(),
+		Priority: test.GenRandInt(1),
 	}
 	articleId := testArticleCreate(t, e, xToken, createArticleRequest)
 
@@ -200,6 +204,7 @@ func testArticleDeleteByIdHandler(t *testing.T, e *httpexpect.Expect) {
 		ColumnId: columnID,
 		Title:    test.GenRandString(),
 		Content:  test.GenRandString() + test.GenRandString(),
+		Priority: test.GenRandInt(1),
 	}
 	articleId := testArticleCreate(t, e, xToken, createArticleRequest)
 

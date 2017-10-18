@@ -39,6 +39,7 @@ func ArticleCreateHandler(c *gin.Context) {
 		ColumnId:   columnId,
 		Title:      req.Title,
 		Content:    req.Content,
+		Priority:   req.Priority,
 		CreaterUid: currentCtx.Payload.UserId,
 		UpdaterUid: currentCtx.Payload.UserId,
 		CreatedAt:  time.Now(),

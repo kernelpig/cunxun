@@ -45,6 +45,7 @@ func testCommentCreateHandler(t *testing.T, e *httpexpect.Expect) {
 		ColumnId: columnID,
 		Title:    test.GenRandString(),
 		Content:  test.GenRandString() + test.GenRandString(),
+		Priority: test.GenRandInt(1),
 	}
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 
@@ -90,6 +91,7 @@ func testCommentGetListHandler(t *testing.T, e *httpexpect.Expect) {
 		ColumnId: columnID,
 		Title:    test.GenRandString(),
 		Content:  test.GenRandString() + test.GenRandString(),
+		Priority: test.GenRandInt(1),
 	}
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 
@@ -138,6 +140,7 @@ func testCommentGetHandler(t *testing.T, e *httpexpect.Expect) {
 		ColumnId: columnID,
 		Title:    test.GenRandString(),
 		Content:  test.GenRandString() + test.GenRandString(),
+		Priority: test.GenRandInt(1),
 	}
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 
@@ -179,6 +182,7 @@ func testCommentUpdateByIdHandler(t *testing.T, e *httpexpect.Expect) {
 		ColumnId: columnID,
 		Title:    test.GenRandString(),
 		Content:  test.GenRandString() + test.GenRandString(),
+		Priority: test.GenRandInt(1),
 	}
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 
@@ -220,6 +224,7 @@ func testCommentDeleteByIdHandler(t *testing.T, e *httpexpect.Expect) {
 		ColumnId: columnID,
 		Title:    test.GenRandString(),
 		Content:  test.GenRandString() + test.GenRandString(),
+		Priority: test.GenRandInt(1),
 	}
 	articleID := testArticleCreate(t, e, xToken, createArticleRequest)
 
