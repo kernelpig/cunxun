@@ -131,7 +131,7 @@ func GetColumnList(db sqlExec, where map[string]interface{}) ([]*ColumnDetailVie
 
 	// 每次只取pageSize个
 	for pageNum := 1; true; pageNum++ {
-		isOver, err := SQLQueryRows(db, &modelBuf, where, OrderById, pageSize, pageNum)
+		isOver, err := SQLQueryRows(db, &modelBuf, where, []string{OrderById}, pageSize, pageNum)
 		if err != nil {
 			return nil, e.SP(e.MColumnErr, e.ColumnGetAllErr, err)
 		}

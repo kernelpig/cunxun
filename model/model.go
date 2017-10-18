@@ -62,8 +62,24 @@ func dumpSQL(_SQL string) string {
 	return _SQL
 }
 
+// 获取order by字符串
+func getOrderByStr(orderByKeys []string) (string, error) {
+	orderByValues := make([]string, 0)
+	for _, k := range orderByKeys {
+		if v, ok := OrderByMap[k]; ok {
+			orderByValues = append(orderByValues, v)
+		} else {
+			return "", fmt.Errorf("invalid order by key: %s", k)
+		}
+	}
+	// 增加时间次要排序
+	orderByValues = append(orderByValues, OrderByMap[OrderByCreateDate])
+	return strings.Join(orderByValues, ", "), nil
+}
+
 // pageSize<=len(selects), pageNum待获取的页数数据, 数据页码从1开始, 遇到任何错误都返回处理完成, 不再处理后续页面
-func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interface{}, orderByKey string, pageSize, pageNum int) (bool, error) {
+// 默认自带created_at字段次要排序，不需要再加了
+func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interface{}, orderByKeys []string, pageSize, pageNum int) (bool, error) {
 	var f []string
 	var _SQL string
 	var rows *sql.Rows
@@ -71,16 +87,11 @@ func SQLQueryRows(db sqlExec, selects *[]interface{}, wheres map[string]interfac
 	var orderBy string
 
 	// 如果有排序则必须符合orderMap
-	if orderByStr, ok := OrderByMap[orderByKey]; ok {
-		orderBy = orderByStr
-		// 增加创建时间倒序次要排序
-		if orderByKey != OrderByCreateDate {
-			orderBy = fmt.Sprintf("%s, %s", orderBy, OrderByMap[OrderByCreateDate])
-		}
-		orderBy = fmt.Sprintf("order by %s", orderBy)
-	} else {
-		return true, e.SD(e.MMysqlErr, e.MysqlInvalidOrderType, orderByKey)
+	orderByValues, err := getOrderByStr(orderByKeys)
+	if err != nil {
+		return true, e.SD(e.MParamsErr, e.ParamsInvalidOrderBy, err.Error())
 	}
+	orderBy = fmt.Sprintf("order by %s", orderByValues)
 
 	// 数据页码从1开始
 	if pageNum < pageNumStart {

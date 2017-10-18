@@ -74,7 +74,7 @@ func GetArticleList(db sqlExec, where map[string]interface{}, orderBy string, pa
 	}
 
 	// 每次只取pageSize个
-	isOver, err := SQLQueryRows(db, &modelBuf, where, orderBy, pageSize, pageNum)
+	isOver, err := SQLQueryRows(db, &modelBuf, where, []string{orderBy}, pageSize, pageNum)
 	if err != nil {
 		return nil, true, e.SP(e.MArticleErr, e.ArticleGetListErr, err)
 	}
