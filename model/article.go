@@ -66,7 +66,7 @@ func CreateArticle(db sqlExec, article *Article) (*Article, error) {
 	return article, nil
 }
 
-func GetArticleList(db sqlExec, where map[string]interface{}, orderBy string, pageSize, pageNum int) ([]*ArticleDetailView, bool, error) {
+func GetArticleList(db sqlExec, where map[string]interface{}, orderBys []string, pageSize, pageNum int) ([]*ArticleDetailView, bool, error) {
 	var list []*ArticleDetailView
 
 	// 初始化缓冲区
@@ -76,7 +76,7 @@ func GetArticleList(db sqlExec, where map[string]interface{}, orderBy string, pa
 	}
 
 	// 每次只取pageSize个
-	isOver, err := SQLQueryRows(db, &modelBuf, where, []string{OrderByPriority, orderBy}, pageSize, pageNum)
+	isOver, err := SQLQueryRows(db, &modelBuf, where, orderBys, pageSize, pageNum)
 	if err != nil {
 		return nil, true, e.SP(e.MArticleErr, e.ArticleGetListErr, err)
 	}

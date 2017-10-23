@@ -99,7 +99,13 @@ func ArticleGetListHandler(c *gin.Context) {
 		return
 	}
 	where := map[string]interface{}{"column_id": columnID, "creater_uid": createrUid}
-	list, isOver, err := model.GetArticleList(db.Mysql, where, c.Query("order_by"), int(pageSize), int(pageNum))
+	orderBys := make([]string, 0)
+	if c.Query("order_by") == model.OrderByCommentCount {
+		orderBys = append(orderBys, model.OrderByCommentCount)
+	} else {
+		orderBys = append(orderBys, model.OrderByPriority)
+	}
+	list, isOver, err := model.GetArticleList(db.Mysql, where, orderBys, int(pageSize), int(pageNum))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, e.IP(e.IArticleGetList, e.MArticleErr, e.ArticleGetListErr, err))
 		return
